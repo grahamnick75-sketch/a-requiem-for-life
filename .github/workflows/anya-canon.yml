@@ -1,0 +1,38 @@
+name: Apply Anya canon clarification
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/anya-canon.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update Anya notes without losing existing browser notes
+        env:
+          ANYA_INSERTION: "// Anya canon clarification: living Vox Nebulae / posthumous Spirit of the Nebulae.\nconst ANYA_CANON_NPCS=[{\"id\":\"anya_vox\",\"name\":\"Anya — Vox Nebulae\",\"summary\":\"Anya in life: Elara’s musical and romantic partner, and the Vox Nebulae, Voice of the Fog.\",\"secret\":\"Anya’s death was a human tragedy related to addiction, not an orchestrated demonic act. How she became Vox Nebulae and the mantle’s powers remain undecided.\",\"status\":\"Canon\"},{\"id\":\"anya_spirit\",\"name\":\"Anya — Spirit of the Nebulae\",\"summary\":\"Anya's posthumous appearance, known as the Spirit of the Nebulae.\",\"secret\":\"This is the same Anya who held Vox Nebulae in life, not a separate individual. The nature of this appearance and whether the Vox mantle has a successor are not yet decided.\",\"status\":\"Canon\"}];\ntry {\n  if (!Array.isArray(data.npcs)) data.npcs=[];\n  ANYA_CANON_NPCS.forEach(n=>{if(!data.npcs.some(x=>x.id===n.id)) data.npcs.push({...n})});\n  const voxEntry=data.lore?.find(x=>x.id==='vox');\n  if(voxEntry && !voxEntry.secret?.includes('Anya held the Vox Nebulae')) voxEntry.secret=(voxEntry.secret||'')+' Anya held the Vox Nebulae mantle in life; following her death she appears as the Spirit of the Nebulae. What happened to the mantle afterward is undecided.';\n  const elaraEntry=data.lore?.find(x=>x.id==='elara');\n  if(elaraEntry && !elaraEntry.secret?.includes('In life, Anya was Vox Nebulae')) elaraEntry.secret=(elaraEntry.secret||'')+' In life, Anya was Vox Nebulae. After death, she appears as the Spirit of the Nebulae—two appearances of the same Anya, not two distinct people.';\n  localStorage.setItem(KEY,JSON.stringify(data));\n} catch(e) { /* Storage may be unavailable in some browsing contexts. */ }\n"
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          p=Path("index.html")
+          s=p.read_text(encoding="utf-8")
+          marker="const MAP_IMAGE="
+          insert=os.environ["ANYA_INSERTION"]
+          if "const ANYA_CANON_NPCS=" not in s:
+              assert marker in s, "Dashboard format changed; not patching"
+              p.write_text(s.replace(marker,insert+marker,1),encoding="utf-8")
+          PY
+      - name: Commit dashboard update
+        run: |
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Clarify Anya's Vox Nebulae and Spirit of the Nebulae identities"
+            git push
+          fi
