@@ -1,0 +1,30 @@
+name: Unpack Requiem dashboard
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/unpack-dashboard.yml'
+      - 'A_Requiem_for_Life_GitHub_Ready.zip'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Extract dashboard files
+        run: |
+          unzip -o A_Requiem_for_Life_GitHub_Ready.zip -d .
+          test -f index.html
+          test -f player_safe_san_francisco_map.png
+      - name: Commit extracted files
+        run: |
+          git add index.html player_safe_san_francisco_map.png
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Add interactive Requiem DM dashboard files"
+            git push
+          fi
