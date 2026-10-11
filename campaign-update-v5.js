@@ -3,7 +3,7 @@
  if(typeof data==='undefined'||!data||!Array.isArray(data.districts))return;
  const additions={
   districts:[
-   {id:'dogpatch',name:'Dogpatch / Potrero Hill waterfront',summary:'Industrial blocks, working warehouses, workshops and waterfront streets southeast of SoMa.',secret:'Cal “Chain” Maddox operates a concealed after-hours supernatural creature-fighting ring inside a functioning commercial Dogpatch warehouse. Ordinary workers may have no idea.',status:'Developing'},
+   {id:'dogpatch',name:'Dogpatch',summary:'Industrial blocks, working warehouses, workshops and waterfront streets southeast of SoMa.',secret:'Cal “Chain” Maddox operates a concealed after-hours supernatural creature-fighting ring inside a functioning commercial Dogpatch warehouse. Ordinary workers may have no idea.',status:'Developing'},
    {id:'waterfront',name:'North Waterfront / Embarcadero',summary:'San Francisco piers, ferries, working shorelines, attractions, and places of arrival and departure.',secret:'Secondary expression of Crossroads: transit, exchange and passage. The Ferryman’s Fey network uses waterfront crossings to smuggle dangerous supernatural creatures. Chinatown remains the Crossroads anchor.',status:'Developing'}
   ],
   locations:[
@@ -33,10 +33,10 @@
   china.secret=((china.secret||'')+' Chinatown remains the principal Crossroads anchor; the north waterfront is a secondary expression of arrival, transit and exchange.').trim();changes++;
  }
  if(typeof HOTSPOTS!=='undefined'){
-  for(const p of [['dogpatch',77,79],['waterfront',75,30]])if(!HOTSPOTS.some(x=>x[0]===p[0]))HOTSPOTS.push(p);
+  for(const p of [['dogpatch',87,82],['waterfront',72,28]])if(!HOTSPOTS.some(x=>x[0]===p[0]))HOTSPOTS.push(p);
  }
  if(typeof LOCATION_PINS!=='undefined'){
-  for(const p of [['dogpatch_warehouse',77,79,'D'],['fishermans_wharf',67,23,'W'],['pier39',72,18,'39'],['alcatraz',64,9,'A']]){
+  for(const p of [['dogpatch_warehouse',87,82,'D'],['fishermans_wharf',57,24,'W'],['pier39',63,23,'39'],['alcatraz',65,12,'A']]){
    if(!LOCATION_PINS.some(x=>x[0]===p[0]))LOCATION_PINS.push(p);
   }
  }
@@ -44,7 +44,7 @@
   const original=mapHome;
   mapHome=function(){return original().replace('draggable="false">','draggable="false"><span class="dogpatch-map-label" aria-hidden="true">Dogpatch</span>');};
   const style=document.createElement('style');
-  style.textContent='.dogpatch-map-label{position:absolute;left:76.5%;top:82%;transform:translate(-50%,-50%);z-index:1;pointer-events:none;color:#39291a;font:italic 700 clamp(12px,1.5vw,19px) Georgia,serif;letter-spacing:.02em;text-shadow:1px 1px 2px #f2dbab,-1px -1px 2px #f2dbab,0 0 6px #f1d9ab}';
+  style.textContent='.dogpatch-map-label{position:absolute;left:86%;top:83%;transform:translate(-50%,-50%);z-index:1;pointer-events:none;color:#39291a;font:italic 700 clamp(12px,1.5vw,19px) Georgia,serif;letter-spacing:.02em;text-shadow:1px 1px 2px #f2dbab,-1px -1px 2px #f2dbab,0 0 6px #f1d9ab}';
   document.head.appendChild(style);
  }
  if(changes)try{persist();}catch(e){}
