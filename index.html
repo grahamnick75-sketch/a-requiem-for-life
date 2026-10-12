@@ -46,4 +46,5 @@ document.getElementById('exportBtn').onclick=()=>{let a=document.createElement('
 document.getElementById('importBtn').onclick=()=>document.getElementById('fileInput').click();document.getElementById('fileInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let incoming=JSON.parse(await f.text());if(!['districts','locations','npcs','lore','threads','sessions'].every(k=>Array.isArray(incoming[k])))throw Error('Invalid dashboard backup');if(confirm('Replace dashboard data on THIS device with the imported backup?')){data=incoming;persist();selected=null;tab='home';render()}}catch(err){alert('Import failed: '+err.message)}e.target.value=''};render();
 </script><script src="campaign-update-v4.js"></script><script src="campaign-update-v5.js"></script>
 <script src="campaign-update-v6.js"></script>
+<script src="first-tongue/dashboard-integration.js"></script>
 </body></html>
