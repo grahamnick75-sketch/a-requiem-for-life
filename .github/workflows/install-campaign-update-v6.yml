@@ -1,0 +1,35 @@
+name: Install Luma and Alcatraz campaign dashboard updates
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-campaign-update-v6.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Attach the latest campaign data migration
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("index.html")
+          s = p.read_text(encoding="utf-8")
+          tag = '<script src="campaign-update-v6.js"></script>'
+          assert '</body>' in s, "Expected dashboard page with closing body tag"
+          if tag not in s:
+              s = s.replace('</body>', tag + '\n</body>', 1)
+              p.write_text(s, encoding="utf-8")
+          PY
+      - name: Commit deployment update
+        run: |
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Load Luma, Conservatory outpost, and Alcatraz arc notes"
+            git push
+          fi
