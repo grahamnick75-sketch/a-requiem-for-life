@@ -127,6 +127,17 @@
     status:'Developing'
   });
 
+  // Map pins are approximate clusters on the illustrated (not geocoded) city map.
+  if (typeof LOCATION_PINS !== 'undefined' && Array.isArray(LOCATION_PINS)) {
+    const addedPins = [
+      ['luma_hq',73,53,'L'],
+      ['luma_client_building',68,57,'S']
+    ];
+    for (const pin of addedPins) {
+      if (!LOCATION_PINS.some(old => old[0] === pin[0])) LOCATION_PINS.push(pin);
+    }
+  }
+
   // Useful cross-links from main family shop to outpost and from island to its arc.
   if (typeof detail === 'function' && !detail.__lumaLinked) {
     const origDetail = detail;
