@@ -1,0 +1,40 @@
+name: Install First Tongue archive into DM dashboard
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-first-tongue.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Attach First Tongue archive
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          html = p.read_text(encoding='utf-8')
+          tag = '<script src="first-tongue/dashboard-integration.js"></script>'
+          assert '</body>' in html, 'Dashboard root has no closing body tag'
+          assert Path('first-tongue/dashboard-integration.js').exists(), 'Archive integration script missing'
+          assert Path('first-tongue/kethil-workshop.html').exists(), 'Kethil workshop missing'
+          assert Path('first-tongue/gm-reference.html').exists(), 'GM reference missing'
+          assert Path('first-tongue/player-primer.html').exists(), 'Player primer missing'
+          assert Path('first-tongue/inscription-handouts.html').exists(), 'Handouts missing'
+          if tag not in html:
+              html = html.replace('</body>', tag + '\n</body>', 1)
+              p.write_text(html, encoding='utf-8')
+          PY
+      - name: Save dashboard integration
+        run: |
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Load First Tongue archive and Kethil workshop in dashboard'
+            git push
+          fi
