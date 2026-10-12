@@ -113,6 +113,20 @@
     secret:'DM ONLY: Hidden qualitative Covenant assessment developed organically through campaign choices; not a fixed score or a secret punishment. Individual relationships and party bonds both matter. Haunting initially isolates and distorts; then familiarity/names vanish, shared connections vanish, and finally characters risk forgetting themselves. Insight checks provide fair clues about supernatural manipulation, and meaningful acts of remembrance or solidarity can recover memories without relying only on saving throws or player trivia. Do not dictate the PCs’ choices or force PvP. Alcatraz’s entity gains a physical form only in the finale; compassionate resolution and combat are both possibilities.',
     status:'Canon'
   });
+
+  upsert('lore',{
+    id:'riftstalker',name:'The Riftstalker (working name)',
+    summary:'Arc 1 final creature: a reality-warping Displacer Beast altered into a living weapon.',
+    secret:'DM ONLY: A powerful, rare Displacer Beast transformed by magical experimentation into a spatial/reality-warping weapon. It can distort apparent position and the geometry of the battlefield; encounter mechanics are undecided. The Ferryman is hired by an unidentified buyer to import it into San Francisco. Its originator, buyer and intended target remain unknown. The creature did not choose to become a weapon; it can be dangerous without being morally evil. Creature title Riftstalker is a working name.',
+    status:'Developing'
+  });
+  upsert('threads',{
+    id:'arc_ferryman',name:'Arc 1 — Open Secrets: The Ferryman',
+    summary:'The Dogpatch creature-fighting ring exposes a waterfront network importing dangerous beings.',
+    secret:'DM ONLY: The Ferryman, an elegant Eladrin criminal, commands supernatural couriers, handlers and lieutenants, exploiting weakened Confluence barriers to import dangerous creatures. Cal “Chain” Maddox, an Awakened human customer, operates an illegal Blink Dog fighting ring inside a functioning Dogpatch warehouse. Early mini-boss battle and rescue there expose shipping records leading to the Ferryman. A mysterious buyer orders an extraordinarily powerful magically altered Displacer Beast (working name: Riftstalker) as a weapon. Arc finale is a waterfront confrontation and major boss battle with the Ferryman and incoming creature. Creature experiments’ origin, buyer, target, exact docks and stats remain undecided. Crossroads anchor stays Chinatown, with secondary waterfront resonance. Umbral Arcana concealment lapses are a separate phenomenon; do not assume a cause.',
+    status:'Developing'
+  });
+
   // Useful cross-links from main family shop to outpost and from island to its arc.
   if (typeof detail === 'function' && !detail.__lumaLinked) {
     const origDetail = detail;
