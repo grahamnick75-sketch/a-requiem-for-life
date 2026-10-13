@@ -162,6 +162,88 @@
       remember("npcs",npc,{connections:npc.connections});closeModal();render();
     };
   }
+
+  // Consistent, DM-only directory and full-record experience.
+  const directoryState={};
+  const directoryKinds=["districts","locations","npcs","villains","lore","threads"];
+  const singular={districts:"District",locations:"Location",npcs:"NPC",villains:"Villain",lore:"Lore",threads:"Story Thread"};
+  const headings={districts:"Districts",locations:"Locations",npcs:"NPCs",villains:"Villains",lore:"Lore",threads:"Story Threads"};
+  const fallbackStatus=x=>String(x.status||"Unspecified");
+  const textField=(label,value)=>value?'<div class="rfl-info-field"><strong>'+esc(label)+'</strong><p>'+esc(String(value))+'</p></div>':"";
+  const relatedRecords=x=>{
+    const items=Array.isArray(x.connections)?x.connections:[];
+    if(x.location)items.unshift({targetType:"locations",targetId:x.location,relation:"Location"});
+    if(x.npcId)items.unshift({targetType:"npcs",targetId:x.npcId,relation:"NPC profile"});
+    return items.map(c=>{
+      const found=c.targetType&&Array.isArray(data[c.targetType])?data[c.targetType].find(t=>t.id===c.targetId):null;
+      return '<div class="rfl-related-row">'+(found?'<button class="rfl-text-link" data-v8-go="'+esc(c.targetType+":"+c.targetId)+'">'+esc(found.name)+' ↗</button>':'<span>'+esc(c.targetName||"Unlinked record")+'</span>')+
+        '<span class="v8-small">'+esc(c.relation||"Connection")+'</span>'+(c.details?'<p>'+esc(c.details)+'</p>':"")+'</div>';
+    }).join("");
+  };
+  const accordion=(name,html,open)=>'<details class="rfl-record-section"'+(open?' open':'')+'><summary>'+esc(name)+'</summary><div class="rfl-section-content">'+(html||'<p class="v8-muted">Not established yet.</p>')+'</div></details>';
+  function recordPage(kind,x){
+    const general=textField("Description",x.summary)+textField("Status",x.status)+
+      (kind==="locations"?textField("District",data.districts.find(d=>d.id===x.district)?.name||x.district):"")+
+      (kind==="npcs"?textField("Role",x.occupation)+textField("Ancestry",x.ancestry)+textField("Age",x.age)+textField("Pronouns",x.pronouns):"");
+    const characterization=["appearance","personality","motivations","flaws","beliefs"].map(k=>textField(k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()),x[k])).join("");
+    const villainDetails=["arc","goal","method","weakness"].map(k=>textField(k[0].toUpperCase()+k.slice(1),x[k])).join("");
+    const rel=relatedRecords(x);
+    return '<div class="rfl-record-page">'+
+      '<div class="rfl-record-actions"><button class="action" data-v8-back>← Back to '+esc(headings[kind])+'</button><span class="rfl-action-spacer"></span>'+
+      '<button class="action" data-v8-edit="'+esc(kind+":"+x.id)+'">✎ Edit</button>'+
+      '<button class="action" data-v8-delete="'+esc(kind+":"+x.id)+'">Delete</button></div>'+
+      '<div class="rfl-record-heading"><span class="v8-badge">'+esc(singular[kind])+' · '+esc(fallbackStatus(x))+'</span><h2>'+esc(x.name)+'</h2></div>'+
+      accordion("Overview",general,true)+
+      ((kind==="npcs")?accordion("Character",characterization,false):"")+
+      ((kind==="villains")?accordion("Antagonist Details",villainDetails,false):"")+
+      accordion("Connections",rel+(kind==="npcs"?'<div class="v8-actions"><button class="action" id="v8AddLink">+ Add connection</button></div>':""),false)+
+      accordion("Campaign Involvement",textField("Arc",x.arc)+textField("Campaign notes",x.campaignNotes),false)+
+      accordion("DM Notes",textField("Secrets",x.secret)+(kind==="npcs"?'<label class="v8-small" for="v8NpcNotes">Live session notes</label><textarea id="v8NpcNotes">'+esc(x.notes||"")+'</textarea><div class="v8-actions"><button class="action" id="v8SaveNpcNotes">Save notes</button><span id="v8NpcNoteStatus" class="v8-muted"></span></div>':""),false)+
+      (kind==="districts"?'<div class="v8-actions"><button class="action" data-v8-zoomdistrict="'+esc(x.id)+'">↗ Focus on map</button></div>':"")+
+      '</div>';
+  }
+  function directoryPage(kind){
+    const state=directoryState[kind]||(directoryState[kind]={search:"",sort:"az",filter:""});
+    const items=data[kind]||[];
+    const statuses=[...new Set(items.map(fallbackStatus))].sort();
+    const filters=kind==="locations"?data.districts.map(d=>({value:d.id,label:d.name})):statuses.map(v=>({value:v,label:v}));
+    return '<div class="rfl-directory"><div class="rfl-dir-heading"><div><h2>'+esc(headings[kind])+'</h2><p class="v8-muted">'+items.length+' records</p></div>'+
+      '<button class="action" data-v8-create="'+kind+'">+ Add '+esc(singular[kind])+'</button></div>'+
+      '<div class="rfl-dir-tools"><input id="rflDirSearch" type="search" placeholder="Search '+esc(headings[kind]).toLowerCase()+'..." value="'+esc(state.search)+'" aria-label="Search records"/>'+
+      '<label>Sort <select id="rflDirSort"><option value="az"'+(state.sort==="az"?" selected":"")+'>Name A–Z</option><option value="za"'+(state.sort==="za"?" selected":"")+'>Name Z–A</option><option value="new"'+(state.sort==="new"?" selected":"")+'>Newest first</option><option value="old"'+(state.sort==="old"?" selected":"")+'>Oldest first</option></select></label>'+
+      '<label>Filter <select id="rflDirFilter"><option value="">All '+(kind==="locations"?"districts":"statuses")+'</option>'+filters.map(f=>'<option value="'+esc(f.value)+'"'+(state.filter===f.value?" selected":"")+'>'+esc(f.label)+'</option>').join("")+'</select></label>'+
+      '<button class="action rfl-clear-filter" id="rflDirClear">Clear</button></div>'+
+      '<div class="rfl-dir-count" id="rflDirCount"></div><div class="rfl-dir-list" id="rflDirList"></div></div>';
+  }
+  function bindDirectory(kind,app){
+    const state=directoryState[kind], input=app.querySelector("#rflDirSearch"),sort=app.querySelector("#rflDirSort"),
+      filter=app.querySelector("#rflDirFilter"),list=app.querySelector("#rflDirList"),count=app.querySelector("#rflDirCount");
+    if(!list)return;
+    function paint(){
+      const query=state.search.trim().toLowerCase();
+      let rows=(data[kind]||[]).filter(x=>(!query||[x.name,x.summary,x.secret,x.arc].some(v=>String(v||"").toLowerCase().includes(query)))&&
+        (!state.filter||(kind==="locations"?x.district===state.filter:fallbackStatus(x)===state.filter)));
+      rows=rows.slice().sort((a,b)=>{
+        if(state.sort==="az")return a.name.localeCompare(b.name);
+        if(state.sort==="za")return b.name.localeCompare(a.name);
+        const av=Date.parse(a.updatedAt||a.createdAt||"")||0,bv=Date.parse(b.updatedAt||b.createdAt||"")||0;
+        return state.sort==="new"?bv-av:av-bv;
+      });
+      count.textContent=rows.length+" of "+(data[kind]||[]).length+" records";
+      list.innerHTML=rows.length?rows.map(x=>'<button class="rfl-dir-row" data-v8-go="'+esc(kind+":"+x.id)+'"><span>'+esc(x.name)+'</span><small>'+esc(kind==="locations"?(data.districts.find(d=>d.id===x.district)?.name||"Location"):fallbackStatus(x))+'</small><span aria-hidden="true">›</span></button>').join(""):'<p class="v8-muted">No matching records.</p>';
+      list.querySelectorAll("[data-v8-go]").forEach(el=>el.onclick=()=>{const bits=el.dataset.v8Go.split(":");go(bits[0],bits.slice(1).join(":"));});
+    }
+    input.oninput=e=>{state.search=e.target.value;paint();};
+    sort.onchange=e=>{state.sort=e.target.value;paint();};
+    filter.onchange=e=>{state.filter=e.target.value;paint();};
+    app.querySelector("#rflDirClear").onclick=()=>{state.search="";state.sort="az";state.filter="";input.value="";sort.value="az";filter.value="";paint();};
+    paint();
+  }
+  const directoryCss=document.createElement("style");
+  directoryCss.id="rfl-record-layout-v10";
+  directoryCss.textContent='.rfl-directory,.rfl-record-page{max-width:1050px;margin:0 auto}.rfl-dir-heading,.rfl-record-actions{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}.rfl-dir-heading h2,.rfl-record-heading h2{font:30px Georgia,serif;color:#eed5a6;margin:0}.rfl-dir-heading p{margin:5px 0}.rfl-dir-tools{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:18px 0}.rfl-dir-tools input{flex:1 1 220px;min-width:160px}.rfl-dir-tools label{display:grid;gap:4px;font-size:12px;color:#d6c19b}.rfl-dir-tools select{min-width:135px}.rfl-dir-count{font-size:12px;color:#bbc4bf;margin:12px 0}.rfl-dir-list{border:1px solid #6d5e49;border-radius:10px;overflow:hidden}.rfl-dir-row{display:flex;width:100%;align-items:center;text-align:left;gap:14px;min-height:49px;padding:12px 15px;background:#202b32;color:#f1e9d8;border:0;border-bottom:1px solid #45505a;cursor:pointer}.rfl-dir-row:last-child{border-bottom:0}.rfl-dir-row:hover,.rfl-dir-row:focus-visible{background:#4c4133;outline:1px solid #c8aa74}.rfl-dir-row span:first-child{flex:1;font:16px Georgia,serif}.rfl-dir-row small{color:#c6ae81}.rfl-record-heading{margin:22px 0}.rfl-action-spacer{flex:1}.rfl-record-section{border:1px solid #6c614f;background:#202b32;border-radius:10px;margin:10px 0;overflow:hidden}.rfl-record-section summary{cursor:pointer;padding:16px;font:17px Georgia,serif;color:#ead2a5;list-style:none}.rfl-record-section summary::-webkit-details-marker{display:none}.rfl-record-section summary:after{content:"⌄";float:right}.rfl-record-section[open] summary:after{content:"⌃"}.rfl-section-content{border-top:1px solid #50564f;padding:16px}.rfl-info-field{margin:0 0 15px}.rfl-info-field strong{font-size:12px;color:#c9ab77;text-transform:uppercase;letter-spacing:.06em}.rfl-info-field p{white-space:pre-wrap;line-height:1.6;margin:5px 0}.rfl-related-row{padding:10px 0;border-bottom:1px solid #45505a}.rfl-related-row p{margin:6px 0}.rfl-text-link{background:none;border:0;color:#e7c788;text-decoration:underline;cursor:pointer;font:inherit}.rfl-record-section textarea{width:100%;min-height:100px}@media(max-width:650px){.rfl-dir-tools label{flex:1}.rfl-clear-filter{align-self:end}}';
+  document.head.appendChild(directoryCss);
+
   const formerMap=mapHome;
   mapHome=function(){
     let html=formerMap();
@@ -208,22 +290,13 @@
         }
       }
     }
-    if(editable.includes(tab)&&!mode){
-      if(selected&&tab==="npcs"){
-        const x=data.npcs.find(n=>n.id===selected);
-        if(x)app.innerHTML=personProfile(x);
+    if(directoryKinds.includes(tab)&&!mode){
+      if(selected){
+        const record=(data[tab]||[]).find(x=>x.id===selected);
+        if(record)app.innerHTML=recordPage(tab,record);
       }else{
-        const controls=document.createElement("div");controls.className="v8-controlbar dmOnly";
-        controls.innerHTML=(selected?'<button class="action" data-v8-edit="'+tab+':'+esc(selected)+'">✎ Edit '+esc(tab.replace(/s$/,""))+'</button><button class="action" data-v8-delete="'+tab+':'+esc(selected)+'">Delete entry</button>':'<button class="action" data-v8-create="'+tab+'">+ Add '+esc(tab.replace(/s$/,""))+'</button>')+
-        (tab==="districts"&&selected?'<button class="action" data-v8-zoomdistrict="'+esc(selected)+'">↗ Focus on map</button>':"");
-        app.insertBefore(controls,app.firstChild);
-        if(selected&&tab==="villains"){
-          const x=data.villains.find(v=>v.id===selected),el=app.querySelector(".detail");
-          if(x&&el){const bonus=document.createElement("div");bonus.className="v8-card dmOnly";
-            bonus.innerHTML='<h3>Antagonist profile</h3><p><b>Story arc:</b> '+esc(x.arc||"Not established")+'</p><p><b>Goal:</b> '+esc(x.goal||"Not established")+'</p><p><b>Methods:</b> '+esc(x.method||"Not established")+'</p><p><b>Weakness:</b> '+esc(x.weakness||"Not established")+'</p>'+(x.npcId?'<button class="action" data-v8-go="npcs:'+esc(x.npcId)+'">Open linked NPC profile</button>':"");
-            el.appendChild(bonus);
-          }
-        }
+        app.innerHTML=directoryPage(tab);
+        bindDirectory(tab,app);
       }
     }
     if(tab==="sessions"&&!mode){
