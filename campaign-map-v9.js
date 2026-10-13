@@ -66,25 +66,40 @@
   }
 
   function graphic(id){
-    var d=district(id);
-    var names=roadNames[id]||['Main Corridor','Neighborhood Route','Local Crossing'];
-    var shoreline=['dogpatch','bayview','waterfront','presidio'].includes(id);
-    return '<svg class="rfl-district-svg" viewBox="0 0 1000 610" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stylized illustrated map of '+h(d?d.name:id)+' with major corridors">'+
-      '<defs><linearGradient id="rfl-ground" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#282d2b"/><stop offset=".55" stop-color="#374039"/><stop offset="1" stop-color="#1c2b32"/></linearGradient>'+
-      '<pattern id="rfl-paper" width="35" height="35" patternUnits="userSpaceOnUse"><path d="M0 0L35 35M35 0L0 35" stroke="#bbab79" opacity=".035" stroke-width="1"/></pattern></defs>'+
-      '<rect width="1000" height="610" fill="url(#rfl-ground)"/>'+
-      '<path d="M-50 72Q230 -45 490 93T1080 103L1070 195Q740 155 530 255T-40 195Z" fill="#53604b" opacity=".14"/>'+
-      '<path d="M-20 410Q250 300 445 390T1050 425L1080 610H-20Z" fill="#837044" opacity=".08"/>'+
-      (shoreline?'<path d="M840 -30Q785 105 875 230T870 435L775 650H1070V-30Z" fill="#1b3c4c" stroke="#bdaf79" stroke-width="5" stroke-opacity=".55"/><path d="M890 0Q840 140 925 275T905 610" fill="none" stroke="#b0cad0" stroke-opacity=".2" stroke-width="3"/>':'')+
-      '<g fill="none" stroke="#091a1d" stroke-opacity=".4" stroke-width="31"><path d="M-70 310Q250 275 545 285T1070 240"/><path d="M285 -60Q380 200 335 670"/><path d="M-80 520Q380 450 680 505T1100 460"/></g>'+
-      '<g fill="none" stroke="#a38c5d" stroke-width="12" stroke-linecap="round" stroke-opacity=".72"><path d="M-70 310Q250 275 545 285T1070 240"/><path d="M285 -60Q380 200 335 670"/><path d="M-80 520Q380 450 680 505T1100 460"/></g>'+
-      '<g fill="none" stroke="#d2c49d" stroke-opacity=".16" stroke-width="2" stroke-dasharray="8 12"><path d="M-70 310Q250 275 545 285T1070 240"/><path d="M285 -60Q380 200 335 670"/></g>'+
-      '<rect width="1000" height="610" fill="url(#rfl-paper)"/>'+
-      '<g fill="#dec99d" font-size="18" font-family="Georgia,serif" letter-spacing="3" opacity=".77">'+
-      '<text transform="translate(48 271) rotate(-3)">'+h(names[0]).toUpperCase()+'</text>'+
-      '<text transform="translate(328 95) rotate(77)">'+h(names[1]).toUpperCase()+'</text>'+
-      '<text transform="translate(450 468) rotate(-2)">'+h(names[2]).toUpperCase()+'</text></g>'+
-      '<g stroke="#cba86c" opacity=".38"><path d="M35 35h65M35 35v65" stroke-width="1.8"/><path d="M900 570h65M965 505v65" stroke-width="1.8"/></g>'+
+    var d=district(id), names=roadNames[id]||['Main Street','Market Lane','Broadway'];
+    var coast=['dogpatch','bayview','waterfront','presidio'].includes(id);
+    var seed=0;for(var k=0;k<id.length;k++)seed=(seed*31+id.charCodeAt(k))>>>0;
+    var blocks='',streets='',trees='',labels='';
+    // An interpretive atlas rather than a magnified three-street sketch: many
+    // side streets, fine ink building footprints and uneven blocks of greenery.
+    for(var row=0;row<9;row++)for(var col=0;col<14;col++){
+      var bx=33+col*70+((row*17+seed%11)%12),by=35+row*64+((col*7)%9);
+      if(coast&&bx>790)continue;
+      var park=((row*7+col*11+seed)%37===0);
+      if(park){
+        blocks+='<rect x="'+(bx+6)+'" y="'+(by+6)+'" width="47" height="42" rx="7" fill="#b5ba8b" stroke="#6c785b" stroke-width="1.3"/>';
+        for(var t=0;t<4;t++)trees+='<circle cx="'+(bx+14+t*11)+'" cy="'+(by+20+(t%2)*13)+'" r="7" fill="#768561" fill-opacity=".65" stroke="#5c6e51" stroke-width="1"/>';
+      }else{
+        for(var q=0;q<3;q++){
+          var ww=12+((seed+col*3+q*5)%7),xx=bx+6+q*18,yy=by+7+((row+q)%3)*3;
+          blocks+='<rect x="'+xx+'" y="'+yy+'" width="'+ww+'" height="'+(15+((row+q*7)%11))+'" rx="1" fill="#d1ba89" fill-opacity=".66" stroke="#856c4d" stroke-width="1.15"/>';
+          if((row+col+q)%4===0)blocks+='<path d="M'+xx+' '+(yy+7)+'h'+ww+'" stroke="#8c775a" stroke-opacity=".48"/>';
+        }
+      }
+    }
+    for(var i=0;i<15;i++)streets+='<path d="M'+(i*71-6)+' -20L'+(i*71+15)+' 635" stroke="#8f805f" stroke-width="8" stroke-opacity=".34"/><path d="M'+(i*71-6)+' -20L'+(i*71+15)+' 635" stroke="#f1dfb7" stroke-width="5"/>';
+    for(var j=0;j<11;j++)streets+='<path d="M-10 '+(j*64+7)+'L1010 '+(j*64-9)+'" stroke="#8f805f" stroke-width="8" stroke-opacity=".34"/><path d="M-10 '+(j*64+7)+'L1010 '+(j*64-9)+'" stroke="#f1dfb7" stroke-width="5"/>';
+    labels='<text x="85" y="222" transform="rotate(-2 85 222)">'+h(names[0]).toUpperCase()+'</text>'+
+      '<text x="505" y="44" transform="rotate(86 505 44)">'+h(names[1]).toUpperCase()+'</text>'+
+      '<text x="480" y="480" transform="rotate(-2 480 480)">'+h(names[2]).toUpperCase()+'</text>';
+    return '<svg class="rfl-district-svg" viewBox="0 0 1000 610" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Illustrated parchment neighborhood atlas of '+h(d?d.name:id)+'">'+
+      '<defs><filter id="rfl-paper-grain"><feTurbulence type="fractalNoise" baseFrequency=".33" numOctaves="3" seed="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".075"/></feComponentTransfer></filter></defs>'+
+      '<rect width="1000" height="610" fill="#e2cba0"/><rect width="1000" height="610" fill="#f0deb9" opacity=".35"/>'+
+      '<g>'+blocks+'</g><g>'+streets+'</g><g>'+trees+'</g>'+
+      (coast?'<path d="M853 -25Q805 119 849 240T817 440L798 635H1020V-25Z" fill="#8ea9ac" stroke="#687e7a" stroke-width="4"/><path d="M868 -15Q828 120 872 245T844 445L823 640" fill="none" stroke="#e2e7d4" stroke-width="3" stroke-opacity=".5"/>':'')+
+      '<g fill="#6b5138" font-size="16" font-family="Georgia,serif" letter-spacing="2.5" opacity=".9" paint-order="stroke" stroke="#e9d4aa" stroke-width="4">'+labels+'</g>'+
+      '<g stroke="#8e7350" fill="none" opacity=".65"><path d="M18 18h65M18 18v65M982 592h-65M982 592v-65" stroke-width="2"/></g>'+
+      '<rect width="1000" height="610" filter="url(#rfl-paper-grain)" opacity=".45" pointer-events="none"/>'+
       '</svg>';
   }
 
@@ -141,7 +156,7 @@
     return '<div class="rfl-stage rfl-neighborhood-stage" id="rflStage"><div class="rfl-neighborhood-art" id="rflPlacementMap">'+
       graphic(activeDistrict)+pinsForDistrict(activeDistrict)+
       '<span class="rfl-neighborhood-seal" aria-hidden="true">✧ '+h(d?d.name:activeDistrict)+' ✧</span>'+
-      '</div></div><p class="rfl-map-footnote">Illustrated district guide · major corridors and marker positions are stylized, not street-accurate.'+
+      '</div></div><p class="rfl-map-footnote">Illustrated parchment district atlas · streets and building footprints are artistically interpreted.'+
       (arrange?' Click anywhere on the map to place the selected pin.':'')+'</p>';
   }
   mapHome=function(){
@@ -159,10 +174,10 @@
   style.textContent=
     '.rfl-topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0}.rfl-crumb{color:#d6c69e;font:15px Georgia,serif}.rfl-topbar [data-jump]{margin-left:auto}'+
     '.rfl-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(235px,295px);gap:16px;align-items:start}.rfl-map-column{min-width:0}.rfl-stage{border:1px solid #75654b;border-radius:13px;overflow:hidden;background:#1a2427;box-shadow:0 14px 35px #0005;isolation:isolate;animation:rflAppear .38s ease-out both}@keyframes rflAppear{from{opacity:.35;transform:scale(.975)}to{opacity:1;transform:scale(1)}}'+
-    '.rfl-art,.rfl-neighborhood-art{position:relative;overflow:hidden;aspect-ratio:3/2}.rfl-city-art img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}.rfl-city-markers{position:absolute;inset:0;pointer-events:none}.rfl-city-dot{position:absolute;pointer-events:auto;transform:translate(-50%,-50%);display:flex;align-items:center;gap:5px;padding:4px 8px;border:1px solid #d8b980;border-radius:9px;background:#172831ed;color:#f3dba9;z-index:1;font-weight:650;max-width:150px;box-shadow:0 3px 9px #0009}.rfl-city-dot span{font-size:11px;color:#e3b76a}.rfl-city-dot small{font-size:clamp(9px,.85vw,12px);white-space:normal;text-align:left;line-height:1.1}.rfl-city-dot:hover,.rfl-city-dot:focus-visible{background:#795834;outline:2px solid #f6d79c;z-index:3}'+
-    '.rfl-neighborhood-art{background:#233230;cursor:default}.rfl-district-svg{width:100%;height:100%;display:block}.rfl-neighborhood-seal{position:absolute;left:3%;top:3%;font:italic clamp(13px,1.4vw,20px) Georgia,serif;color:#e4cf9b;text-shadow:0 1px 5px #000;pointer-events:none}.rfl-map-footnote{font-size:12px;color:#aeb9bb;margin:10px 0 14px}'+
+    '.rfl-art,.rfl-neighborhood-art{position:relative;overflow:hidden;aspect-ratio:3/2}.rfl-city-art img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}.rfl-city-markers{position:absolute;inset:0;pointer-events:none}.rfl-city-dot{position:absolute;pointer-events:auto;transform:translate(-50%,-50%);display:flex;align-items:center;gap:5px;padding:2px 5px;border:1px solid #b99359;border-radius:9px;background:#342b23df;color:#f3dba9;z-index:1;font-weight:650;max-width:150px;box-shadow:0 3px 9px #0009}.rfl-city-dot span{font-size:11px;color:#e3b76a}.rfl-city-dot small{font-size:clamp(9px,.85vw,12px);white-space:normal;text-align:left;line-height:1.1}.rfl-city-dot:hover,.rfl-city-dot:focus-visible{background:#795834;outline:2px solid #f6d79c;z-index:3}'+
+    '.rfl-neighborhood-art{background:#e2cba0;cursor:default}.rfl-district-svg{width:100%;height:100%;display:block}.rfl-neighborhood-seal{position:absolute;left:3%;top:3%;font:italic clamp(13px,1.4vw,20px) Georgia,serif;color:#59432c;text-shadow:0 1px 2px #eddbb4;pointer-events:none}.rfl-map-footnote{font-size:12px;color:#aeb9bb;margin:10px 0 14px}'+
     '.rfl-guide{background:#1b252e;border:1px solid #3e4c57;border-radius:12px;padding:15px;min-width:0;max-height:min(77vh,850px);overflow:auto}.rfl-guide h3{font:23px Georgia,serif;color:#efd3a2;margin:7px 0}.rfl-guide p{line-height:1.45;font-size:13px}.rfl-overline{color:#cba96b;letter-spacing:.14em;font-size:10px;font-weight:750}.rfl-location-heading{margin-top:18px;margin-bottom:9px}.rfl-district-list,.rfl-location-list{display:flex;flex-direction:column;gap:5px;max-height:39vh;overflow:auto}.rfl-guide-button{background:#24323b;color:#e9e3d7;border:1px solid #435563;border-radius:8px;text-align:left;display:flex;gap:5px;justify-content:space-between;align-items:center;padding:10px;font-size:13px;min-height:39px}.rfl-guide-button small{color:#c9b588;font-size:10px;text-align:right;flex-shrink:0}.rfl-guide-button:hover,.rfl-guide-button:focus-visible,.rfl-guide-button.chosen{background:#634a2d;border-color:#c5a16b;outline:none}.rfl-guide-controls{display:flex;flex-wrap:wrap;gap:7px;margin:13px 0}.rfl-guide-controls button{font-size:12px}.rfl-instruction{color:#efd3a2;border-left:2px solid #cbab70;padding-left:9px}.rfl-location-detail{margin-top:15px;padding:12px;background:#131e24;border:1px solid #50616a;border-radius:9px}.rfl-location-detail h4{font:20px Georgia,serif;color:#eed2a2;margin:8px 0}.rfl-secret{margin:10px 0;padding:9px;background:#33252d;border-left:3px solid #bc8169}.rfl-secret p{white-space:pre-wrap}'+
-    '.rfl-pin{position:absolute;transform:translate(-50%,-50%);border:0;box-shadow:none;background:transparent;color:#f9e2ae;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:126px;padding:0;cursor:pointer}.rfl-pin-icon{width:25px;height:25px;border-radius:50%;border:2px solid #ead09c;background:#513729;box-shadow:0 2px 10px #000b;display:grid;place-items:center;font-size:17px;line-height:1}.rfl-pin-landmark .rfl-pin-icon{width:34px;height:34px;border-radius:8px;transform:rotate(45deg);background:#a27e43;font-size:23px}.rfl-pin-landmark .rfl-pin-icon::first-letter{transform:rotate(-45deg)}.rfl-pin-label{background:#15262bd9;border:1px solid #8c7650;color:#ffe7b7;border-radius:5px;padding:3px 5px;font-size:10px;max-width:128px;line-height:1.2;text-align:center;margin-top:3px;overflow-wrap:anywhere}.rfl-pin.selected .rfl-pin-icon,.rfl-pin:hover .rfl-pin-icon,.rfl-pin:focus-visible .rfl-pin-icon{background:#bd8e4d;outline:2px solid #fff1bb;z-index:3}'+
+    '.rfl-pin{position:absolute;transform:translate(-50%,-50%);border:0;box-shadow:none;background:transparent;color:#f9e2ae;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:126px;padding:0;cursor:pointer}.rfl-pin-icon{width:18px;height:18px;border-radius:50%;border:2px solid #ead09c;background:#513729;box-shadow:0 2px 10px #000b;display:grid;place-items:center;font-size:13px;line-height:1}.rfl-pin-landmark .rfl-pin-icon{width:25px;height:25px;border-radius:8px;transform:rotate(45deg);background:#a27e43;font-size:23px}.rfl-pin-landmark .rfl-pin-icon::first-letter{transform:rotate(-45deg)}.rfl-pin-label{background:#15262bd9;border:1px solid #8c7650;color:#ffe7b7;border-radius:5px;padding:3px 5px;font-size:10px;max-width:128px;line-height:1.2;text-align:center;margin-top:3px;overflow-wrap:anywhere}.rfl-pin.selected .rfl-pin-icon,.rfl-pin:hover .rfl-pin-icon,.rfl-pin:focus-visible .rfl-pin-icon{background:#bd8e4d;outline:2px solid #fff1bb;z-index:3}'+
     '.rfl-neighborhood-art.rfl-arrange{cursor:crosshair}.rfl-neighborhood-art.rfl-arrange .rfl-pin{cursor:crosshair}.rfl-neighborhood-art.rfl-arrange::after{content:"";position:absolute;inset:0;border:2px dashed #e0c38a80;pointer-events:none}'+
     '@media(max-width:1000px){.rfl-layout{grid-template-columns:minmax(0,1fr)}.rfl-guide{max-height:none}.rfl-district-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));max-height:none}.rfl-location-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));max-height:none}.rfl-city-dot{padding:3px 5px}.rfl-city-dot small{font-size:10px}}'+
     '@media(max-width:550px){.rfl-city-dot{border-radius:50%;padding:0;width:18px;height:18px;justify-content:center}.rfl-city-dot small{position:absolute;left:50%;top:100%;transform:translateX(-50%);display:none;background:#172831;padding:4px;min-width:75px;z-index:4}.rfl-city-dot:focus-visible small,.rfl-city-dot:hover small{display:block}.rfl-city-dot span{font-size:9px}.rfl-pin-label{font-size:9px;max-width:78px}.rfl-pin-icon{width:21px;height:21px}.rfl-map-footnote{font-size:11px}}'+
