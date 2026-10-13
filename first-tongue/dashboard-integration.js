@@ -140,5 +140,13 @@
   script.src='campaign-update-v7.js';
   script.async=false;
   script.dataset.canonVersion='v7';
+  script.addEventListener('load',function(){
+    if(document.querySelector('script[data-canon-version="v8"]'))return;
+    const next=document.createElement('script');
+    next.src='campaign-update-v8.js';
+    next.async=false;
+    next.dataset.canonVersion='v8';
+    (document.body||document.head).appendChild(next);
+  });
   (document.body||document.head).appendChild(script);
 })();
