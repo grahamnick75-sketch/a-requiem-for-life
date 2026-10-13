@@ -171,7 +171,7 @@
   const fallbackStatus=x=>String(x.status||"Unspecified");
   const textField=(label,value)=>value?'<div class="rfl-info-field"><strong>'+esc(label)+'</strong><p>'+esc(String(value))+'</p></div>':"";
   const relatedRecords=x=>{
-    const items=Array.isArray(x.connections)?x.connections:[];
+    const items=Array.isArray(x.connections)?x.connections.slice():[];
     if(x.location)items.unshift({targetType:"locations",targetId:x.location,relation:"Location"});
     if(x.npcId)items.unshift({targetType:"npcs",targetId:x.npcId,relation:"NPC profile"});
     return items.map(c=>{
