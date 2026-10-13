@@ -168,3 +168,20 @@
   }
   if (typeof render === 'function') render();
 })();
+
+/* Load the subsequently developed canon/editor and illustrated map upgrades.
+   The original index.html intentionally remains untouched (it embeds a large image). */
+(function(){
+  if(window.__requiemSubsequentUpdatesLoaded)return;
+  window.__requiemSubsequentUpdatesLoaded=true;
+  var scripts=['campaign-update-v7.js','campaign-update-v8.js','campaign-map-v9.js'];
+  function next(i){
+    if(i>=scripts.length)return;
+    var el=document.createElement('script');
+    el.src=scripts[i];
+    el.onload=function(){next(i+1);};
+    el.onerror=function(){console.error('Campaign dashboard script could not load: '+scripts[i]);};
+    document.body.appendChild(el);
+  }
+  next(0);
+})();
