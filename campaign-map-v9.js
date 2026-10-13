@@ -182,6 +182,16 @@
   var oldRender=render;
   render=function(){
     oldRender();
+    // Preserve the district dossier's existing 'Focus on map' navigation.
+    if(tab==='districts'){
+      document.querySelectorAll('[data-v8-zoomdistrict]').forEach(function(button){
+        button.onclick=function(){
+          activeDistrict=button.dataset.v8Zoomdistrict;
+          selectedLocation=null;arrange=false;mapDistrict=activeDistrict;
+          tab='home';selected=null;render();
+        };
+      });
+    }
     if(tab!=='home')return;
     var app=document.getElementById('app');
     if(!app)return;
