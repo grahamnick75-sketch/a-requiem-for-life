@@ -178,6 +178,11 @@
   };
   const formerRender=render;
   render=function(){
+    // An imported pre-v8 JSON backup may not contain the new collections or editor metadata.
+    if(!Array.isArray(data.villains))data.villains=[];
+    if(!data._editorOverrides||typeof data._editorOverrides!=="object")data._editorOverrides={};
+    if(!Array.isArray(data._editorDeletes))data._editorDeletes=[];
+    for(const v of vill)if(!data.villains.some(x=>x.id===v.id)&&!data._editorDeletes.includes("villains:"+v.id))data.villains.push(v);
     formerRender();
     const app=document.getElementById("app");if(!app)return;
     if(tab==="firstTongue")return;
