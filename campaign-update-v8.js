@@ -60,7 +60,7 @@
   function fieldsFor(kind){
     let f=[["name","Name","text"],["summary","Public summary","textarea"],["secret","DM-only notes / secrets","textarea"],["status","Status","status"]];
     if(kind==="locations")f.splice(1,0,["district","District","district"]);
-    if(kind==="npcs")f.splice(1,0,["location","Home / associated location","location"],["age","Age","text"],["ancestry","Ancestry / species","text"],["pronouns","Pronouns","text"],["occupation","Role / occupation","text"],["appearance","Appearance","textarea"],["personality","Personality / demeanor","textarea"],["motivations","Motivations","textarea"],["flaws","Flaws","textarea"],["beliefs","Strongest beliefs","textarea"]);
+    if(kind==="npcs")f.splice(1,0,["location","Primary location","location"],["age","Age","text"],["ancestry","Ancestry / species","text"],["pronouns","Pronouns","text"],["occupation","Role / occupation","text"],["appearance","Appearance","textarea"],["personality","Personality / demeanor","textarea"],["motivations","Motivations","textarea"],["flaws","Flaws","textarea"],["beliefs","Strongest beliefs","textarea"]);
     if(kind==="villains")f.splice(1,0,["npcId","Linked NPC profile (optional)","npc"],["arc","Arc / storyline","text"],["goal","Goal / motivation","textarea"],["method","Methods and resources","textarea"],["weakness","Flaws / vulnerabilities","textarea"]);
     return f;
   }
@@ -97,11 +97,12 @@
     const draft=Object.assign({name:"",summary:"",secret:"",status:"Developing"},record||{});
     if(source&&!record)draft.secret="Source — "+source.title+" ("+(source.date||"undated")+"):\n"+source.text;
     const title=(record?"Edit ":"Create ")+kind.replace(/^./,x=>x.toUpperCase()).replace(/s$/,"");
-    modal('<div class="oneline"><h2>'+esc(title)+'</h2></div><p class="v8-muted">Structured entries save to this browser and are included in JSON backups. Existing personal notes are preserved.</p><form id="v8EntryForm"><div class="v8-editorfields">'+fieldsFor(kind).map(f=>fieldHtml(f,draft[f[0]])).join("")+'</div><div class="v8-actions"><button type="submit" class="action">Save entry</button><button type="button" class="action" data-v8-cancel>Cancel</button></div></form>');
+    modal('<div class="oneline"><h2>'+esc(title)+'</h2></div><p class="v8-muted">Structured entries save to this browser and are included in JSON backups. Existing personal notes are preserved.</p><form id="v8EntryForm"><div class="v8-editorfields">'+fieldsFor(kind).map(f=>fieldHtml(f,draft[f[0]])).join("")+(kind==="npcs"?'<div class="field wide"><label>Additional locations (Ctrl/Cmd-click for multiple)</label><select id="rflNpcAdditional" multiple size="7">'+data.locations.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(l=>'<option value="'+esc(l.id)+'"'+(Array.isArray(draft.additionalLocations)&&draft.additionalLocations.includes(l.id)?' selected':'')+'>'+esc(l.name)+'</option>').join("")+'</select></div>':"")+'</div><div class="v8-actions"><button type="submit" class="action">Save entry</button><button type="button" class="action" data-v8-cancel>Cancel</button></div></form>');
     document.getElementById("v8EntryForm").onsubmit=e=>{
       e.preventDefault();
       const form=e.currentTarget;const patch={};
       for(const f of fieldsFor(kind))patch[f[0]]=form.elements.namedItem(f[0]).value.trim();
+      if(kind==="npcs")patch.additionalLocations=Array.from(form.querySelector("#rflNpcAdditional").selectedOptions).map(o=>o.value).filter(id=>id!==patch.location);
       if(!patch.name){alert("Please provide a name.");return;}
       const saved=record||{id:newId(kind,patch.name)};
       Object.assign(saved,patch);
@@ -164,6 +165,9 @@
   }
 
   // Consistent, DM-only directory and full-record experience.
+  const npcLocationIds=x=>[...new Set([x.location,...(Array.isArray(x.additionalLocations)?x.additionalLocations:[])].filter(Boolean))];
+  const npcNeighborhoodIds=x=>new Set(npcLocationIds(x).map(id=>data.locations.find(l=>l.id===id)?.district||id));
+  const npcNeighborhoods=()=>data.districts.slice().sort((a,b)=>a.name.localeCompare(b.name));
   const directoryState={};
   const directoryKinds=["districts","locations","npcs","villains","lore","threads"];
   const singular={districts:"District",locations:"Location",npcs:"NPC",villains:"Villain",lore:"Lore",threads:"Story Thread"};
@@ -184,7 +188,7 @@
   function recordPage(kind,x){
     const general=textField("Description",x.summary)+textField("Status",x.status)+
       (kind==="locations"?textField("District",data.districts.find(d=>d.id===x.district)?.name||x.district):"")+
-      (kind==="npcs"?textField("Role",x.occupation)+textField("Ancestry",x.ancestry)+textField("Age",x.age)+textField("Pronouns",x.pronouns):"");
+      (kind==="npcs"?textField("Primary location",data.locations.find(l=>l.id===x.location)?.name||"Unassigned")+textField("Additional locations",(x.additionalLocations||[]).map(id=>data.locations.find(l=>l.id===id)?.name||id).join(", "))+textField("Role",x.occupation)+textField("Ancestry",x.ancestry)+textField("Age",x.age)+textField("Pronouns",x.pronouns):"");
     const characterization=["appearance","personality","motivations","flaws","beliefs"].map(k=>textField(k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()),x[k])).join("");
     const villainDetails=["arc","goal","method","weakness"].map(k=>textField(k[0].toUpperCase()+k.slice(1),x[k])).join("");
     const rel=relatedRecords(x);
@@ -199,7 +203,6 @@
       accordion("Connections",rel+(kind==="npcs"?'<div class="v8-actions"><button class="action" id="v8AddLink">+ Add connection</button></div>':""),false)+
       accordion("Campaign Involvement",textField("Arc",x.arc)+textField("Campaign notes",x.campaignNotes),false)+
       accordion("DM Notes",textField("Secrets",x.secret)+(kind==="npcs"?'<label class="v8-small" for="v8NpcNotes">Live session notes</label><textarea id="v8NpcNotes">'+esc(x.notes||"")+'</textarea><div class="v8-actions"><button class="action" id="v8SaveNpcNotes">Save notes</button><span id="v8NpcNoteStatus" class="v8-muted"></span></div>':""),false)+
-      (kind==="districts"?'<div class="v8-actions"><button class="action" data-v8-zoomdistrict="'+esc(x.id)+'">↗ Focus on map</button></div>':"")+
       '</div>';
   }
   function directoryPage(kind){
@@ -212,7 +215,7 @@
       '<div class="rfl-dir-tools"><input id="rflDirSearch" type="search" placeholder="Search '+esc(headings[kind]).toLowerCase()+'..." value="'+esc(state.search)+'" aria-label="Search records"/>'+
       '<label>Sort <select id="rflDirSort"><option value="az"'+(state.sort==="az"?" selected":"")+'>Name A–Z</option><option value="za"'+(state.sort==="za"?" selected":"")+'>Name Z–A</option><option value="new"'+(state.sort==="new"?" selected":"")+'>Newest first</option><option value="old"'+(state.sort==="old"?" selected":"")+'>Oldest first</option></select></label>'+
       '<label>Filter <select id="rflDirFilter"><option value="">All '+(kind==="locations"?"districts":"statuses")+'</option>'+filters.map(f=>'<option value="'+esc(f.value)+'"'+(state.filter===f.value?" selected":"")+'>'+esc(f.label)+'</option>').join("")+'</select></label>'+
-      '<button class="action rfl-clear-filter" id="rflDirClear">Clear</button></div>'+
+      (kind==="npcs"?'<label>Neighborhood <select id="rflNpcNeighborhood"><option value="">All neighborhoods</option><option value="__unassigned__">Unassigned</option>'+npcNeighborhoods().map(d=>'<option value="'+esc(d.id)+'"'+(state.neighborhood===d.id?' selected':'')+'>'+esc(d.name)+'</option>').join("")+'</select></label>':"")+'<button class="action rfl-clear-filter" id="rflDirClear">Clear</button></div>'+
       '<div class="rfl-dir-count" id="rflDirCount"></div><div class="rfl-dir-list" id="rflDirList"></div></div>';
   }
   function bindDirectory(kind,app){
@@ -222,7 +225,7 @@
     function paint(){
       const query=state.search.trim().toLowerCase();
       let rows=(data[kind]||[]).filter(x=>(!query||[x.name,x.summary,x.secret,x.arc].some(v=>String(v||"").toLowerCase().includes(query)))&&
-        (!state.filter||(kind==="locations"?x.district===state.filter:fallbackStatus(x)===state.filter)));
+        (!state.filter||(kind==="locations"?x.district===state.filter:fallbackStatus(x)===state.filter))&&(kind!=="npcs"||!state.neighborhood||(state.neighborhood==="__unassigned__"?npcLocationIds(x).length===0:npcNeighborhoodIds(x).has(state.neighborhood))));
       rows=rows.slice().sort((a,b)=>{
         if(state.sort==="az")return a.name.localeCompare(b.name);
         if(state.sort==="za")return b.name.localeCompare(a.name);
@@ -236,7 +239,8 @@
     input.oninput=e=>{state.search=e.target.value;paint();};
     sort.onchange=e=>{state.sort=e.target.value;paint();};
     filter.onchange=e=>{state.filter=e.target.value;paint();};
-    app.querySelector("#rflDirClear").onclick=()=>{state.search="";state.sort="az";state.filter="";input.value="";sort.value="az";filter.value="";paint();};
+    const neighborhood=app.querySelector("#rflNpcNeighborhood");if(neighborhood)neighborhood.onchange=e=>{state.neighborhood=e.target.value;paint();};
+    app.querySelector("#rflDirClear").onclick=()=>{state.search="";state.sort="az";state.filter="";state.neighborhood="";input.value="";sort.value="az";filter.value="";if(neighborhood)neighborhood.value="";paint();};
     paint();
   }
   const directoryCss=document.createElement("style");
@@ -315,7 +319,6 @@
     app.querySelectorAll("[data-v8-edit]").forEach(e=>e.onclick=()=>{const [k,...id]=e.dataset.v8Edit.split(":");editRecord(k,id.join(":"))});
     app.querySelectorAll("[data-v8-delete]").forEach(e=>e.onclick=()=>{const [k,...id]=e.dataset.v8Delete.split(":");removeRecord(k,id.join(":"))});
     app.querySelectorAll("[data-v8-promote]").forEach(e=>e.onclick=()=>choosePromotion(e.dataset.v8Promote));
-    app.querySelectorAll("[data-v8-zoomdistrict]").forEach(e=>e.onclick=()=>{mapDistrict=e.dataset.v8Zoomdistrict;focused=true;mapShowLocations=true;mapZoom=2.7;tab="home";selected=null;render()});
     app.querySelectorAll("[data-v8-back]").forEach(e=>e.onclick=()=>{selected=null;render()});
     app.querySelectorAll("[data-v8-go]").forEach(e=>e.onclick=()=>{const [k,...id]=e.dataset.v8Go.split(":");go(k,id.join(":"))});
     const addLink=app.querySelector("#v8AddLink");
