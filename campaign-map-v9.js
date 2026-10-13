@@ -159,14 +159,13 @@
       '</div></div><p class="rfl-map-footnote">Illustrated parchment district atlas · streets and building footprints are artistically interpreted.'+
       (arrange?' Click anywhere on the map to place the selected pin.':'')+'</p>';
   }
+  // Static city overview: no pins, district zoom, or drill-down.
   mapHome=function(){
-    initializeAnchors();
-    var title=activeDistrict&&district(activeDistrict);
-    return '<div class="maphead"><div><h2>San Francisco · Campaign Map</h2>'+
-      '<p class="muted">Illustrated city atlas · DM workspace</p></div><button class="action" data-jump="sessions">Session journal →</button></div>'+
-      '<div class="rfl-topbar">'+(title?'<button class="action" id="rflBack">← San Francisco</button><span class="rfl-crumb">San Francisco / '+h(title.name)+'</span>':'<span class="rfl-crumb">San Francisco / City overview</span>')+
-      '<button class="action" data-jump="locations">All locations →</button></div>'+
-      '<div class="rfl-layout"><div class="rfl-map-column">'+(title?districtView():cityView())+'</div>'+sidePanel()+'</div>';
+    activeDistrict=null;selectedLocation=null;arrange=false;
+    return '<div class="maphead"><div><h2>San Francisco · Campaign Map</h2><p class="muted">Illustrated city overview · DM workspace</p></div></div>'+
+      '<div class="rfl-topbar"><span class="rfl-crumb">San Francisco / City overview</span><button class="action" data-jump="locations">Browse locations →</button></div>'+
+      '<div class="rfl-stage rfl-city-stage"><div class="rfl-art rfl-city-art"><img src="'+MAP_IMAGE+'" draggable="false" alt="Illustrated overview map of San Francisco"/></div></div>'+
+      '<p class="rfl-map-footnote">City reference illustration. Find campaign locations in the Locations directory.</p>';
   };
 
   var style=document.createElement('style');
@@ -198,15 +197,6 @@
   render=function(){
     oldRender();
     // Preserve the district dossier's existing 'Focus on map' navigation.
-    if(tab==='districts'){
-      document.querySelectorAll('[data-v8-zoomdistrict]').forEach(function(button){
-        button.onclick=function(){
-          activeDistrict=button.dataset.v8Zoomdistrict;
-          selectedLocation=null;arrange=false;mapDistrict=activeDistrict;
-          tab='home';selected=null;render();
-        };
-      });
-    }
     if(tab!=='home')return;
     var app=document.getElementById('app');
     if(!app)return;
