@@ -53,6 +53,23 @@
       item.secret=(String(item.secret||"").trim()+"\n\n"+change.note).trim();
     }
   }
+
+  // Dedicated encounter record for the approved Arc 1 finale creature.
+  // Riftstalker remains a working name; no unapproved origin/intent is introduced.
+  if(!(data._editorDeletes||[]).includes("villains:villain_riftstalker") &&
+     !data.villains.some(x=>x.id==="villain_riftstalker"||/^(the )?riftstalker/i.test(x.name||""))){
+    data.villains.push({
+      id:"villain_riftstalker",name:"Riftstalker (working name)",
+      arc:"Arc 1 — Open Secrets",
+      summary:"A rare, trafficked Feywild Displacer Beast transformed into a spatially unstable living weapon; the creature at the Ferryman's finale.",
+      goal:"Unknown; the creature did not choose to be weaponized.",
+      method:"Displacement, afterimages and warped space. Exact combat mechanics remain open.",
+      weakness:"Unestablished.",
+      secret:"DM ONLY: Its buyer, creator, and intended target are unknown. The Ferryman delivers the beast; its behavior is dangerous without necessarily being evil. Approved visual: huge panther-like predator with purple-pink magical fur, distinctive bright magenta ram horns, tentacles, clawed feet, spatial tears and duplicate afterimages; three-quarter side profile, crouched to spring.",
+      status:"Developing"
+    });
+  }
+
   const rflArtByName=[
     [/^marlow$/i,"assets/portraits/marlow.webp"],
     [/^anya\s*[—–-]\s*vox nebulae$/i,"assets/portraits/anya-vox.webp"],
@@ -61,13 +78,26 @@
     [/^birdie$/i,"assets/portraits/birdie.webp"],
     [/^cal.*chain.*maddox$/i,"assets/portraits/cal-maddox.webp"],
     [/^daniel chen$/i,"assets/portraits/daniel-chen.webp"],
-    [/^daniel foster$/i,"assets/portraits/daniel-foster.webp"]
+    [/^daniel foster$/i,"assets/portraits/daniel-foster.webp"],
+    [/^dex$/i,"assets/portraits/dex.webp"],
+    [/^dolly trolley$/i,"assets/portraits/dolly-trolley.webp"],
+    [/^dr\.?\s*tessa vale$/i,"assets/portraits/tessa-vale.webp"],
+    [/^elaine wong$/i,"assets/portraits/elaine-wong.webp"],
+    [/^floyd$/i,"assets/portraits/floyd.webp"],
+    [/^jin$/i,"assets/portraits/jin.webp"],
+    [/^jules$/i,"assets/portraits/jules.webp"],
+    [/^lan tr/i,"assets/portraits/lan-tran.webp"],
+    [/^luma$/i,"assets/portraits/luma-corporate.webp"],
+    [/^marisol.*reyes$/i,"assets/portraits/marisol-reyes.webp"],
+    [/^mei wong$/i,"assets/portraits/mei-wong.webp"],
+    [/^the ferryman$/i,"assets/portraits/ferryman.webp"],
+    [/^(?:the )?riftstalker/i,"assets/portraits/riftstalker.webp"]
   ];
   for(const kind of ["npcs","villains"]){
     for(const item of data[kind]||[]){
       const hit=rflArtByName.find(([re])=>re.test(item.name||""));
       if(hit&&!Object.prototype.hasOwnProperty.call((data._editorOverrides||{})[kind+":"+item.id]||{},"portrait"))
-        item.portrait=hit[1];
+        item.portrait=(kind==="villains"&&(item.npcId==="luma"||item.id==="villain_luma"))?"assets/portraits/luma-robot.webp":hit[1];
     }
   }
   const rflApprovedAppearance={
@@ -76,6 +106,19 @@
     "artie":"Early-70s man with warm olive complexion, average fit frame, wild thick gray hair, full gray beard, vintage flannel and denim, friendly smile and a bar towel over his shoulder.",
     "birdie":"Petite human woman in her 50s–60s, tall piled-up gray hair wrapped in a colorful scarf, layered bohemian clothing, abundant colorful jewelry, playful eccentric expression."
   };
+  Object.assign(rflApprovedAppearance,{
+    "dex": "Young Awakened human punk, slim and wiry, bright pink mohawk, edgy expression with a charming smirk; punk graphic T-shirt, studded black sleeveless vest, ripped black trousers, boots, abundant arm tattoos.",
+    "dolly-trolley": "Forties drag queen, curvy and glamorous, immense red trolley-shaped hair with gold tram trim; campy red-and-gold vintage trolley conductor-inspired full-length gown, white gloves, brass bell, commanding poise. Full-coverage costume.",
+    "tessa-vale": "High Elf woman appearing in her 50s, stocky sturdy build, deep-brown complexion, long flowing silver hair, stern gaze, dark-academia tweed jacket, waistcoat and floor-length plaid skirt, ancient leather-bound volume.",
+    "elaine-wong": "Chinese woman in her 50s, sturdy grounded build, dark hair pinned in a tidy bun, warm welcoming face, practical burgundy shopkeeper blouse, cream apron, brown work trousers.",
+    "floyd": "Short chunky moss-green Tortle herbalist, sleepy and unbothered, tie-dye shirt, patterned loose pants, psychedelic patterned shell growing moss and plants, stuffed herb satchel.",
+    "jin": "Slender black Dragonborn elder with iridescent purple scale sheen, ornate branching horns, calm eyes; loose linen shirt, embroidered green tea-master vest and trousers. Kneels presenting a porcelain tea cup with an ornate teapot and carved tray.",
+    "jules": "Youthful-looking transgender Aasimar man, short curly platinum hair, warm friendly expression, exposed chest with visible top surgery scars and luminous full-body silver-white celestial rune tattoos, black cargo trousers, black boots, pride bracelets, tattoo machine. His youthful appearance does not change his long history as an activist and Harvey Milk's friend.",
+    "lan-tran": "Petite slender 76-year-old Vietnamese restaurant co-owner, black-and-gray hair pinned back, loving but stern expression, pink traditional-inspired silk cooking blouse with floral details, blue embroidered trousers, cream apron. Offers a steaming bowl of pho and carries a wooden spoon.",
+    "luma-corporate": "Humanized corporate AI avatar with a sleek silver-white bob, violet eyes, subtly segmented synthetic features, silver-white tailored blazer and full-length matching trousers, polished shoes, tablet. Calm, professionally friendly; discreet violet light accents. Visually related to the robotic body.",
+    "marisol-reyes": "Short stocky 58-year-old resident manager, medium tan weathered skin, salt-and-pepper messy bun, no-nonsense expression, blue denim jacket, gray shirt, olive cargo work pants, boots, maintenance clipboard and walkie-talkie. Cartoon proportions, cel shading.",
+    "mei-wong": "Petite Chinese grandmother in her 70s, short practical salt-and-pepper haircut, quietly capable expression, humble faded-blue shopkeeper blouse, work apron, brown trousers, practical shoes."
+});
   for(const npc of data.npcs||[]){
     const approved=rflArtByName.find(([re])=>re.test(npc.name||""));
     if(!approved)continue;
@@ -84,13 +127,27 @@
     if(rflApprovedAppearance[slug]&&!Object.prototype.hasOwnProperty.call(edits,"appearance"))
       npc.appearance=rflApprovedAppearance[slug];
   }
+  for(const villain of data.villains||[]){
+    if(/^(?:the )?riftstalker/i.test(villain.name||"")&& !Object.prototype.hasOwnProperty.call((data._editorOverrides||{})["villains:"+villain.id]||{},"appearance")){
+      villain.appearance="Huge Feywild panther-like predator, deep purple and vivid lavender fur, luminous turquoise markings, massive pink/magenta curled ram horns, two long magical shoulder tentacles, dark disturbing eyes, sharp claws, rift tears and shimmering afterimages.";
+    }
+  }
   function rflPortrait(kind,item){
     const x=(item&&item.portrait)||(kind==="villains"&&item&&data.npcs.find(n=>n.id===item.npcId)?.portrait)||"";
     return /^assets\/portraits\/[a-z0-9-]+\.webp$/.test(x)?x:"";
   }
   function rflPortraitCard(kind,item){
     const src=rflPortrait(kind,item);
-    return src?'<div class="rfl-portrait"><img src="'+esc(src)+'" alt="Approved full-body portrait of '+esc(item.name)+'" loading="lazy"/></div>':"";
+    if(!src)return "";
+    if((item.name||"").toLowerCase()==="luma"){
+      const variants=[
+        {src:"assets/portraits/luma-corporate.webp",label:"Corporate AI persona"},
+        {src:"assets/portraits/luma-robot.webp",label:"Physical robotic body"}
+      ];
+      if(kind==="villains")variants.reverse();
+      return '<div class="rfl-portrait-gallery">'+variants.map(v=>'<figure><img src="'+esc(v.src)+'" alt="'+esc("Luma — "+v.label)+'" loading="lazy"/><figcaption>'+esc(v.label)+'</figcaption></figure>').join("")+'</div>';
+    }
+    return '<div class="rfl-portrait"><img src="'+esc(src)+'" alt="Approved full-body portrait of '+esc(item.name)+'" loading="lazy"/></div>';
   }
 
   // Correct bad illustrated-map placement over the right-hand neighborhood legend.
@@ -305,6 +362,7 @@
   const directoryCss=document.createElement("style");
   directoryCss.id="rfl-record-layout-v10";
   directoryCss.textContent='.rfl-directory,.rfl-record-page{max-width:1050px;margin:0 auto}.rfl-dir-heading,.rfl-record-actions{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}.rfl-dir-heading h2,.rfl-record-heading h2{font:30px Georgia,serif;color:#eed5a6;margin:0}.rfl-dir-heading p{margin:5px 0}.rfl-dir-tools{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:18px 0}.rfl-dir-tools input{flex:1 1 220px;min-width:160px}.rfl-dir-tools label{display:grid;gap:4px;font-size:12px;color:#d6c19b}.rfl-dir-tools select{min-width:135px}.rfl-dir-count{font-size:12px;color:#bbc4bf;margin:12px 0}.rfl-dir-list{border:1px solid #6d5e49;border-radius:10px;overflow:hidden}.rfl-dir-row{display:flex;width:100%;align-items:center;text-align:left;gap:14px;min-height:49px;padding:12px 15px;background:#202b32;color:#f1e9d8;border:0;border-bottom:1px solid #45505a;cursor:pointer}.rfl-dir-row:last-child{border-bottom:0}.rfl-dir-row:hover,.rfl-dir-row:focus-visible{background:#4c4133;outline:1px solid #c8aa74}.rfl-dir-row span:first-child{flex:1;font:16px Georgia,serif}.rfl-dir-row small{color:#c6ae81}.rfl-record-heading{margin:22px 0}.rfl-action-spacer{flex:1}.rfl-record-section{border:1px solid #6c614f;background:#202b32;border-radius:10px;margin:10px 0;overflow:hidden}.rfl-record-section summary{cursor:pointer;padding:16px;font:17px Georgia,serif;color:#ead2a5;list-style:none}.rfl-record-section summary::-webkit-details-marker{display:none}.rfl-record-section summary:after{content:"⌄";float:right}.rfl-record-section[open] summary:after{content:"⌃"}.rfl-section-content{border-top:1px solid #50564f;padding:16px}.rfl-info-field{margin:0 0 15px}.rfl-info-field strong{font-size:12px;color:#c9ab77;text-transform:uppercase;letter-spacing:.06em}.rfl-info-field p{white-space:pre-wrap;line-height:1.6;margin:5px 0}.rfl-related-row{padding:10px 0;border-bottom:1px solid #45505a}.rfl-related-row p{margin:6px 0}.rfl-text-link{background:none;border:0;color:#e7c788;text-decoration:underline;cursor:pointer;font:inherit}.rfl-record-section textarea{width:100%;min-height:100px}@media(max-width:650px){.rfl-dir-tools label{flex:1}.rfl-clear-filter{align-self:end}}';
+  directoryCss.textContent += '.rfl-portrait-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;max-width:760px;margin:0 auto 20px}.rfl-portrait-gallery figure{margin:0;min-width:0;text-align:center}.rfl-portrait-gallery img{width:100%;height:380px;object-fit:contain;border:1px solid #677c86;border-radius:12px;background:#101b2a;box-shadow:0 10px 22px #0005}.rfl-portrait-gallery figcaption{margin-top:5px;color:#c5dbe4;font-size:.87rem}';
   directoryCss.textContent += '.rfl-dir-thumb{width:52px;height:64px;object-fit:cover;object-position:top;border-radius:6px;border:1px solid #746a59;flex-shrink:0}.rfl-portrait{display:flex;justify-content:center;margin:0 0 18px}.rfl-portrait img{width:min(100%,360px);height:auto;max-height:580px;object-fit:contain;border:1px solid #677c86;border-radius:12px;background:#101b2a;box-shadow:0 10px 22px #0005}';
   document.head.appendChild(directoryCss);
 

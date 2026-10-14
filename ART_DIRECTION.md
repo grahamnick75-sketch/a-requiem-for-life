@@ -15,3 +15,21 @@ Approved portraits (2026-10-13):
 These are display-friendly WebP derivatives of the approved full-resolution conversation artwork. Full originals remain available from the conversation; do not substitute earlier rejected Daniel Foster portraits.
 
 Next character in dashboard order: Dex.
+
+## Approved portraits — second batch (2026-10-14)
+- Dex — assets/portraits/dex.webp
+- Dolly Trolley (full-length, non-sexualized outfit) — assets/portraits/dolly-trolley.webp
+- Dr. Tessa Vale — assets/portraits/tessa-vale.webp
+- Elaine Wong — assets/portraits/elaine-wong.webp
+- Floyd — assets/portraits/floyd.webp
+- Jin — assets/portraits/jin.webp
+- Jules — assets/portraits/jules.webp
+- Lan Trần — assets/portraits/lan-tran.webp
+- Luma — physical robotic body — assets/portraits/luma-robot.webp
+- Luma — corporate AI persona (trousers) — assets/portraits/luma-corporate.webp
+- Marisol 'Mari' Reyes (cartoon version) — assets/portraits/marisol-reyes.webp
+- Mei Wong — assets/portraits/mei-wong.webp
+- The Ferryman — assets/portraits/ferryman.webp
+- Riftstalker (working name; magenta ram horns) — assets/portraits/riftstalker.webp
+
+The Luma NPC and villain pages display both corporate and robotic forms. The Riftstalker has a dedicated Villains card and its name remains provisional. Only the latest user-approved version of each design is displayed. Lou Moreno is intentionally excluded from portrait production.
