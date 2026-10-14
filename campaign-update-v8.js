@@ -91,7 +91,17 @@
     [/^marisol.*reyes$/i,"assets/portraits/marisol-reyes.webp"],
     [/^mei wong$/i,"assets/portraits/mei-wong.webp"],
     [/^the ferryman$/i,"assets/portraits/ferryman.webp"],
-    [/^(?:the )?riftstalker/i,"assets/portraits/riftstalker.webp"]
+    [/^(?:the )?riftstalker/i,"assets/portraits/riftstalker.webp"],
+    [/^minh tr/i,"assets/portraits/minh-tran.webp"],
+    [/^odette copperfield$/i,"assets/portraits/odette-copperfield.webp"],
+    [/^orun$/i,"assets/portraits/orun.webp"],
+    [/^percy$/i,"assets/portraits/percy.webp"],
+    [/^remy$/i,"assets/portraits/remy.webp"],
+    [/^theo chen$/i,"assets/portraits/theo-chen.webp"],
+    [/^vivian.*chen$/i,"assets/portraits/viv-chen.webp"],
+    [/^walter wong$/i,"assets/portraits/walter-wong.webp"],
+    [/^winnie$/i,"assets/portraits/winnie.webp"],
+    [/^ziggy$/i,"assets/portraits/ziggy.webp"]
   ];
   for(const kind of ["npcs","villains"]){
     for(const item of data[kind]||[]){
@@ -118,6 +128,18 @@
     "luma-corporate": "Humanized corporate AI avatar with a sleek silver-white bob, violet eyes, subtly segmented synthetic features, silver-white tailored blazer and full-length matching trousers, polished shoes, tablet. Calm, professionally friendly; discreet violet light accents. Visually related to the robotic body.",
     "marisol-reyes": "Short stocky 58-year-old resident manager, medium tan weathered skin, salt-and-pepper messy bun, no-nonsense expression, blue denim jacket, gray shirt, olive cargo work pants, boots, maintenance clipboard and walkie-talkie. Cartoon proportions, cel shading.",
     "mei-wong": "Petite Chinese grandmother in her 70s, short practical salt-and-pepper haircut, quietly capable expression, humble faded-blue shopkeeper blouse, work apron, brown trousers, practical shoes."
+});
+  Object.assign(rflApprovedAppearance,{
+    "minh-tran": "79-year-old Vietnamese human man, tall and slender, balding with a clean-shaven face, expressive brows and a warmly grumpy smile. Short-sleeve cream patterned shirt, dark slacks, brown loafers; sitting cross-legged on a stool with steaming Vietnamese coffee.",
+    "odette-copperfield": "Older dwarf woman, short and stout, exaggerated dwarven facial structure with a large nose, gray hair arranged in an enormously tall, intricately curled updo. Purple-and-silver glamorous vintage tailor/mystic ensemble; holds a dressmaker's body measuring tape with a mischievous smile.",
+    "orun": "Older goblin with a slim, wiry frame, short graying hair, moss-green skin, large pointed ears and composed thoughtful eyes. Humble earth-toned layers, rolled-sleeve shirt, worn boots; carries several books.",
+    "percy": "Bronze-colored gargoyle statue, medium-size with a sturdy carved body, stern watchful face, large bat wings, perched atop a decorative gothic pedestal. Smooth bronze finish, guardian pose, no clothing.",
+    "remy": "Orc cook in his 50s, huge muscular build, muted sage-green skin, long dark hair tied back, prominent tusks and gentle grandfatherly expression. Vintage button-down work shirt, suspenders, heavy stained apron and boots. Carries cast-iron skillet.",
+    "theo-chen": "25-year-old modern Asian-American man of average build, textured black undercut, clean-shaven, casual confident expression. Modern American streetwear: layered black jacket over olive hooded layer, white shirt, olive cargo trousers and high-top sneakers; headphones around his neck.",
+    "viv-chen": "29-year-old modern Asian-American woman, tall and slender, long dark hair with purple streaks, guarded playful expression. Alternative streetwear: black leather jacket, celestial graphic tee, black jeans, lace-up boots; carrying smartphone and ornate purple-black Conservatory research shoulder bag.",
+    "walter-wong": "79-year-old Chinese American man, tall and slender, mostly bald with gray hair at the sides, clean-shaven, kind smile. Old-fashioned jacket, buttoned shirt, suspenders and practical slacks. Leaning on his broom outside the family grocery.",
+    "winnie": "Woman in her 60s, short and pleasantly plump, wild curly gray hair, huge curious eyes and round spectacles on a chain. Eclectic layered antique-shop attire, pockets overflowing with magical oddities, multiple charms and trinkets; beaming as she examines a magical bauble.",
+    "ziggy": "Mischievous male Satyr, appearing in his 40s, slim and energetic with weathered gray-brown fur, wild curly brown hair, curled ram horns and a broad goofy grin. Tie-dye vest and vivid patchwork trousers, many handmade alchemy accessories and tools, lively colorful hippie style."
 });
   for(const npc of data.npcs||[]){
     const approved=rflArtByName.find(([re])=>re.test(npc.name||""));

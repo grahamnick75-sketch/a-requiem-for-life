@@ -14,7 +14,6 @@ Approved portraits (2026-10-13):
 
 These are display-friendly WebP derivatives of the approved full-resolution conversation artwork. Full originals remain available from the conversation; do not substitute earlier rejected Daniel Foster portraits.
 
-Next character in dashboard order: Dex.
 
 ## Approved portraits — second batch (2026-10-14)
 - Dex — assets/portraits/dex.webp
@@ -33,3 +32,17 @@ Next character in dashboard order: Dex.
 - Riftstalker (working name; magenta ram horns) — assets/portraits/riftstalker.webp
 
 The Luma NPC and villain pages display both corporate and robotic forms. The Riftstalker has a dedicated Villains card and its name remains provisional. Only the latest user-approved version of each design is displayed. Lou Moreno is intentionally excluded from portrait production.
+
+## Approved portraits — third batch (2026-10-14)
+- Minh Trần — assets/portraits/minh-tran.webp
+- Odette Copperfield (final tall updo and enlarged dwarf nose) — assets/portraits/odette-copperfield.webp
+- Orun — assets/portraits/orun.webp
+- Percy — assets/portraits/percy.webp
+- Remy — assets/portraits/remy.webp
+- Theo Chen — assets/portraits/theo-chen.webp
+- Vivian 'Viv' Chen (final Conservatory handbag and smartphone) — assets/portraits/viv-chen.webp
+- Walter Wong — assets/portraits/walter-wong.webp
+- Winnie — assets/portraits/winnie.webp
+- Ziggy — assets/portraits/ziggy.webp
+
+Character designs were approved by the DM. This extends the existing gallery without altering the campaign's narrative canon, editing overrides or session journal.
