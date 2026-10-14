@@ -35,6 +35,64 @@
     const item=Array.isArray(data[kind])?data[kind].find(x=>x.id===id):null;
     if(item&&fields&&typeof fields==="object")Object.assign(item,fields);
   }
+
+  // Canon decisions and approved art from the Oct 13, 2026 planning session.
+  // Non-destructive: respect each editor override and any explicitly deleted records.
+  const rflDailyUpdates=[{"kind":"locations","id":"luma_client_building","fields":{"name":"Renewal Biomedical Headquarters","district":"soma","summary":"A modern glass-and-steel SoMa biotech tower housing offices and restricted laboratories. Daniel Chen works here. Renewal Biomedical is developing a medical and magical treatment for addiction in clinical trials; the building is SoMa's major Orith resonance anchor.","status":"Canon"},"note":"Orith — Seeking that Makes is concentrated here, independently of Luma Technologies. Clinical research and trials take place in restricted laboratories, not a public clinic. Luma Technologies knows about this anchor and supplies the building's advanced security systems. Arc 2: Daniel Chen interrupts a Luma-controlled Resonance Collector during a lockdown; preserve the established rescue sequence."},{"kind":"locations","id":"luma_hq","fields":{"name":"Luma Technologies Headquarters","district":"soma","summary":"The SoMa headquarters of a controversial, high-end robotics and artificial intelligence company founded by wizard Daniel Foster. Its expensive arcane-engineered robots and AI systems serve corporations, specialized facilities, and wealthy clients.","status":"Canon"},"note":"Luma Technologies is part of SoMa's public, commercially established Fog magical-technology industry. The company has a controversial reputation; its products are cutting-edge and not commonplace. Keep the existing Arc 2 infiltration, restricted research laboratory, Foster confrontation and Luma awakening beats."},{"kind":"locations","id":"yerba_buena_gardens","fields":{"name":"Yerba Buena Gardens","district":"soma","summary":"A shared public green space and SoMa's year-round showcase for magical inventions, experimental art, and accessible technological wonder.","status":"Canon"},"note":"Both Fog residents and ordinary San Franciscans attend. Magical displays are presented as cutting-edge technology, immersive art, or illusions, preserving the Fog. The annual family-friendly Wonderworks Festival takes place here on the first Saturday of May. Renewal Biomedical participates with appropriate patient privacy."},{"kind":"locations","id":"dogpatch_warehouse","fields":{"summary":"A working industrial warehouse in Dogpatch housing Cal 'Chain' Maddox's underground Blink Dog fighting ring, an open secret among the gambling crowd.","status":"Canon"},"note":"Arc 1: late-night howling draws neighborhood complaints; the source of the party's tip is deliberately flexible and could be a Mission District contact. The venue is easy to find and an underground gambling operation. Cal openly runs it. When the party arrives, a Blink Dog fight is just ending. Cal's purchase paperwork names supplier 'The Ferryman' as a codename and gives the next delivery date: three nights after this encounter. Other paperwork details remain at DM discretion."},{"kind":"locations","id":"waterfront_abandoned_pier","fields":{"name":"Abandoned Embarcadero Pier","district":"waterfront","summary":"A neglected waterfront landing along the Embarcadero, used for a supernatural shipment three nights after the Dogpatch fighting-ring encounter.","status":"Canon"},"note":"Arc 1 optional stealth rescue, separate from the finale. A smuggling vessel arrives on a night of exceptionally dense fog, carrying captive Blink Dogs in reinforced cages. A supernatural crew handles the cargo; Marlow, the Ferryman's powerful humanoid enforcer, patrols the vessel. Players may sneak aboard and free the animals, but a failed stealth attempt triggers dangerous yet winnable combat. Marlow can be killed. Evidence aboard points toward the Ferryman's headquarters. Whether the Ferryman himself is aboard is flexible; if present, he escapes."},{"kind":"lore","id":"wonderworks_festival","fields":{"name":"Wonderworks Festival","summary":"A beloved annual, family-friendly celebration of creativity, technology and magical invention at Yerba Buena Gardens on the first Saturday in May, open to everyone.","status":"Canon"},"note":"Year-round innovation exhibits also take place in the gardens. Wonderworks welcomes Fog and ordinary San Franciscans alike; magical features are disguised as technology, art or illusions. Renewal Biomedical participates by publicly presenting responsible, patient-confidential research progress. Motto proposed: 'Imagine what could be.'"},{"kind":"threads","id":"arc_ferryman","fields":{"summary":"Arc 1 — Open Secrets: From late-night howling and Cal Maddox's Dogpatch Blink Dog fights, to a fogbound Embarcadero rescue shipment and the later Ferryman/Riftstalker finale.","status":"Canon"},"note":"Confirmed beats (Oct 13, 2026): (1) The party's formation is handled separately; how residents' howling complaints reach the party is deliberately flexible, possibly via the Mission District. (2) The Dogpatch fight venue is easy to locate, accepts underground gamblers, and is openly run by Cal. The party arrives just as a fight ends. (3) Purchase paperwork lists 'The Ferryman' as supplier codename and the NEXT SHIPMENT in THREE nights. (4) Abandoned Embarcadero pier on a high-fog night: optional stealth mission on a supernatural-crewed vessel to rescue Blink Dogs from reinforced cages. Marlow, a killable custom monstrous humanoid barbarian/enforcer, patrols the ship; failed stealth can lead to challenging combat. Ferryman may appear and escape, or be absent, but the party can gain clues to his headquarters. (5) Separate later waterfront finale: Ferryman confrontation involving the Riftstalker, working name for the Displacer Beast. Headquarters location, definitive Riftstalker name, and certain details remain undecided."},{"kind":"npcs","id":"marlow","fields":{"name":"Marlow","location":"waterfront_abandoned_pier","age":"40s","ancestry":"Supernatural humanoid (specific kind undecided)","occupation":"The Ferryman's shipboard enforcer","appearance":"Hulking, muscular, Sabretooth-like silhouette; medium shaggy hair, ruddy and scarred skin, terrifying recognizably human but distorted face: heavy brow, deep-set eyes, broken nose, crooked jaw, prominent scars and canines. Dark coat over rough work clothes, clawed hands. Becomes visibly more monstrous in Rage.","personality":"Cold and emotionless while patrolling; ferocious in combat.","summary":"The Ferryman's powerful supernatural enforcer, a patrolling shipboard combat threat during the abandoned Embarcadero pier rescue.","secret":"DM ONLY: A killable barbarian-style bruiser who fights with claws, Rage, Reckless Attack and brute strength. No teleportation or Fogstride. Optional stealth bypass is possible; if alerted, he is the major combat threat. Combat need not mean failed rescue.","status":"Canon"}},{"kind":"villains","id":"villain_marlow","fields":{"name":"Marlow","npcId":"marlow","arc":"Arc 1 — Open Secrets","goal":"Safely complete the Ferryman's smuggling delivery and eliminate interference.","method":"Patrol, physical intimidation, claws, Rage and brute strength.","summary":"The Ferryman's hulking supernatural shipboard enforcer and major optional combat opponent at the Embarcadero shipment rescue.","secret":"DM ONLY: Can be killed. Stealth can avoid the encounter. Faces a more monstrous physical transformation in rage; no Fogstride or teleportation.","status":"Canon"}},{"kind":"npcs","id":"daniel","fields":{"summary":"Daniel Chen is Elaine's husband, father of Viv and Theo, and a Renewal Biomedical employee in SoMa. He works in a tower that is Orith's major resonance anchor and uses Luma Technologies security systems.","occupation":"Renewal Biomedical employee","additionalLocations":["luma_client_building"]},"note":"Daniel's place in Arc 2 is unchanged: he interrupts Luma's Resonance Collector and must be rescued during the security lockdown. His primary family association with Golden Gate Grocery is preserved."},{"kind":"npcs","id":"daniel_foster","fields":{"appearance":"Awkward, nerdy, deliberately unglamorous man in his 30s: medium-length middle-parted brown hair, prominent glasses, thin build, imperfect facial features, plaid button-up shirt with pens in its pocket, khaki trousers, everyday brown shoes. Final approved portrait replaces prior turtleneck/suit versions."}},{"kind":"npcs","id":"cal_maddox","fields":{"appearance":"Late 30s-40s, heavyset and imposing, tan weathered complexion, shaved head and clean-shaven face. Sleeveless black shirt and vest, tattoo-covered bare arms, chains, oversized gold necklace. Smug, arrogant expression."}}];
+  for(const change of rflDailyUpdates){
+    if(!Array.isArray(data[change.kind]))continue;
+    const key=change.kind+":"+change.id;
+    if(data._editorDeletes.includes(key))continue;
+    let item=data[change.kind].find(x=>x.id===change.id);
+    const userEdits=data._editorOverrides[key]||{};
+    if(!item){item={id:change.id};data[change.kind].push(item);}
+    for(const [k,v] of Object.entries(change.fields||{})){
+      if(!Object.prototype.hasOwnProperty.call(userEdits,k))item[k]=v;
+    }
+    if(change.note && !String(item.secret||"").includes(change.note)){
+      item.secret=(String(item.secret||"").trim()+"\n\n"+change.note).trim();
+    }
+  }
+  const rflArtByName=[
+    [/^marlow$/i,"assets/portraits/marlow.webp"],
+    [/^anya\s*[—–-]\s*vox nebulae$/i,"assets/portraits/anya-vox.webp"],
+    [/^anya\s*[—–-]\s*spirit of the nebulae$/i,"assets/portraits/anya-spirit.webp"],
+    [/^arthur.*artie.*bell$/i,"assets/portraits/artie.webp"],
+    [/^birdie$/i,"assets/portraits/birdie.webp"],
+    [/^cal.*chain.*maddox$/i,"assets/portraits/cal-maddox.webp"],
+    [/^daniel chen$/i,"assets/portraits/daniel-chen.webp"],
+    [/^daniel foster$/i,"assets/portraits/daniel-foster.webp"]
+  ];
+  for(const kind of ["npcs","villains"]){
+    for(const item of data[kind]||[]){
+      const hit=rflArtByName.find(([re])=>re.test(item.name||""));
+      if(hit&&!Object.prototype.hasOwnProperty.call((data._editorOverrides||{})[kind+":"+item.id]||{},"portrait"))
+        item.portrait=hit[1];
+    }
+  }
+  const rflApprovedAppearance={
+    "anya-vox":"Young adult blonde singer-songwriter, gentle waves, warm radiant expression, white/silver/blue celestial-themed stagewear with nebula shimmer.",
+    "anya-spirit":"Same woman and facial features as Vox Nebulae, rendered entirely in blue as a spectral spirit. Modest wrapped garment, upper torso fading into a swirling genie-like cosmic blue trail from high on the waist.",
+    "artie":"Early-70s man with warm olive complexion, average fit frame, wild thick gray hair, full gray beard, vintage flannel and denim, friendly smile and a bar towel over his shoulder.",
+    "birdie":"Petite human woman in her 50s–60s, tall piled-up gray hair wrapped in a colorful scarf, layered bohemian clothing, abundant colorful jewelry, playful eccentric expression."
+  };
+  for(const npc of data.npcs||[]){
+    const approved=rflArtByName.find(([re])=>re.test(npc.name||""));
+    if(!approved)continue;
+    const path=approved[1];const slug=path.split("/").pop().replace(".webp","");
+    const key="npcs:"+npc.id; const edits=data._editorOverrides[key]||{};
+    if(rflApprovedAppearance[slug]&&!Object.prototype.hasOwnProperty.call(edits,"appearance"))
+      npc.appearance=rflApprovedAppearance[slug];
+  }
+  function rflPortrait(kind,item){
+    const x=(item&&item.portrait)||(kind==="villains"&&item&&data.npcs.find(n=>n.id===item.npcId)?.portrait)||"";
+    return /^assets\/portraits\/[a-z0-9-]+\.webp$/.test(x)?x:"";
+  }
+  function rflPortraitCard(kind,item){
+    const src=rflPortrait(kind,item);
+    return src?'<div class="rfl-portrait"><img src="'+esc(src)+'" alt="Approved full-body portrait of '+esc(item.name)+'" loading="lazy"/></div>':"";
+  }
+
   // Correct bad illustrated-map placement over the right-hand neighborhood legend.
   if(typeof LOCATION_PINS!=="undefined"){
     const pin=LOCATION_PINS.find(p=>p[0]==="dogpatch_warehouse");
@@ -197,6 +255,7 @@
       '<button class="action" data-v8-edit="'+esc(kind+":"+x.id)+'">✎ Edit</button>'+
       '<button class="action" data-v8-delete="'+esc(kind+":"+x.id)+'">Delete</button></div>'+
       '<div class="rfl-record-heading"><span class="v8-badge">'+esc(singular[kind])+' · '+esc(fallbackStatus(x))+'</span><h2>'+esc(x.name)+'</h2></div>'+
+      rflPortraitCard(kind,x)+
       accordion("Overview",general,true)+
       ((kind==="npcs")?accordion("Character",characterization,false):"")+
       ((kind==="villains")?accordion("Antagonist Details",villainDetails,false):"")+
@@ -233,7 +292,7 @@
         return state.sort==="new"?bv-av:av-bv;
       });
       count.textContent=rows.length+" of "+(data[kind]||[]).length+" records";
-      list.innerHTML=rows.length?rows.map(x=>'<button class="rfl-dir-row" data-v8-go="'+esc(kind+":"+x.id)+'"><span>'+esc(x.name)+'</span><small>'+esc(kind==="locations"?(data.districts.find(d=>d.id===x.district)?.name||"Location"):fallbackStatus(x))+'</small><span aria-hidden="true">›</span></button>').join(""):'<p class="v8-muted">No matching records.</p>';
+      list.innerHTML=rows.length?rows.map(x=>'<button class="rfl-dir-row" data-v8-go="'+esc(kind+":"+x.id)+'">'+(rflPortrait(kind,x)?'<img class="rfl-dir-thumb" src="'+esc(rflPortrait(kind,x))+'" alt="" loading="lazy"/>':'')+'<span>'+esc(x.name)+'</span><small>'+esc(kind==="locations"?(data.districts.find(d=>d.id===x.district)?.name||"Location"):fallbackStatus(x))+'</small><span aria-hidden="true">›</span></button>').join(""):'<p class="v8-muted">No matching records.</p>';
       list.querySelectorAll("[data-v8-go]").forEach(el=>el.onclick=()=>{const bits=el.dataset.v8Go.split(":");go(bits[0],bits.slice(1).join(":"));});
     }
     input.oninput=e=>{state.search=e.target.value;paint();};
@@ -246,6 +305,7 @@
   const directoryCss=document.createElement("style");
   directoryCss.id="rfl-record-layout-v10";
   directoryCss.textContent='.rfl-directory,.rfl-record-page{max-width:1050px;margin:0 auto}.rfl-dir-heading,.rfl-record-actions{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}.rfl-dir-heading h2,.rfl-record-heading h2{font:30px Georgia,serif;color:#eed5a6;margin:0}.rfl-dir-heading p{margin:5px 0}.rfl-dir-tools{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:18px 0}.rfl-dir-tools input{flex:1 1 220px;min-width:160px}.rfl-dir-tools label{display:grid;gap:4px;font-size:12px;color:#d6c19b}.rfl-dir-tools select{min-width:135px}.rfl-dir-count{font-size:12px;color:#bbc4bf;margin:12px 0}.rfl-dir-list{border:1px solid #6d5e49;border-radius:10px;overflow:hidden}.rfl-dir-row{display:flex;width:100%;align-items:center;text-align:left;gap:14px;min-height:49px;padding:12px 15px;background:#202b32;color:#f1e9d8;border:0;border-bottom:1px solid #45505a;cursor:pointer}.rfl-dir-row:last-child{border-bottom:0}.rfl-dir-row:hover,.rfl-dir-row:focus-visible{background:#4c4133;outline:1px solid #c8aa74}.rfl-dir-row span:first-child{flex:1;font:16px Georgia,serif}.rfl-dir-row small{color:#c6ae81}.rfl-record-heading{margin:22px 0}.rfl-action-spacer{flex:1}.rfl-record-section{border:1px solid #6c614f;background:#202b32;border-radius:10px;margin:10px 0;overflow:hidden}.rfl-record-section summary{cursor:pointer;padding:16px;font:17px Georgia,serif;color:#ead2a5;list-style:none}.rfl-record-section summary::-webkit-details-marker{display:none}.rfl-record-section summary:after{content:"⌄";float:right}.rfl-record-section[open] summary:after{content:"⌃"}.rfl-section-content{border-top:1px solid #50564f;padding:16px}.rfl-info-field{margin:0 0 15px}.rfl-info-field strong{font-size:12px;color:#c9ab77;text-transform:uppercase;letter-spacing:.06em}.rfl-info-field p{white-space:pre-wrap;line-height:1.6;margin:5px 0}.rfl-related-row{padding:10px 0;border-bottom:1px solid #45505a}.rfl-related-row p{margin:6px 0}.rfl-text-link{background:none;border:0;color:#e7c788;text-decoration:underline;cursor:pointer;font:inherit}.rfl-record-section textarea{width:100%;min-height:100px}@media(max-width:650px){.rfl-dir-tools label{flex:1}.rfl-clear-filter{align-self:end}}';
+  directoryCss.textContent += '.rfl-dir-thumb{width:52px;height:64px;object-fit:cover;object-position:top;border-radius:6px;border:1px solid #746a59;flex-shrink:0}.rfl-portrait{display:flex;justify-content:center;margin:0 0 18px}.rfl-portrait img{width:min(100%,360px);height:auto;max-height:580px;object-fit:contain;border:1px solid #677c86;border-radius:12px;background:#101b2a;box-shadow:0 10px 22px #0005}';
   document.head.appendChild(directoryCss);
 
   const formerMap=mapHome;
