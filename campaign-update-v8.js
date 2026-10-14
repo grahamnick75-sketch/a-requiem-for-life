@@ -54,6 +54,92 @@
     }
   }
 
+
+  // Approved Oct 14 neighborhood decisions. Ordinary businesses stay mundane.
+  // Preserve dashboard editor changes, deleted entries, and older campaign canon.
+  const rflNeighborhoodDistricts=[
+    {id:"potrero",name:"Potrero Hill",summary:"Sunny hillside neighborhood with steep residential streets, exceptional city views, an 18th Street commercial strip, and industrial edges toward Dogpatch. A quieter everyday home base.",note:"The Switchback and McKinley Square are approved neighborhood gathering places. No required magic, Current anchor, or Arc 1 plot is assigned here."},
+    {id:"bernal",name:"Bernal Heights",summary:"Residential hillside neighborhood with a small-village atmosphere, independent businesses on Cortland Avenue, and a panoramic hilltop park. A quieter place for characters to live or visit.",note:"The Little Lantern and Bernal Heights Park are approved everyday locations. No mandatory supernatural storyline or established Current anchor."}
+  ];
+  const rflNormalizeName=x=>String(x||"").toLocaleLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+  const rflFindKind=(kind,id,names)=>data[kind].find(x=>x.id===id)
+    ||data[kind].find(x=>(names||[]).some(n=>rflNormalizeName(x.name)===rflNormalizeName(n)));
+  const rflMergeDecision=(kind,id,fields,note,aliases)=>{
+    if(!Array.isArray(data[kind]))return null;
+    if(data._editorDeletes.includes(kind+":"+id))return null;
+    let item=rflFindKind(kind,id,[fields.name].concat(aliases||[]));
+    if(item&&data._editorDeletes.includes(kind+":"+item.id))return null;
+    if(!item){item={id};data[kind].push(item);}
+    const key=kind+":"+item.id,edits=data._editorOverrides[key]||{};
+    for(const [field,value] of Object.entries(fields)){
+      if(!Object.prototype.hasOwnProperty.call(edits,field))item[field]=value;
+    }
+    if(note&&!Object.prototype.hasOwnProperty.call(edits,"secret")){
+      const tag="[Neighborhood decisions — October 14, 2026]";
+      const original=String(item.secret||"");
+      const oldStart=original.indexOf(tag);
+      const originalWithoutOld=oldStart<0?original:original.slice(0,oldStart).trimEnd();
+      item.secret=(originalWithoutOld+"\n\n"+tag+"\n"+note).trim();
+    }
+    return item;
+  };
+  for(const item of rflNeighborhoodDistricts)
+    rflMergeDecision("districts",item.id,
+      {name:item.name,summary:item.summary,status:"Canon"},item.note);
+  const rflMission=data.districts.find(d=>d.id==="mission");
+  if(rflMission&&!data._editorDeletes.includes("districts:mission")){
+    // The older combined "Mission / Bernal Heights" title is no longer apt.
+    const ed=data._editorOverrides["districts:mission"]||{};
+    if(!Object.prototype.hasOwnProperty.call(ed,"name")&&/bernal/i.test(rflMission.name||""))
+      rflMission.name="Mission District";
+    rflMergeDecision("districts","mission",{}, 
+      "Calle 24 is a vibrant neighborhood corridor of family businesses and strong Latino cultural identity. Confirmed places: Caliente 24, Balmy Alley, and Dolores Park. Balmy Alley is a public, mixed Mundane/Awakened arts space; some murals have magical influences, but their manifestation is deliberately undefined. Dolores Park is an ordinary public park with no required supernatural significance. Valencia Street is not being developed yet; a possible player-owned Jewish deli there is only a player idea, not an approved location. Do not create or define the deli unless that player chooses it.");
+  }
+  if(data.districts.some(d=>d.id==="dogpatch"))
+    rflMergeDecision("districts","dogpatch",{},
+      "Dogpatch is a mix of historic homes, working warehouses, creative spaces and waterfront industry. Confirmed everyday hubs are The Rusted Anchor near Third Street and Salt & Steel Repair Works on the waterfront, both ordinary businesses. Cal 'Chain' Maddox's illicit Blink Dog fighting ring remains at the existing industrial warehouse, separate from these businesses.");
+  const rflPotrero=(rflFindKind("districts","potrero",["Potrero Hill"])||{}).id||"potrero";
+  const rflBernal=(rflFindKind("districts","bernal",["Bernal Heights"])||{}).id||"bernal";
+  const rflNeighborhoodPlaces=[
+    {id:"caliente_24",name:"Caliente 24",district:"mission",
+      summary:"Ordinary family-owned taqueria on Calle 24 in the Mission District. A warm neighborhood dinner spot that closes at 10 PM; no magical services or Fog-related secrets.",
+      note:"Arc 1 opening hook: during dinner, the party can overhear two Dogpatch warehouse workers complaining about repeated nighttime howling from warehouses in Dogpatch. The workers are annoyed and frustrated, not frightened. Their names, precise workplace, and further details are intentionally left for DM improvisation."},
+    {id:"balmy_alley",name:"Balmy Alley",district:"mission",
+      summary:"Real public alley known for vibrant community murals. In the Fog setting it is a mixed Mundane/Awakened arts space: most murals are ordinary, while some bear subtle magical influences.",
+      note:"Do not lock down how the magic works or who notices it. The murals' supernatural manifestations are intentionally open-ended."},
+    {id:"dolores_park",name:"Dolores Park",district:"mission",
+      summary:"Real public hillside park, open to everyone for picnics, socializing, sightseeing, and downtime. An ordinary player-accessible city location.",
+      note:"No special supernatural connection, mandatory quest, or Current anchor. The park can be used casually during play.",
+      aliases:["Mission Dolores Park"]},
+    {id:"the_switchback",name:"The Switchback",district:rflPotrero,
+      summary:"Fictional cozy neighborhood diner on 18th Street in Potrero Hill, frequented by breakfast regulars, workers and longtime residents. An ordinary place to meet and hear local news.",
+      note:"Ordinary establishment; no assigned Fog secret or plot requirement."},
+    {id:"mckinley_square",name:"McKinley Square",district:rflPotrero,
+      summary:"Real small hillside public park in Potrero Hill with city views; suited to quiet conversations, meetings, or enjoying the neighborhood.",
+      note:"Ordinary public park, not a required quest location."},
+    {id:"the_little_lantern",name:"The Little Lantern",district:rflBernal,
+      summary:"Fictional independent bookstore and coffee shop on Cortland Avenue in Bernal Heights. Comfortable, welcoming, and quiet; a possible party home base.",
+      note:"Ordinary neighborhood establishment, without any mandatory supernatural subplot."},
+    {id:"bernal_heights_park",name:"Bernal Heights Park",district:rflBernal,
+      summary:"Real grassy hilltop public park offering broad San Francisco views. An ordinary accessible location for exploration, sunset views, and character moments.",
+      note:"No required magical significance or plot hook."},
+    {id:"the_rusted_anchor",name:"The Rusted Anchor",district:"dogpatch",
+      summary:"Fictional old workers' bar near Third Street in Dogpatch, with weathered wood, industrial details and dim light. A neighborhood hangout for dockworkers, warehouse employees, artists and longtime residents.",
+      note:"Open to both Mundane and Awakened patrons but otherwise an ordinary bar. A player social hub; no direct ties to Cal Maddox's fighting ring."},
+    {id:"salt_steel_repair_works",name:"Salt & Steel Repair Works",district:"dogpatch",
+      summary:"Fictional ordinary waterfront repair shop specializing in boat engines, generators, dock machinery, and industrial equipment. A longstanding local working business.",
+      note:"Explicitly mundane: no magical repairs, secret enchantments, or established supernatural involvement."}
+  ];
+  for(const loc of rflNeighborhoodPlaces){
+    rflMergeDecision("locations",loc.id,
+      {name:loc.name,district:loc.district,summary:loc.summary,status:"Canon"},
+      loc.note,loc.aliases);
+  }
+  const rflOpeningThread=data.threads&&data.threads.find(t=>t.id==="arc_ferryman");
+  if(rflOpeningThread)
+    rflMergeDecision("threads","arc_ferryman",{},
+      "Arc 1 opening location is Caliente 24, an ordinary family-owned taqueria on Calle 24, closing at 10 PM. During dinner the party overhears two annoyed and frustrated Dogpatch warehouse workers discussing nighttime howling; their names and further specifics are left to DM improvisation. This is a natural investigative lead, not an assigned quest. All previously established warehouse, three-night shipment, Ferryman and Riftstalker beats remain unchanged.");
+
   // Dedicated encounter record for the approved Arc 1 finale creature.
   // Riftstalker remains a working name; no unapproved origin/intent is introduced.
   if(!(data._editorDeletes||[]).includes("villains:villain_riftstalker") &&

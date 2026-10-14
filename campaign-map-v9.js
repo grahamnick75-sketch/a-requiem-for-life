@@ -13,10 +13,14 @@
   var citySpots = {
     presidio:[33,26], ggp:[33,53], haight:[43,58], japantown:[48,40],
     tenderloin:[55,44], chinatown:[64,36], soma:[68,53], castro:[51,70],
-    mission:[63,72], dogpatch:[75,74], bayview:[73,79], waterfront:[70,27]
+    mission:[63,72], potrero:[71,65], potrero_hill:[71,65], bernal:[61,81], bernal_heights:[61,81], dogpatch:[75,74], bayview:[73,79], waterfront:[70,27]
   };
   var roadNames = {
     dogpatch:['Third Street','Illinois Street','22nd Street'],
+    potrero:['18th Street','Connecticut Street','Wisconsin Street'],
+    potrero_hill:['18th Street','Connecticut Street','Wisconsin Street'],
+    bernal:['Cortland Avenue','Bernal Heights Boulevard','Folsom Street'],
+    bernal_heights:['Cortland Avenue','Bernal Heights Boulevard','Folsom Street'],
     haight:['Haight Street','Ashbury Street','Stanyan Street'],
     chinatown:['Grant Avenue','Stockton Street','California Street'],
     tenderloin:['Geary Street','Larkin Street','Hyde Street'],
