@@ -7,6 +7,9 @@
   if (typeof data === 'undefined' || !data || !Array.isArray(data.districts) ||
       typeof mapHome !== 'function' || typeof render !== 'function') return;
 
+  // User-approved single overview; full-size source remains preserved outside GitHub.
+  // Asset path is versioned to avoid displaying cached, earlier maps.
+  var rflApprovedMap20261015 = 'assets/illustrated-san-francisco-overview-20261015.webp';
   var activeDistrict = null;
   var selectedLocation = null;
   var arrange = false;
@@ -151,7 +154,7 @@
       return '<button class="rfl-city-dot" type="button" data-rfl-district="'+h(d.id)+'" style="left:'+xy[0]+'%;top:'+xy[1]+'%" title="Explore '+h(d.name)+'"><span>◆</span><small>'+h(d.name)+'</small></button>';
     }).join('');
     return '<div class="rfl-stage rfl-city-stage" id="rflStage"><div class="rfl-art rfl-city-art">'+
-      '<img src="'+MAP_IMAGE+'" draggable="false" alt="Illustrated map of San Francisco neighborhoods"/>'+
+      '<img src="' + rflApprovedMap20261015 + '" draggable="false" alt="Illustrated map of San Francisco neighborhoods"/>'+
       '<div class="rfl-city-markers">'+markers+'</div></div></div>'+
       '<p class="rfl-map-footnote">Illustrated city overview · neighborhood positions are approximate. Select a district for its own detailed map.</p>';
   }
@@ -168,7 +171,7 @@
     activeDistrict=null;selectedLocation=null;arrange=false;
     return '<div class="maphead"><div><h2>San Francisco · Campaign Map</h2><p class="muted">Illustrated city overview · DM workspace</p></div></div>'+
       '<div class="rfl-topbar"><span class="rfl-crumb">San Francisco / City overview</span><button class="action" data-jump="locations">Browse locations →</button></div>'+
-      '<div class="rfl-stage rfl-city-stage"><div class="rfl-art rfl-city-art"><img src="'+MAP_IMAGE+'" draggable="false" alt="Illustrated overview map of San Francisco"/></div></div>'+
+      '<div class="rfl-stage rfl-city-stage"><div class="rfl-art rfl-city-art"><img src="' + rflApprovedMap20261015 + '" draggable="false" alt="Illustrated overview map of San Francisco"/></div></div>'+
       '<p class="rfl-map-footnote">City reference illustration. Find campaign locations in the Locations directory.</p>';
   };
 
