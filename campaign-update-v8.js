@@ -140,6 +140,42 @@
     rflMergeDecision("threads","arc_ferryman",{},
       "Arc 1 opening location is Caliente 24, an ordinary family-owned taqueria on Calle 24, closing at 10 PM. During dinner the party overhears two annoyed and frustrated Dogpatch warehouse workers discussing nighttime howling; their names and further specifics are left to DM improvisation. This is a natural investigative lead, not an assigned quest. All previously established warehouse, three-night shipment, Ferryman and Riftstalker beats remain unchanged.");
 
+
+  // Canon simplification: the Confluence alone protects Surface life and veils
+  // the Fog. Retire the separate Umbral Arcana concept, while preserving DM edits.
+  const rflConfluenceRule="The Confluence protects Surface life from supernatural dangers and veils the Fog from ordinary perception.";
+  if(Array.isArray(data.lore)){
+    data.lore=data.lore.filter(entry=>!/^\s*(?:the\s+)?Umbral Arcana\s*$/i.test(entry.name||""));
+    const existing=data.lore.find(entry=>entry.id==="confluence"||/^(?:the\s+)?confluence$/i.test(entry.name||""));
+    if(existing){
+      const ed=data._editorOverrides["lore:"+existing.id]||{};
+      if(!Object.prototype.hasOwnProperty.call(ed,"summary"))existing.summary=rflConfluenceRule;
+      if(!Object.prototype.hasOwnProperty.call(ed,"status"))existing.status="Canon";
+      if(!Object.prototype.hasOwnProperty.call(ed,"secret")){
+        const prior=String(existing.secret||"");
+        const marker="The Confluence itself is responsible for the veil";
+        if(!prior.includes(marker))existing.secret=(prior+"\n\n"+marker+" that hides the Fog from ordinary Surface perception, alongside its protection of Surface life. The causes of occasional veil failures remain undefined.").trim();
+      }
+    }else if(!(data._editorDeletes||[]).includes("lore:confluence")){
+      data.lore.push({
+        id:"confluence",name:"The Confluence",status:"Canon",
+        summary:rflConfluenceRule,
+        secret:"The balance of the five Currents sustains the Confluence. It protects Surface life and conceals the Fog without a separate spell or concealment system. The causes of any lapses in the veil remain undecided."
+      });
+    }
+  }
+  for(const kind of ["districts","locations","npcs","villains","lore","threads"]){
+    for(const item of data[kind]||[]){
+      const edits=data._editorOverrides[kind+":"+item.id]||{};
+      for(const field of ["summary","secret","description"]){
+        if(typeof item[field]!=="string"||Object.prototype.hasOwnProperty.call(edits,field))continue;
+        item[field]=item[field]
+          .replace(/\b(?:the\s+|an\s+)?Umbral Arcana\b/gi,"the Confluence\'s veil")
+          .replace(/\bthe the Confluence\'s veil\b/gi,"the Confluence\'s veil");
+      }
+    }
+  }
+
   // Dedicated encounter record for the approved Arc 1 finale creature.
   // Riftstalker remains a working name; no unapproved origin/intent is introduced.
   if(!(data._editorDeletes||[]).includes("villains:villain_riftstalker") &&
