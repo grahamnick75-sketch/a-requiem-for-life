@@ -133,20 +133,4 @@
   if(toggle)toggle.addEventListener("change",()=>{if(toggle.checked&&(view==="maker"||view==="gm"))view="player";if(tab===id)render();});
   render();
 })();
-/* Load Castro / Tenderloin additions after the First Tongue migration. */
-(function loadNeighborhoodCanonV7(){
-  if(document.querySelector('script[data-canon-version="v7"]'))return;
-  const script=document.createElement('script');
-  script.src='campaign-update-v7.js';
-  script.async=false;
-  script.dataset.canonVersion='v7';
-  script.addEventListener('load',function(){
-    if(document.querySelector('script[data-canon-version="v8"]'))return;
-    const next=document.createElement('script');
-    next.src='campaign-update-v8.js';
-    next.async=false;
-    next.dataset.canonVersion='v8';
-    (document.body||document.head).appendChild(next);
-  });
-  (document.body||document.head).appendChild(script);
-})();
+// index.html owns the neighborhood and editor script order.
