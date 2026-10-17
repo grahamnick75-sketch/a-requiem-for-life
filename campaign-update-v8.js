@@ -582,6 +582,45 @@
     data._arc2OutlineVersion="2026-10-17-v1";
     save();
   }
+
+  // Keep the Arc 2 session outline and festival reference in Story Threads.
+  function rflPlaceArc2Threads(){
+    if(data._arc2ThreadPlacement==="2026-10-17-v2")return;
+    const source=(data.lore||[]).find(x=>x.id==="wonderworks_festival");
+    const canonical=rflArc2Updates.find(x=>x[0]==="lore"&&x[1]==="wonderworks_festival");
+    const fields=Object.assign({},canonical?canonical[2]:{},source||{});
+    delete fields.id;delete fields.notes;
+    fields.name="Arc 2 — Wonderworks Festival";
+    fields.arc="Arc 2 — Ghosts in the Machine";
+    fields.connections=[{targetType:"threads",targetId:"arc_luma",relation:"Full Arc 2 outline"}];
+    const key="threads:wonderworks_festival";
+    if(!data._editorDeletes.includes(key)){
+      let festival=data.threads.find(x=>x.id==="wonderworks_festival");
+      if(!festival){festival={id:"wonderworks_festival"};data.threads.push(festival);}
+      Object.assign(festival,fields);
+      data._editorOverrides[key]=Object.assign({},data._editorOverrides[key]||{},fields);
+    }
+    if(source){
+      data._arc2FestivalPreviousLore=Object.assign({},source);
+      const pointer={
+        summary:"Annual invention festival at Yerba Buena Gardens. Full attractions, Kindred Forms, and Arc 2 scenes are organized under Story Threads → Arc 2 — Wonderworks Festival.",
+        secret:"Full planning reference moved to Story Threads → Arc 2 — Wonderworks Festival.",
+        outline:null,
+        connections:[{targetType:"threads",targetId:"wonderworks_festival",relation:"Festival outline, attractions and Kindred Forms"}]
+      };
+      Object.assign(source,pointer);
+      data._editorOverrides["lore:wonderworks_festival"]=Object.assign({},data._editorOverrides["lore:wonderworks_festival"]||{},pointer);
+    }
+    const arc=data.threads.find(x=>x.id==="arc_luma");
+    if(arc){
+      const links=(arc.connections||[]).filter(c=>!(c.targetType==="threads"&&c.targetId==="wonderworks_festival"));
+      links.push({targetType:"threads",targetId:"wonderworks_festival",relation:"Wonderworks attractions and Kindred Forms"});
+      arc.connections=links;
+      data._editorOverrides["threads:arc_luma"]=Object.assign({},data._editorOverrides["threads:arc_luma"]||{},{connections:links});
+    }
+    data._arc2ThreadPlacement="2026-10-17-v2";save();
+  }
+
   function rflOutlineHtml(x){
     if(!Array.isArray(x.outline)||!x.outline.length)return "";
     return '<section class="rfl-arc-outline dmOnly"><h3>Outline &amp; Key Takeaways</h3>'+x.outline.map(s=>
@@ -595,6 +634,7 @@
   const formerRender=render;
   render=function(){
     rflApplyArc2();
+    rflPlaceArc2Threads();
     // An imported pre-v8 JSON backup may not contain the new collections or editor metadata.
     if(!Array.isArray(data.villains))data.villains=[];
     if(!data._editorOverrides||typeof data._editorOverrides!=="object")data._editorOverrides={};
@@ -603,11 +643,6 @@
     formerRender();
     const app=document.getElementById("app");if(!app)return;
     if(tab==="firstTongue")return;
-    if(tab==="home"&&!mode){
-      const quick=document.createElement("section");quick.className="panel dmOnly";
-      quick.innerHTML='<h3>Arc 2 — Ghosts in the Machine</h3><p>Wonderworks → Renewal → Chinatown outpost → Luma Securities → Finale</p><div class="v8-actions"><button class="action" data-v8-go="threads:arc_luma">Arc 2 outline &amp; key takeaways</button><button class="action" data-v8-go="lore:wonderworks_festival">Wonderworks attractions &amp; Kindred Forms</button></div>';
-      app.prepend(quick);
-    }
     if(tab==="home"){
       const choose=document.getElementById("v8DistrictSelect");
       if(choose)choose.onchange=e=>{mapDistrict=e.target.value;};
