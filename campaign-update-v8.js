@@ -753,3 +753,269 @@
   document.getElementById("playerMode")?.addEventListener("change",()=>{render();});
   save();render();
 })();
+
+
+/* RFL_ARC3_CANON_V9_MARKER
+   October 18–19 2026 campaign decisions. Additive, idempotent dashboard migration.
+   Preserves user-authored edits, imported backups, earlier arcs, and the existing UI.
+   Some final-boss mechanics remain developing and must not be represented as settled.
+*/
+(function(){
+  "use strict";
+  if(typeof data==="undefined" || !data || typeof render!=="function") return;
+  if(window.__rflArc3V9Loaded) return;
+  window.__rflArc3V9Loaded=true;
+  var VERSION="2026-10-19-arc3-v1";
+  var arc="Arc 3 — The Dead Don't Leave";
+  var birdieWords=[
+    "My grandmother used to tell me that long before this city had a name, there was a spirit who watched over those who passed.",
+    "They called it the Keeper of Memories.",
+    "When someone died, the Keeper would hold their memories gently, so nothing of who they were would be lost as they journeyed west.",
+    "I don't know if I believe all the old stories. But since Anya passed... I find myself hoping that one's true.",
+    "I hope someone is holding her memories."
+  ];
+  function link(type,id,relation,details){return {targetType:type,targetId:id,relation:relation,details:details||""};}
+  function section(title,bullets,takeaway){return {title:title,bullets:bullets,takeaway:takeaway};}
+  function outlineText(segments){
+    return (segments||[]).map(function(s){
+      return s.title+"\n"+(s.bullets||[]).map(function(b){return "• "+b;}).join("\n")+
+        (s.takeaway?"\nKEY TAKEAWAY: "+s.takeaway:"");
+    }).join("\n\n");
+  }
+  function findByIdOrName(kind,id,possibleNames){
+    var arr=data[kind]||[];
+    return arr.find(function(x){return x.id===id;}) ||
+      arr.find(function(x){return (possibleNames||[]).some(function(n){return String(x.name||"").trim().toLowerCase()===n.toLowerCase();});});
+  }
+  function upsert(kind,id,fields,opts){
+    opts=opts||{};
+    if(!Array.isArray(data[kind])) data[kind]=[];
+    if(!Array.isArray(data._editorDeletes)) data._editorDeletes=[];
+    if(!data._editorOverrides||typeof data._editorOverrides!=="object")data._editorOverrides={};
+    if(data._editorDeletes.includes(kind+":"+id))return null;
+    var item=findByIdOrName(kind,id,opts.aliases||[]);
+    if(item && data._editorDeletes.includes(kind+":"+item.id))return null;
+    if(!item){item={id:id};data[kind].push(item);}
+    var edits=data._editorOverrides[kind+":"+item.id]||{};
+    Object.keys(fields||{}).forEach(function(key){
+      if(!Object.prototype.hasOwnProperty.call(edits,key))item[key]=fields[key];
+    });
+    if(opts.note && !Object.prototype.hasOwnProperty.call(edits,"secret")){
+      var tag="[Arc 3 canon update — October 19, 2026]";
+      var old=String(item.secret||"");
+      if(!old.includes(opts.note))item.secret=(old+"\n\n"+tag+"\n"+opts.note).trim();
+    }
+    if(opts.connections && !Object.prototype.hasOwnProperty.call(edits,"connections")){
+      if(!Array.isArray(item.connections))item.connections=[];
+      opts.connections.forEach(function(c){
+        if(!item.connections.some(function(existing){
+          return existing.targetType===c.targetType && existing.targetId===c.targetId && existing.relation===c.relation;
+        }))item.connections.push(c);
+      });
+    }
+    return item;
+  }
+  function event(id,order,title,summary,sections,connections,status){
+    var fields={
+      name:"Arc 3 — "+String(order).padStart(2,"0")+". "+title,
+      summary:summary,arcNumber:3,eventOrder:order,parentThread:"arc_alcatraz",
+      arc:arc,status:status||"Canon",outline:sections,
+      secret:outlineText(sections),
+      connections:connections||[]
+    };
+    return upsert("threads",id,fields);
+  }
+  function apply(){
+    if(data._arc3CanonVersion===VERSION) return;
+    for(var kind of ["districts","locations","npcs","villains","lore","threads"])
+      if(!Array.isArray(data[kind]))data[kind]=[];
+
+    var anya=(data.npcs||[]).find(function(n){return n.id==="anya_vox" || /^anya\b/i.test(n.name||"")&&!/spirit/i.test(n.name||"");});
+    var birdie=(data.npcs||[]).find(function(n){return /^birdie$/i.test(n.name||"") || n.id==="birdie";});
+    var avalon=(data.locations||[]).find(function(l){return /avalon house/i.test(l.name||"");});
+    var alcatraz=(data.locations||[]).find(function(l){return /^alcatraz(?: island)?$/i.test(l.name||"") || l.id==="alcatraz";});
+    var invent=(data.npcs||[]).find(function(n){return /kindred engine/i.test([n.summary,n.occupation,n.secret].join(" ")) && /invent|creat|built|designer/i.test([n.summary,n.occupation,n.secret].join(" "));});
+    var bid=birdie?birdie.id:"birdie", aid=anya?anya.id:"anya_vox";
+    var avID=avalon?avalon.id:"avalon_house", alcID=alcatraz?alcatraz.id:"alcatraz";
+
+    // Original-Fog community: a living culture, not merely an occult clue source.
+    upsert("npcs",bid,{
+      name:"Birdie",status:"Canon",
+      summary:"Haight-Ashbury musician and Avalon House matriarch; an openly Indigenous elder descended from the Fog's original inhabitants and a beloved lifelong musical mentor to Anya.",
+      beliefs:"The stories and people of the original Fog community deserve to endure. She openly cherishes her heritage; memory, art, chosen family, and service to the community matter to her."
+    },{
+      note:"Birdie is open about her Indigenous Fog heritage; it is not a secret or a late twist. She knew and loved Anya as a longtime musical mentor. Anya dies offsite during the Arc 2 Luma finale, not in Arc 3. Early in Arc 3, BEFORE the Kindred Engine inventor asks the party for help, Birdie grieves Anya at Avalon House and shares precisely the following inherited story without ever mentioning Alcatraz:\n\n“"+birdieWords.join("”\n\n“")+"”\n\nThe scene should be personal grief, not an obvious quest hook. The form of any memorial gathering is still undecided. Do NOT replace Birdie's existing approved character art; a respectful visual revision is only being considered.",
+      connections:[link("npcs",aid,"Lifelong musical mentor","Birdie loved Anya and grieves her death in Arc 2."),link("threads","arc3_birdie","Opening scene","Shares her grandmother's Keeper of Memories story.")]
+    });
+
+    if(avalon)upsert("locations",avID,{},{
+      note:"Arc 3 opens with a personal conversation here between Birdie and the party, after Anya's Arc 2 death and before the Kindred Engine inventor's request for help. Birdie offers her grandmother's Keeper of Memories story without mentioning Alcatraz.",
+      connections:[link("threads","arc3_birdie","Arc 3 opening")]
+    });
+
+    // Named locations; independently operated businesses are ordinary and not complicit.
+    upsert("locations","gilded_gull",{
+      name:"The Gilded Gull",district:"waterfront",status:"Canon",
+      summary:"A fictional, prestigious fine-dining restaurant on a pier at Fisherman's Wharf: emerald velvet, polished brass, broad bay windows, theatrical desserts, and refined waterfront hospitality.",
+      secret:"The Kindred Engine inventor's missing wife and her sister make this their traditional sisters' date restaurant. Both dined here on their disappearance day, three days before the inventor contacts the party. Staff do NOT know the sisters by name and are curt, busy, and impatient because this is a crowded high-end restaurant, NOT because they are covering up anything supernatural. An observant or persistent investigation establishes the sisters ate here. A server recalls the sisters asking for directions to a quieter waterfront walk and briefly meeting an unidentified person outside; all three departed in the same direction. The third person's identity, intent and fate are intentionally unassigned. The restaurant's name comes from a gilded seabird stone carving uncovered when the pier was constructed; weathered First Tongue script beneath it reads 'Mi ti mer' — 'I remember you.' The staff do not understand the old inscription. The carving is early First Tongue foreshadowing, not proof of wrongdoing.",
+      connections:[link("threads","arc3_gilded_gull","Investigation stop"),link("lore","arc3_first_tongue","First Tongue inscription")]
+    });
+
+    upsert("locations","alcatraz_tour_dock",{
+      name:"Independent Alcatraz Tours Dock",district:"waterfront",status:"Canon",
+      summary:"A quieter working dock near Fisherman's Wharf, with independent mom-and-pop excursion boats and an 'Alcatraz Tours' sign beside a 10–15-passenger captain-operated vessel.",
+      secret:"After following the Gilded Gull lead, the party finds an intact bracelet decorated with Kindred animal patterns resting near a mooring post in front of the Alcatraz Tours sign. It belongs to the inventor's missing wife, but its placement does not demonstrate a violent struggle or confirm who left it. The independent captain keeps NO ticket ledger or passenger manifest and does NOT remember the sisters boarding. On learning they are missing, he offers to take the party to Alcatraz to help investigate. They encounter him at dusk, reach Alcatraz around nightfall, and he WAITS aboard his boat at the dock while the party explores. Do NOT assert the sisters boarded his boat or that the captain is involved in disappearances.",
+      connections:[link("threads","arc3_docks","Physical evidence and boat lead"),link("locations",alcID,"Tour destination")]
+    });
+
+    if(alcatraz)upsert("locations",alcID,{},{
+      note:"Arc 3: party arrives near nightfall with a helpful independent excursion captain, who remains waiting aboard his boat. No staff or tourists greet them: the island and cellhouse feel eerily empty. They hear a detached, emotionless voice repeating 'Please help me' IN ORDINARY LANGUAGE; an empty solitary cell marks their first Identity Fracture. Their first Forgotten victim is an unfamiliar living person, not either missing sister. The spiritual origin of the corrupted Keeper of Memories and the name-redemption endgame are DM-only. The prison arrival and early beats are established; revised final mechanics remain developing.",
+      connections:[link("threads","arc_alcatraz","Arc 3 setting"),link("villains","villain_entity_alcatraz","Corrupted Keeper")]
+    });
+
+    // True First Tongue and Kethil script are fictional Fog heritage, not a real Indigenous language.
+    upsert("lore","arc3_first_tongue",{
+      name:"First Tongue & Kethil — Arc 3 Research",status:"Canon",
+      summary:"The original Fog community's pre–Gold Rush language naturally faded over generations. Arc 3 begins the campaign's important First Tongue clues; the Conservatory has only fragmentary understanding.",
+      secret:"Treat the First Tongue as fictional, NOT an actual Ohlone or other living Indigenous language. Its written script is Kethil. The original Fog inhabitants spoke it before the Gold Rush; it was not deliberately suppressed, merely lost through time. The Conservatory recognizes its script and some roots (perhaps 'mer' relates to memory) but cannot immediately translate whole inscriptions; investigation and living cultural knowledge provide context. At The Gilded Gull the gilded bird carries 'Mi ti mer' ('I remember you'). On Alcatraz the victims of the entity unconsciously repeat First Tongue sounds or phrases such as 'Mi ti mer'; they are not fluent. During Alcatraz exploration First Tongue is HEARD only from victims, never as the entity's audible voice or as a disembodied corridor whisper. Another established phrase is 'Nor nam mal', meaning exactly 'forgotten through binding, and forgotten', expressed as a compact Kethil insignia on the entity's left chest; this is NOT necessarily its true name. The entity's original true name has not yet been established.",
+      connections:[link("locations","gilded_gull","Written clue"),link("npcs","entity_alcatraz","Chest insignia and forgotten name"),link("lore","arc3_keeper_history","Keeper history")]
+    });
+    upsert("lore","arc3_keeper_history",{
+      name:"Keeper of Memories — The Forgotten Guardian",status:"Canon",
+      summary:"Long before Alcatraz was a prison, a spirit known by name to the Indigenous inhabitants of the Fog safeguarded the memories of the departed as they journeyed west.",
+      secret:"Original purpose: Keeper of Memories, NOT simply guardian of the dead. Living descendants of the original Fog inhabitants preserve stories of the Keeper, but its actual First Tongue name has been lost. The prison's generations of isolation, dehumanization, cruelty and abandonment corrupted the Keeper. Having forgotten its own identity, it now strips living visitors of their memories and will. Recovery of the original name across Arc 3's research is a potential redemption path: speaking it is an act of remembrance rather than a mechanical password. The entity can also be fought and destroyed; exact rules, pacing and outcome consequences are still to be developed. Keep real Ohlone history and beliefs distinct from invented Fog customs; no fictionalized sacred ceremony is canon.",
+      connections:[link("npcs",bid,"Living storykeeper"),link("lore","arc3_first_tongue","Forgotten true name"),link("villains","villain_entity_alcatraz","Corrupted form")]
+    });
+    upsert("lore","arc3_identity_fracture",{
+      name:"Identity Fracture — Alcatraz",status:"Canon",
+      summary:"The Keeper's corruption erases recognition, selfhood and human ties. The earliest memory lapse affects one character with the lowest Mereth score on the DM-managed hidden Current tracker.",
+      secret:"The first fracture happens inside an empty solitary cell after an eerily emotionless 'Please help me' voice stops. Secretly select ONE player character with the lowest Mereth Current score (not lowest total across five Currents). No saving throw or damage for this minor first event. That character briefly forgets the voice and why they entered the cell; the other PCs remember. Greater losses of identity, relationships and purpose may develop over time; escalation mechanics and tie breakers remain unassigned. The Forgotten appear alive, nonhostile, vacant and largely without will. A first unfamiliar man can speak disconnected fragments, unconsciously repeat 'Mi ti mer', follow simple instructions, but stops near the prison exit. If forcibly carried or pushed out, he struggles with genuine psychological terror; there is no literal invisible barrier.",
+      connections:[link("threads","arc3_empty_cell","First fracture"),link("threads","arc3_first_forgotten","First victim")]
+    });
+    upsert("lore","xev_awakening",{
+      name:"Nexev “Xev” Terces — Awakening",status:"Canon",
+      summary:"Marlow hires Xev once to open a magically locked Feywild-crossing door. She disobeys the instruction not to open it, sees the Feywild and awakens to the Fog after magical backlash.",
+      secret:"Arc 1/player-character backstory. Marlow is a ONE-TIME Awakening contact, not Xev's recurring employer. Marlow insists that Xev UNLOCK but NOT OPEN the enchanted door: she will know it is unlocked when light shines from underneath. His real reason is to stop her from witnessing the Ferryman enter San Francisco, NOT concern for a magical backlash. Curious Xev opens it anyway, sees the Feywild, and the magic blasts her backward INTO a barrel and knocks her unconscious, hiding her in the barrel. While she is unconscious the Ferryman crosses into San Francisco unseen by her. On waking, the door is closed and the Feywild crossing is no longer open. The experience Awakens Xev, making the Fog perceptible to her. Do not claim she saw the Ferryman enter.",
+      connections:[link("npcs","marlow","One-time employer"),link("villains","villain_ferryman","Unwitnessed arrival")]
+    });
+    upsert("lore","guerrilla_grafters",{
+      name:"Guerrilla Grafters (future Fog concept)",status:"Idea",
+      summary:"A separate future city-worldbuilding concept inspired by San Francisco's clandestine community grafting fruit-bearing branches onto ornamental street trees.",
+      secret:"Parked for later collaborative development. The user wants the Guerrilla Grafters in the campaign but has NOT decided whether they are ordinary Surface activists, a Fog collective, magical, or linked to any Current. No connection to Arc 3 or Alcatraz; do not invent one."
+    });
+
+    upsert("npcs","entity_alcatraz",{
+      name:"The Entity of Alcatraz (Corrupted Keeper of Memories)",
+      location:alcID,ancestry:"Ancient Fog spirit",age:"Ancient",
+      occupation:"Former Keeper of Memories; current supernatural presence within Alcatraz",
+      appearance:"Approved full-body campaign cartoon/graphic-novel design: unnaturally tall, thin, elongated humanoid. Smooth bald featureless porcelain-white head with deep hollow black eye sockets; no nose or mouth. Smooth long white fingers, no claws. Faded/desaturated orange prison jumpsuit with frayed fabric dissolving into spectral wisps. Compact interlocked Kethil insignia at left chest represents 'Nor nam mal' ('forgotten through binding, and forgotten'); it subtly darkens/glows when activated. Stands perfectly upright and unnaturally still; walks when calm, levitates as anger rises. Standard dark-navy background with electric-cyan geometric triangles. The approved portrait exists in this campaign conversation but has not yet been uploaded as a GitHub asset.",
+      personality:"Ancient, intelligent, articulate and observant; initially confused and curious after the sisters remember one another, then skeptical, angry and increasingly aggressive when shown human compassion.",
+      summary:"A once-revered pre-prison Keeper of Memories whose own name and role were lost when generations of prisoner suffering warped it into a taker of identity.",
+      secret:"DM ONLY: Originally cared for the memories of the departed journeying west; the original Fog community knew its actual First Tongue name, now forgotten. It steals living visitors' memories and keeps the Forgotten on Alcatraz. It becomes physically visible AFTER the party finds both missing sisters and helps restore their memories through the Kindred bracelet, stories of the inventor/husband and their shared history. Initially curious and confused, the entity then challenges the party's belief in compassion, recounts prison cruelty and grows hostile and aggressive. Players may fight it or recover its original name and demonstrate genuine remembrance and compassion; the exact final mechanism is still DEVELOPING, not a guaranteed one-word instant solution. The current approved portrait must be added separately to assets/portraits when its binary is available in GitHub.",
+      status:"Canon",
+      connections:[link("lore","arc3_keeper_history","Original purpose"),link("lore","arc3_first_tongue","Forgotten name and chest script"),link("threads","arc3_sisters_keeper","Manifestation")]
+    });
+    upsert("villains","villain_entity_alcatraz",{
+      name:"The Entity of Alcatraz",npcId:"entity_alcatraz",arc:arc,
+      summary:"The corrupted ancient Keeper of Memories, taking identities rather than safeguarding the departed.",
+      goal:"At present, impose the isolation and emptiness it believes define humanity; its original name and restorative role are forgotten.",
+      method:"Memory theft, Identity Fracture, disembodied voice, control over the Forgotten, terror at leaving the prison, eventual physical manifestation.",
+      weakness:"Human connection can restore memory; rediscovery of its TRUE First Tongue name could release its anger. Exact mechanics remain under development.",
+      secret:"White mask-like face, hollow eyes, long limbs, spectral orange prison jumpsuit and subtle Kethil chest insignia (Nor nam mal). First seen physically after the missing sisters begin remembering each other. Its initial curiosity escalates to skepticism, hostility and aggression. Destruction remains possible; redemption via name, compassion and restoration of identity is being developed. The victims, not the entity, are the audible source of First Tongue utterances within Alcatraz.",
+      status:"Developing",
+      connections:[link("npcs","entity_alcatraz","NPC form"),link("lore","arc3_keeper_history","Original identity")]
+    });
+
+    if(invent)upsert("npcs",invent.id,{},{
+      note:"Arc 3: His WIFE and her SISTER have both been missing for three days. Wife and sister went on a sisters' date at Fisherman's Wharf, regularly dining at The Gilded Gull. He seeks the party's help because he remembers the extraordinary Kindred animals of two party members from the Engine encounter, NOT because their disappearance has any connection to his invention. His name, wife's name and sister-in-law's name are not being invented here.",
+      connections:[link("threads","arc3_inventor","Desperate request"),link("locations","gilded_gull","Wife's traditional restaurant")]
+    });
+
+    // Arc 3 is a new multi-event outline in the SAME Story Threads directory as Arcs 1 and 2.
+    var events=[
+      ["arc3_birdie","Birdie Remembers Anya"],
+      ["arc3_inventor","A Desperate Request"],
+      ["arc3_gilded_gull","Dinner at The Gilded Gull"],
+      ["arc3_missing_pattern","A Wider Pattern"],
+      ["arc3_docks","The Bracelet & the Tour Dock"],
+      ["arc3_alcatraz_arrival","The Crossing at Dusk"],
+      ["arc3_empty_cell","The Voice and First Fracture"],
+      ["arc3_first_forgotten","The Forgotten Stranger"],
+      ["arc3_sisters_keeper","The Sisters and the Keeper"]
+    ];
+    upsert("threads","arc_alcatraz",{
+      name:"Arc 3 — Overview: The Dead Don't Leave",arc:arc,arcNumber:3,eventOrder:0,
+      status:"Developing",
+      summary:"After Anya's Arc 2 death, a story of the Keeper of Memories quietly foreshadows missing-person cases, a Fisherman's Wharf investigation, and an Alcatraz spirit whose own forgotten name may be the key to redemption.",
+      outline:events.map(function(e,i){return section(String(i+1)+". "+e[1],[
+        i===0?"Birdie shares her personal grief-driven story about the Keeper; she never mentions Alcatraz.":
+        i===1?"The Kindred Engine inventor asks the party to find his wife and sister-in-law, missing for three days.":
+        i===2?"Question the busy Gilded Gull staff, confirm dinner, find a third-person lead and the Kethil bird inscription.":
+        i===3?"Investigate reports of additional missing people; precise method and timing of this widening mystery are still being designed.":
+        i===4?"Find the intact Kindred bracelet by an Alcatraz Tours sign and meet an independent boat captain.":
+        i===5?"The captain brings the party at nightfall and waits aboard; the island appears deserted.":
+        i===6?"A flat 'Please help me' leads to an empty cell and a one-character Mereth-based memory lapse.":
+        i===7?"Meet an unfamiliar living but hollowed victim, who echoes First Tongue fragments and cannot willingly leave.":
+        "Restore the sisters through the bracelet and personal stories; the Keeper manifests; true-name redemption and combat remain possible."
+      ],i===3?"Outline / placement unresolved":"See linked event for confirmed beats.");}),
+      connections:events.map(function(e,i){return link("threads",e[0],"Event "+(i+1));})
+        .concat([link("lore","arc3_keeper_history","Underlying mystery"),link("lore","arc3_first_tongue","Investigative language")])
+    },{
+      note:"Keep this as a developing outline. The disappearance of OTHER people is part of the agreed broader mystery, but exact new evidence, pace and event placement are still open. The Gilded Gull clue now points toward Alcatraz earlier than the first rough pitch did. Do not reintroduce an invented passenger ledger, force a dock camera, make the captain leave, or shift Anya's death out of Arc 2."
+    });
+    event("arc3_birdie",1,"Birdie Remembers Anya",
+      "After Anya dies in Arc 2, Birdie speaks privately with the party at Avalon House before the missing-person hook.",
+      [section("Anya's absence",["Birdie is an openly Indigenous elder and beloved Haight-Ashbury musical mentor of Anya, NOT a secret mystic.","She grieves Anya's Arc 2 death and turns to a story passed down by her grandmother."],"Allow the emotional scene to stand on its own."),
+       section("Birdie's words — preserve exactly",birdieWords,"No mention of Alcatraz or obvious quest hook."),
+       section("Open question",["Why the party visits Avalon House—memorial gathering or informal visit—has not been decided."],"Do not invent a mandatory memorial.")],
+      [link("npcs",bid,"Storyteller"),link("locations",avID,"Setting"),link("lore","arc3_keeper_history","Foreshadowing")]);
+    event("arc3_inventor",2,"A Desperate Request",
+      "The Kindred Engine inventor asks the party for help locating both his wife and her sister, missing for three days.",
+      [section("Personal hook",["The sisters went out together on a sisters' date at Fisherman's Wharf.","The inventor remembers that two PCs received unusually rare Kindred animals, so he seeks them out as capable helpers.","He knows the sisters habitually visit The Gilded Gull; their exact itinerary is unknown.","The Kindred Engine is NOT involved in the disappearance."],"The restaurant is their first tangible lead.")],
+      [link("locations","gilded_gull","Next lead")]);
+    event("arc3_gilded_gull",3,"Dinner at The Gilded Gull",
+      "The party confirms that both missing women ate at the prestigious pier restaurant and uncovers two understated leads.",
+      [section("High-end red herring",["Polished but rushed staff are short with investigators because they are busy, not because they are involved.","Staff do not personally know the sisters by name; the party must provide descriptions or investigate persistently.","Both sisters did dine at The Gilded Gull the day they vanished."],"Misread inconvenience as suspicious concealment if the players choose."),
+       section("Last sighting",["The sisters asked about a quieter stretch of waterfront.","Outside, a third unidentified person appeared to recognize them and briefly spoke with them.","All three departed together toward the working piers. Their relation remains undetermined."],"Follow the waterfront or try to identify the third person."),
+       section("First Tongue foreshadowing",["The restaurant takes its name from an old gilded seabird carving recovered during pier construction.","Below the carving: Kethil inscription 'Mi ti mer' meaning 'I remember you'.","The restaurant is an ordinary business; staff know nothing about the inscription's significance."],"Conservatory recognizes fragments but cannot fully translate the First Tongue.")],
+      [link("locations","gilded_gull","Restaurant"),link("locations","alcatraz_tour_dock","Waterfront route"),link("lore","arc3_first_tongue","Inscription")]);
+    event("arc3_missing_pattern",4,"A Wider Pattern",
+      "The investigation reveals that others have disappeared; how the party uncovers the cases is still open.",
+      [section("Established premise",["The sisters are not isolated victims. A broader pattern of missing persons eventually emerges.","An earlier concept involved another person disappearing after an Alcatraz tour; exact placement and whether it remains a distinct lead have not been locked.","Avoid asserting a criminal conspiracy or that the third person caused the disappearances."],"Develop the missing-person leads before finalizing scene order.")],
+      [],"Developing");
+    event("arc3_docks",5,"The Bracelet & the Tour Dock",
+      "A Kindred-pattern bracelet points to the tour dock; the captain offers a ride but cannot identify the sisters.",
+      [section("Evidence",["Follow the waterfront route to a quieter working pier.","Find the inventor's wife's distinctive Kindred-animal-pattern bracelet INTACT by a mooring post immediately in front of an 'Alcatraz Tours' sign.","The bracelet is not broken and there are no confirmed signs of violence; the captain's 10–15-passenger boat is nearby."],"Strong pointer toward Alcatraz, but NOT proof the sisters boarded the boat."),
+       section("Independent captain",["The neighborhood has mom-and-pop Alcatraz boat operators, not formal manifests.","The captain cannot recall the sisters and keeps NO ledger.","He offers to bring the party across to help; party finds him at DUSK.","He WILL WAIT aboard at Alcatraz while they investigate."],"Their apparent escape route remains available.")],
+      [link("locations","alcatraz_tour_dock","Dock"),link("locations",alcID,"Destination")]);
+    event("arc3_alcatraz_arrival",6,"The Crossing at Dusk",
+      "The party arrives on Alcatraz around nightfall and finds the island deserted while the captain waits on his boat.",
+      [section("Arrival tone",["A dusk departure means arrival as darkness gathers.","No visitor, guide or employee greets the party; the grounds and prison seem completely abandoned.","The captain ties up and waits at his vessel. Do not have him quietly depart."],"The horror comes from the island, not from an artificially vanished escape boat."),
+       section("Exploration",["The party explores the old prison for a while before meeting any living missing people.","No immediate obvious attack or entity manifestation."],"Build suspense before the first Forgotten person.")],
+      [link("locations",alcID,"Setting")]);
+    event("arc3_empty_cell",7,"The Voice and First Fracture",
+      "An emotionless 'Please help me' leads into an empty solitary cell and the first hidden Mereth-based memory lapse.",
+      [section("The empty cell",["An eerie voice repeats 'Please help me' in ordinary English, flatly and without any fear.","Following it leads to an empty solitary cell. The voice stops as the party enters.","Do NOT use disembodied First Tongue whispers here."],"No victim is visible."),
+       section("DM-hidden Current mechanic",["Consult the unofficial DM-managed Current tracker.","Target exactly ONE character with the LOWEST MERETH score, not the lowest total Current score.","No save for this first tiny fracture. The selected PC cannot remember the voice or why they entered; the others remember normally."],"Subtle doubt before the loss of identity escalates.")],
+      [link("lore","arc3_identity_fracture","Mechanic"),link("locations",alcID,"Setting")]);
+    event("arc3_first_forgotten",8,"The Forgotten Stranger",
+      "The first victim is an unfamiliar, nonhostile, living person whose identity and will are almost gone.",
+      [section("A living shell",["Discover an ordinary-looking middle-aged man sitting motionless, alive but vacant.","He responds only in fragmented speech and unconsciously echoes 'Mi ti mer'; the First Tongue is heard from victims only.","He is NOT one of the missing sisters."],"First direct evidence that missing people may be alive."),
+       section("The exit test",["He passively follows simple requests, but near a prison exit stops moving.","If physically carried or forced out, he struggles in intense psychological terror.","Releasing him allows him to retreat and become vacant again. There is no invisible barrier."],"The Keeper's control is psychological rather than a physical wall.")],
+      [link("lore","arc3_identity_fracture","Victim behavior"),link("lore","arc3_first_tongue","Echoed phrase")]);
+    event("arc3_sisters_keeper",9,"The Sisters and the Keeper",
+      "The party reunites the missing sisters; recovering their connection causes the corrupted Keeper to manifest physically.",
+      [section("Recovering who they were",["Find the inventor's missing wife and her sister, both alive but deprived of memories.","Use the Kindred-pattern bracelet and stories about the inventor, their shared lives and The Gilded Gull tradition to revive recognition.","When one recognizes the other, the ancient corrupted Keeper manifests in the prison."],"Human connection restores identity and triggers the reveal."),
+       section("First manifestation",["Entity's appearance: tall, elongated white featureless face with hollow black eyes, faded orange spectral prison jumpsuit and compact Kethil left-chest insignia 'Nor nam mal'.","It begins intelligent, articulate, confused and CURIOUS, not immediately attacking.","When the party presents compassion as evidence against its view of humanity, it becomes skeptical, challenges them with stories of cruelty, then grows hostile and aggressive."],"An encounter, not an instant forced combat roll."),
+       section("Two potential resolutions",["The party can fight the manifested entity or investigate its ORIGINAL First Tongue name, lost across generations.","The Keeper once safeguarded the departed's memories, before Alcatraz prison suffering corrupted it; learning its name is an act of recognition, not simply a magic password.","The full way that empathy, name-recovery and possible combat interlock is deliberately still in development; do not assume a guaranteed redemption result."],"Mereth remembrance and Saelun human connection meet at the arc's climax.")],
+      [link("npcs","entity_alcatraz","Manifestation"),link("villains","villain_entity_alcatraz","Possible final opponent"),link("lore","arc3_keeper_history","True-name mystery")],"Developing");
+
+    // Remember the update in local dashboard state. Retain all user edits / deletions.
+    data._arc3CanonVersion=VERSION;
+    if(typeof persist==="function"){try{persist();}catch(err){console.warn("Arc 3 persistence deferred",err);}}
+  }
+  var oldRender=render;
+  render=function(){apply();return oldRender.apply(this,arguments);};
+  apply();
+  render();
+})();
