@@ -765,7 +765,7 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-19-arc3-v1";
+  var VERSION="2026-10-19-arc3-v2";
   var arc="Arc 3 — The Dead Don't Leave";
   var birdieWords=[
     "My grandmother used to tell me that long before this city had a name, there was a spirit who watched over those who passed.",
@@ -906,12 +906,13 @@
 
     upsert("npcs","entity_alcatraz",{
       name:"The Entity of Alcatraz (Corrupted Keeper of Memories)",
+      portrait:"assets/portraits/entity-alcatraz.webp",
       location:alcID,ancestry:"Ancient Fog spirit",age:"Ancient",
       occupation:"Former Keeper of Memories; current supernatural presence within Alcatraz",
-      appearance:"Approved full-body campaign cartoon/graphic-novel design: unnaturally tall, thin, elongated humanoid. Smooth bald featureless porcelain-white head with deep hollow black eye sockets; no nose or mouth. Smooth long white fingers, no claws. Faded/desaturated orange prison jumpsuit with frayed fabric dissolving into spectral wisps. Compact interlocked Kethil insignia at left chest represents 'Nor nam mal' ('forgotten through binding, and forgotten'); it subtly darkens/glows when activated. Stands perfectly upright and unnaturally still; walks when calm, levitates as anger rises. Standard dark-navy background with electric-cyan geometric triangles. The approved portrait exists in this campaign conversation but has not yet been uploaded as a GitHub asset.",
+      appearance:"Approved full-body campaign cartoon/graphic-novel design: unnaturally tall, thin, elongated humanoid. Smooth bald featureless porcelain-white head with deep hollow black eye sockets; no nose or mouth. Smooth long white fingers, no claws. Faded/desaturated orange prison jumpsuit with frayed fabric dissolving into spectral wisps. Compact interlocked Kethil insignia at left chest represents 'Nor nam mal' ('forgotten through binding, and forgotten'); it subtly darkens/glows when activated. Stands perfectly upright and unnaturally still; walks when calm, levitates as anger rises. Standard dark-navy background with electric-cyan geometric triangles. Approved portrait file: assets/portraits/entity-alcatraz.webp.",
       personality:"Ancient, intelligent, articulate and observant; initially confused and curious after the sisters remember one another, then skeptical, angry and increasingly aggressive when shown human compassion.",
       summary:"A once-revered pre-prison Keeper of Memories whose own name and role were lost when generations of prisoner suffering warped it into a taker of identity.",
-      secret:"DM ONLY: Originally cared for the memories of the departed journeying west; the original Fog community knew its actual First Tongue name, now forgotten. It steals living visitors' memories and keeps the Forgotten on Alcatraz. It becomes physically visible AFTER the party finds both missing sisters and helps restore their memories through the Kindred bracelet, stories of the inventor/husband and their shared history. Initially curious and confused, the entity then challenges the party's belief in compassion, recounts prison cruelty and grows hostile and aggressive. Players may fight it or recover its original name and demonstrate genuine remembrance and compassion; the exact final mechanism is still DEVELOPING, not a guaranteed one-word instant solution. The current approved portrait must be added separately to assets/portraits when its binary is available in GitHub.",
+      secret:"DM ONLY: Originally cared for the memories of the departed journeying west; the original Fog community knew its actual First Tongue name, now forgotten. It steals living visitors' memories and keeps the Forgotten on Alcatraz. It becomes physically visible AFTER the party finds both missing sisters and helps restore their memories through the Kindred bracelet, stories of the inventor/husband and their shared history. Initially curious and confused, the entity then challenges the party's belief in compassion, recounts prison cruelty and grows hostile and aggressive. Players may fight it or recover its original name and demonstrate genuine remembrance and compassion; the exact final mechanism is still DEVELOPING, not a guaranteed one-word instant solution. Official NPC portrait uses assets/portraits/entity-alcatraz.webp.",
       status:"Canon",
       connections:[link("lore","arc3_keeper_history","Original purpose"),link("lore","arc3_first_tongue","Forgotten name and chest script"),link("threads","arc3_sisters_keeper","Manifestation")]
     });
