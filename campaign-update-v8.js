@@ -1020,3 +1020,78 @@
   apply();
   render();
 })();
+
+
+/* Repository-backed multi-editor synchronization */
+(function(){
+  // Explicit repository synchronization; local browser save remains unchanged.
+  if(typeof data==="undefined"||typeof render!=="function"||window.__rflSyncInit)return;
+  window.__rflSyncInit=true;
+  const kinds=["districts","locations","npcs","villains","lore","threads"];
+  const key="rfl_sync_api_url", sessionKey="rfl_sync_session";
+  let sha=null;
+  const params=new URLSearchParams(location.hash.slice(1));
+  if(params.has("rfl_sync_session")){
+    sessionStorage.setItem(sessionKey,params.get("rfl_sync_session"));
+    history.replaceState(null,"",location.pathname+location.search);
+  }
+  const bar=document.createElement("section");
+  bar.id="rflGithubSyncBar";
+  bar.style.cssText="position:fixed;bottom:12px;right:12px;z-index:9996;background:#121d2c;border:1px solid #65829b;color:white;padding:12px;border-radius:12px;box-shadow:0 8px 30px #0009;max-width:min(390px,calc(100vw - 24px));font:13px system-ui";
+  bar.innerHTML='<strong>Repository Sync</strong><div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0"><button type="button" data-sync="connect">Configure / Sign in</button><button type="button" data-sync="load">Load</button><button type="button" data-sync="save">Save to GitHub</button><button type="button" data-sync="logout">Sign out</button></div><small id="rflSyncStatus" role="status">Browser edits are not yet synced.</small>';
+  document.body.appendChild(bar);
+  const status=message=>{bar.querySelector("#rflSyncStatus").textContent=message};
+  const token=()=>sessionStorage.getItem(sessionKey)||"";
+  const endpoint=()=>localStorage.getItem(key)||"";
+  async function call(path,method="GET",body){
+    if(!endpoint())throw Error("Configure the Worker URL first.");
+    if(!token())throw Error("Sign in with GitHub first.");
+    const response=await fetch(endpoint()+path,{method,headers:{"authorization":"Bearer "+token(),"content-type":"application/json"},body:body===undefined?undefined:JSON.stringify(body)});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok)throw Error(result.error||"Request failed ("+response.status+")");
+    return result;
+  }
+  function snapshot(){
+    const out={schema:1,updatedAt:new Date().toISOString(),collections:{},_editorOverrides:data._editorOverrides||{},_editorDeletes:data._editorDeletes||[]};
+    kinds.forEach(k=>{out.collections[k]=Array.isArray(data[k])?data[k]:[]});
+    return out;
+  }
+  async function load(){
+    const remote=await call("/api/state");
+    if(!remote.data){sha=null;status("No shared state exists yet. Save to create it.");return;}
+    if(!remote.data.collections||remote.data.schema!==1)throw Error("Unsupported repository state format");
+    if(!confirm("Replace current browser campaign entries with the repository version? Export a JSON backup first if you have local edits."))return;
+    kinds.forEach(k=>{if(Array.isArray(remote.data.collections[k]))data[k]=remote.data.collections[k]});
+    data._editorOverrides=remote.data._editorOverrides||{};
+    data._editorDeletes=remote.data._editorDeletes||[];
+    sha=remote.sha;
+    persist();render();
+    status("Loaded shared campaign state. Version "+sha.slice(0,8));
+  }
+  async function save(){
+    if(!confirm("Save all current dashboard entries to the shared GitHub repository? Other authorized editors will see them when they load."))return;
+    const result=await call("/api/state","PUT",{sha,data:snapshot()});
+    sha=result.sha;
+    status("Saved to GitHub. Commit recorded.");
+  }
+  bar.addEventListener("click",async e=>{
+    const action=e.target.closest("[data-sync]")?.dataset.sync;
+    if(!action)return;
+    try{
+      if(action==="connect"){
+        const api=prompt("Cloudflare Worker URL (https://...workers.dev)",endpoint());
+        if(api===null)return;
+        const url=new URL(api.trim());
+        if(url.protocol!=="https:")throw Error("Worker URL must use HTTPS");
+        localStorage.setItem(key,url.origin);
+        location.href=url.origin+"/auth/start";
+        return;
+      }
+      if(action==="logout"){
+        try{if(token())await call("/api/logout","PUT",{});}finally{sessionStorage.removeItem(sessionKey);sha=null;status("Signed out of repository sync.");}
+      }else if(action==="load")await load();
+      else if(action==="save")await save();
+    }catch(err){status("Sync error: "+err.message);alert("Repository Sync: "+err.message)}
+  });
+  if(token()&&endpoint())call("/api/me").then(x=>status("Signed in as @"+x.login+". Use Load to access shared data.")).catch(e=>status("Sync sign-in expired: "+e.message));
+})();
