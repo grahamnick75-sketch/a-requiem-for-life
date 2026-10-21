@@ -600,7 +600,7 @@
       if(!api||!token){image.alt="Sign in to Repository Sync to view portrait";return;}
       try{
         const response=await fetch(api+"/api/portraits/"+encodeURIComponent(id),{headers:{Authorization:"Bearer "+token}});
-        if(!response.ok)throw Error("Could not load portrait");
+        if(response.status===404){image.remove();return;} if(!response.ok)throw Error("Could not load portrait");
         const payload=await response.json();
         if(!/^[A-Za-z0-9+/]+={0,2}$/.test(payload.content)||payload.content.length>1024000)throw Error("Invalid portrait");
         image.src="data:image/webp;base64,"+payload.content;
@@ -623,7 +623,7 @@
         return state.sort==="new"?bv-av:av-bv;
       });
       count.textContent=rows.length+" of "+(data[kind]||[]).length+" records";
-      list.innerHTML=rows.length?rows.map(x=>'<button class="rfl-dir-row" data-v8-go="'+esc(kind+":"+x.id)+'">'+(rflPortrait(kind,x)?'<img class="rfl-dir-thumb" src="'+esc(rflPortrait(kind,x))+'" alt="" loading="lazy"/>':(/^repo:portraits\/npcs\/[a-z0-9_-]+\.webp$/.test(x.portrait||"")?'<img class="rfl-dir-thumb" data-rfl-private-portrait="'+esc(x.portrait.slice("repo:portraits/npcs/".length,-5))+'" alt="" loading="lazy"/>':''))+'<span>'+esc(x.name)+'</span><small>'+esc(kind==="locations"?(data.districts.find(d=>d.id===x.district)?.name||"Location"):fallbackStatus(x))+'</small><span aria-hidden="true">›</span></button>').join(""):'<p class="v8-muted">No matching records.</p>';
+      list.innerHTML=rows.length?rows.map(x=>'<button class="rfl-dir-row" data-v8-go="'+esc(kind+":"+x.id)+'">'+(rflPortrait(kind,x)?'<img class="rfl-dir-thumb" src="'+esc(rflPortrait(kind,x))+'" alt="" loading="lazy"/>':(kind==="npcs" && (/^repo:portraits\/npcs\/[a-z0-9_-]+\.webp$/.test(x.portrait||"") || (!x.portrait && /^[a-z0-9_-]{1,64}$/.test(x.id)))?'<img class="rfl-dir-thumb" data-rfl-private-portrait="'+esc(x.id)+'" alt="" loading="lazy"/>':''))+'<span>'+esc(x.name)+'</span><small>'+esc(kind==="locations"?(data.districts.find(d=>d.id===x.district)?.name||"Location"):fallbackStatus(x))+'</small><span aria-hidden="true">›</span></button>').join(""):'<p class="v8-muted">No matching records.</p>';
       loadPrivatePortraits(list);
       list.querySelectorAll("[data-v8-go]").forEach(el=>el.onclick=()=>{const bits=el.dataset.v8Go.split(":");go(bits[0],bits.slice(1).join(":"));});
     }
