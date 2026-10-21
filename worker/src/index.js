@@ -87,6 +87,43 @@ export default {
       await env.SESSIONS.delete("session:"+request.headers.get("authorization").slice(7));
       return reply({ok:true});
     }
+    // Private NPC portraits. The client converts images to WebP before upload.
+    // IDs are strictly limited to safe slugs; image reads require an approved DM login.
+    const portraitMatch=url.pathname.match(/^\/api\/portraits\/([a-z0-9][a-z0-9_-]{0,63})$/);
+    if(portraitMatch&&["GET","PUT"].includes(request.method)) {
+      const npcId=portraitMatch[1];
+      const path="portraits/npcs/"+npcId+".webp";
+      const endpoint="/repos/"+env.REPO+"/contents/"+path;
+      if(request.method==="GET"){
+        const found=await gh(endpoint,editor.token);
+        if(found.status===404)return reply({error:"Portrait not found"},404);
+        if(!found.ok)return reply({error:"Portrait retrieval failed"},502);
+        const file=await found.json();
+        if(file.encoding!=="base64"||!file.content)return reply({error:"Unexpected image response"},502);
+        return reply({id:npcId,sha:file.sha,content:file.content.replace(/\s/g,""),mime:"image/webp"});
+      }
+      // Maximum encoded body is ~1 MB, representing <= 750 KiB WebP.
+      if(Number(request.headers.get("content-length")||0)>1050000)return reply({error:"Portrait too large"},413);
+      const raw=await request.text();
+      if(raw.length>1050000)return reply({error:"Portrait too large"},413);
+      let input;try{input=JSON.parse(raw);}catch{return reply({error:"Invalid portrait JSON"},400);}
+      if(typeof input?.content!=="string"||!/^[A-Za-z0-9+/]+={0,2}$/.test(input.content)
+          ||input.content.length>1024000)return reply({error:"Expected compressed WebP base64"},400);
+      let binary;try{binary=atob(input.content);}catch{return reply({error:"Invalid base64"},400);}
+      if(binary.length>768000||binary.length<20)return reply({error:"Portrait must be under 750 KiB"},413);
+      if(binary.slice(0,4)!=="RIFF"||binary.slice(8,12)!=="WEBP")
+        return reply({error:"Portrait must be a valid WebP container"},415);
+      const existing=await gh(endpoint,editor.token);
+      if(![200,404].includes(existing.status))return reply({error:"Cannot read existing portrait"},502);
+      const current=existing.status===200?(await existing.json()).sha:null;
+      if((input.sha??null)!==current)return reply({error:"Portrait changed since you loaded it; reload before replacing.",currentSha:current},409);
+      const commit={message:"Save NPC portrait "+npcId+" by @"+editor.login,content:input.content};
+      if(current)commit.sha=current;
+      const stored=await gh(endpoint,editor.token,{method:"PUT",headers:{"content-type":"application/json"},body:JSON.stringify(commit)});
+      if(!stored.ok)return reply({error:"Portrait commit failed",status:stored.status},stored.status===409?409:502);
+      const saved=await stored.json();
+      return reply({id:npcId,sha:saved.content.sha,portrait:"repo:portraits/npcs/"+npcId+".webp",commit:saved.commit.html_url});
+    }
     if(url.pathname==="/api/state"&&["GET","PUT"].includes(request.method)) {
       const path=env.STATE_PATH||"private-data/editor-state.json";
       const endpoint="/repos/"+env.REPO+"/contents/"+path.split("/").map(encodeURIComponent).join("/");
