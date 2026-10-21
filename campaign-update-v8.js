@@ -437,56 +437,68 @@
         upload.title="Save this NPC first, then reopen it to upload artwork.";
         status.textContent="First click Save entry to create the NPC, then reopen Edit NPC Profile to upload artwork.";
       }else status.textContent="Select artwork and upload. Then Save to GitHub to sync the NPC portrait reference.";
-      upload.onclick=async()=>{
-        if(!record){status.textContent="Save the new NPC first, then reopen the editor.";return;}
-        if(!fileInput.files[0]||!bitmap){status.textContent="Choose a valid image before uploading.";return;}
+      upload.style.display="none";
+      status.textContent="Choose an optional portrait, then click Save NPC to save both artwork and character.";
+      async function uploadSelectedPortrait(saved){
+        if(!fileInput.files.length)return saved.portrait||"";
+        if(!bitmap)throw Error("The image preview is not ready.");
         const api=localStorage.getItem("rfl_sync_api_url"),token=sessionStorage.getItem("rfl_sync_session");
-        if(!api||!token){status.textContent="Sign in via Repository Sync first.";return;}
-        upload.disabled=true;
-        status.textContent="Compressing portrait...";
-        try{
-          let blob=null;
-          for(const quality of [0.84,0.75,0.65,0.52]){
-            blob=await new Promise(resolve=>cropCanvas.toBlob(resolve,"image/webp",quality));
-            if(blob&&blob.size<=750*1024)break;
-          }
-          if(!blob||blob.type!=="image/webp"||blob.size>750*1024)throw Error("Portrait remains too large; choose a simpler image.");
-          const endpoint=api+"/api/portraits/"+encodeURIComponent(record.id);
-          const headers={Authorization:"Bearer "+token};
-          status.textContent="Checking existing portrait...";
-          const existing=await fetch(endpoint,{headers});
-          let sha=null;
-          if(existing.ok){sha=(await existing.json()).sha;}
-          else if(existing.status!==404)throw Error("Unable to check existing portrait (HTTP "+existing.status+")");
-          const base64=await new Promise((resolve,reject)=>{
-            const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=()=>reject(Error("Could not read compressed image"));reader.readAsDataURL(blob);
-          });
-          status.textContent="Uploading "+Math.round(blob.size/1024)+" KiB to private GitHub...";
-          const response=await fetch(endpoint,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({sha,content:base64})});
-          const saved=await response.json().catch(()=>({}));
-          if(!response.ok)throw Error(saved.error||"Upload failed (HTTP "+response.status+")");
-          record.portrait=saved.portrait;
-          remember("npcs",record,{portrait:record.portrait});
-          status.textContent="✓ Portrait uploaded and committed to private GitHub. Next click Save to GitHub in Repository Sync to sync the NPC record.";
-        }catch(error){status.textContent="Upload failed: "+error.message;}
-        finally{upload.disabled=false;}
-      };
+        if(!api||!token)throw Error("Sign into Repository Sync first.");
+        status.textContent="Compressing image...";
+        let blob;
+        for(const quality of [0.84,0.75,0.65,0.52]){
+          blob=await new Promise(resolve=>cropCanvas.toBlob(resolve,"image/webp",quality));
+          if(blob&&blob.size<=750*1024)break;
+        }
+        if(!blob||blob.type!=="image/webp"||blob.size>750*1024)throw Error("Portrait is too large even after compression.");
+        const endpoint=api+"/api/portraits/"+encodeURIComponent(saved.id);
+        status.textContent="Checking existing portrait...";
+        const headers={Authorization:"Bearer "+token};
+        const prior=await fetch(endpoint,{headers});
+        if(prior.status!==404&&!prior.ok)throw Error("Portrait lookup failed (HTTP "+prior.status+")");
+        const sha=prior.ok?(await prior.json()).sha:null;
+        const base64=await new Promise((resolve,reject)=>{
+          const reader=new FileReader();
+          reader.onload=()=>resolve(String(reader.result).split(",")[1]);
+          reader.onerror=()=>reject(Error("Cannot read image"));
+          reader.readAsDataURL(blob);
+        });
+        status.textContent="Uploading portrait...";
+        const response=await fetch(endpoint,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({sha,content:base64})});
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok)throw Error(result.error||"Upload failed (HTTP "+response.status+")");
+        return result.portrait;
+      }
     }
-    document.getElementById("v8EntryForm").onsubmit=e=>{
+    document.getElementById("v8EntryForm").onsubmit=async e=>{
       e.preventDefault();
-      const form=e.currentTarget;const patch={};
+      const form=e.currentTarget,patch={};
       for(const f of fieldsFor(kind))patch[f[0]]=form.elements.namedItem(f[0]).value.trim();
       if(kind==="npcs")patch.additionalLocations=Array.from(form.querySelector("#rflNpcAdditional").selectedOptions).map(o=>o.value).filter(id=>id!==patch.location);
       if(!patch.name){alert("Please provide a name.");return;}
+      const button=form.querySelector('button[type="submit"]');
+      button.disabled=true;button.textContent="Saving...";
       const saved=record||{id:newId(kind,patch.name)};
-      Object.assign(saved,patch);
-      if(!record)data[kind].push(saved);
-      remember(kind,saved,patch);
-      if(source){
-        const session=data.sessions.find(x=>x.id===source.id);
-        if(session){session.promoted=session.promoted||[];session.promoted.push({type:kind,id:saved.id});save();}
-      }
-      closeModal();go(kind,saved.id);
+      try{
+        if(kind==="npcs"&&form.querySelector("#rflPortraitUpload").files.length)patch.portrait=await uploadSelectedPortrait(saved);
+        Object.assign(saved,patch);
+        if(!record)data[kind].push(saved);
+        remember(kind,saved,patch);
+        if(source){
+          const session=data.sessions.find(x=>x.id===source.id);
+          if(session){session.promoted=session.promoted||[];session.promoted.push({type:kind,id:saved.id});save();}
+        }
+        if(kind==="npcs"){
+          form.querySelector("#rflPortraitStatus").textContent="Saving NPC details to GitHub...";
+          if(typeof window.rflSaveNpcToRepository!=="function")throw Error("Repository Sync unavailable. NPC saved locally.");
+          await window.rflSaveNpcToRepository();
+        }
+        closeModal();go(kind,saved.id);
+      }catch(error){
+        const status=form.querySelector("#rflPortraitStatus");
+        if(status)status.textContent="Save incomplete: "+error.message+" Local changes are preserved.";
+        else alert(error.message);
+      }finally{button.disabled=false;button.textContent=kind==="npcs"?"Save NPC":"Save entry";}
     };
   }
   function choosePromotion(sessionId){
@@ -1174,6 +1186,14 @@
     sha=result.sha;
     status("Saved to GitHub. Commit recorded.");
   }
+  window.rflSaveNpcToRepository=async()=>{
+    if(!token())throw Error("Sign in to Repository Sync first.");
+    if(!sha)throw Error("Click Load in Repository Sync before saving NPCs to avoid overwriting newer changes.");
+    const result=await call("/api/state","PUT",{sha,data:snapshot()});
+    sha=result.sha;
+    status("Saved NPC to GitHub. Version "+sha.slice(0,8));
+    return result;
+  };
   bar.addEventListener("click",async e=>{
     const action=e.target.closest("[data-sync]")?.dataset.sync;
     if(!action)return;
