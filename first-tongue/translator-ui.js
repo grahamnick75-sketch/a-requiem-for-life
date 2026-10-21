@@ -25,6 +25,7 @@
    <button type="button" data-example="Remember who you are.">Remember who you are.</button>
    <button type="button" data-example="I will remember you.">I will remember you.</button>
    <button type="button" data-example="Open the gate!">Open the gate!</button>
+   <button type="button" data-example="I will remember you.&#10;You will remember me.&#10;And when I move on.&#10;Hold my memory gently.">Birdie’s lullaby (four lines)</button>
    <button type="button" data-example="The fog protects the city.">Missing-vocabulary example</button>
   </div>
   <div class="ftm-result" id="ftm-result" aria-live="polite">
