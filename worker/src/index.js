@@ -100,7 +100,7 @@ export default {
         if(!found.ok)return reply({error:"Portrait retrieval failed"},502);
         const file=await found.json();
         if(file.encoding!=="base64"||!file.content)return reply({error:"Unexpected image response"},502);
-        return reply({id:npcId,sha:file.sha,content:file.content.replace(/\\s/g,""),mime:"image/webp"});
+        return reply({id:npcId,sha:file.sha,content:file.content.replace(/\s/g,""),mime:"image/webp"});
       }
       // Maximum encoded body is ~1 MB, representing <= 750 KiB WebP.
       if(Number(request.headers.get("content-length")||0)>1050000)return reply({error:"Portrait too large"},413);
