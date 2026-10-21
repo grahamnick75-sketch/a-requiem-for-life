@@ -57,7 +57,7 @@
     handouts:"first-tongue/inscription-handouts.html"
   };
   const v=[
-    {id:"maker",title:"Kethil Inscription Maker",sub:"Live SVG engravings, searchable 133-word dictionary, original glyphs.",dm:true},
+    {id:"maker",title:"Kethil Inscription Maker",sub:"Live SVG engravings, searchable 135-word dictionary, original glyphs.",dm:true},
     {id:"gm",title:"Conservatory GM Reference",sub:"16 folios: complete language, lore, grammar and puzzle solutions.",dm:true},
     {id:"player",title:"Player Language Primer",sub:"Spoiler-safe introduction, pronunciation, names, and letter forms.",dm:false},
     {id:"handouts",title:"Printable Inscription Handouts",sub:"Five Kethil-encoded clues with spaces for player notes.",dm:false}
