@@ -313,6 +313,10 @@
   }
   function rflPortraitCard(kind,item){
     const src=rflPortrait(kind,item);
+    if(!src && item && /^repo:portraits\\/npcs\\/[a-z0-9_-]+\\.webp$/.test(item.portrait||"")){
+      const id=item.portrait.slice("repo:portraits/npcs/".length,-5);
+      return '<div class="rfl-portrait"><img data-rfl-private-portrait="'+esc(id)+'" alt="Private portrait for '+esc(item.name)+'" loading="lazy" /></div>';
+    }
     if(!src)return "";
     if((item.name||"").toLowerCase()==="luma"){
       const variants=[
@@ -799,6 +803,18 @@
       const top=app.querySelector(".panel.dmOnly");
       if(top&&!top.querySelector("#rflJournalGuidance")){const p=document.createElement("p");p.id="rflJournalGuidance";p.className="v8-muted";p.textContent="Session notes are a historical record. To turn improvised people or places into permanent records, use Promote to Canon on a saved session; nothing is generated automatically.";top.insertBefore(p,top.firstChild);}
     }
+    app.querySelectorAll("img[data-rfl-private-portrait]").forEach(async image=>{
+      const id=image.dataset.rflPrivatePortrait;
+      const api=localStorage.getItem("rfl_sync_api_url"),token=sessionStorage.getItem("rfl_sync_session");
+      if(!api||!token){image.alt="Sign in to Repository Sync to view portrait";return;}
+      try{
+        const response=await fetch(api+"/api/portraits/"+encodeURIComponent(id),{headers:{Authorization:"Bearer "+token}});
+        if(!response.ok)throw Error("Could not load portrait");
+        const payload=await response.json();
+        if(!/^[A-Za-z0-9+/]+={0,2}$/.test(payload.content)||payload.content.length>1024000)throw Error("Invalid portrait");
+        image.src="data:image/webp;base64,"+payload.content;
+      }catch(error){image.alt="Private portrait unavailable: "+error.message;}
+    });
     app.querySelectorAll("[data-v8-create]").forEach(e=>e.onclick=()=>editRecord(e.dataset.v8Create,null));
     app.querySelectorAll("[data-v8-edit]").forEach(e=>e.onclick=()=>{const [k,...id]=e.dataset.v8Edit.split(":");editRecord(k,id.join(":"))});
     app.querySelectorAll("[data-v8-delete]").forEach(e=>e.onclick=()=>{const [k,...id]=e.dataset.v8Delete.split(":");removeRecord(k,id.join(":"))});
