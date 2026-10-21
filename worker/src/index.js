@@ -3,7 +3,7 @@
 const json = (v,status=200,headers={}) => new Response(JSON.stringify(v),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...headers}});
 const random = () => crypto.randomUUID()+crypto.randomUUID();
 const allowed = (login,env) => (env.EDITORS||"").split(",").map(x=>x.trim().toLowerCase()).filter(Boolean).includes(login.toLowerCase());
-const ghHeaders = token => ({"authorization":"Bearer "+token,"accept":"application/vnd.github+json","x-github-api-version":"2022-11-28"});
+const ghHeaders = token => ({"user-agent":"RequiemForLife-DM-Sync","authorization":"Bearer "+token,"accept":"application/vnd.github+json","x-github-api-version":"2022-11-28"});
 const fail = (message,status=400)=>json({error:message},status);
 async function gh(url,token,options={}) {
   return fetch("https://api.github.com"+url,{...options,headers:{...ghHeaders(token),...(options.headers||{})}});
