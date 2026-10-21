@@ -593,6 +593,20 @@
       (kind==="npcs"?'<label>Neighborhood <select id="rflNpcNeighborhood"><option value="">All neighborhoods</option><option value="__unassigned__">Unassigned</option>'+npcNeighborhoods().map(d=>'<option value="'+esc(d.id)+'"'+(state.neighborhood===d.id?' selected':'')+'>'+esc(d.name)+'</option>').join("")+'</select></label>':"")+'<button class="action rfl-clear-filter" id="rflDirClear">Clear</button></div>'+
       '<div class="rfl-dir-count" id="rflDirCount"></div><div class="rfl-dir-list" id="rflDirList"></div></div>';
   }
+  function loadPrivatePortraits(root){
+    root.querySelectorAll("img[data-rfl-private-portrait]").forEach(async image=>{
+      const id=image.dataset.rflPrivatePortrait;
+      const api=localStorage.getItem("rfl_sync_api_url"),token=sessionStorage.getItem("rfl_sync_session");
+      if(!api||!token){image.alt="Sign in to Repository Sync to view portrait";return;}
+      try{
+        const response=await fetch(api+"/api/portraits/"+encodeURIComponent(id),{headers:{Authorization:"Bearer "+token}});
+        if(!response.ok)throw Error("Could not load portrait");
+        const payload=await response.json();
+        if(!/^[A-Za-z0-9+/]+={0,2}$/.test(payload.content)||payload.content.length>1024000)throw Error("Invalid portrait");
+        image.src="data:image/webp;base64,"+payload.content;
+      }catch(error){image.alt="Private portrait unavailable: "+error.message;}
+    });
+  }
   function bindDirectory(kind,app){
     const state=directoryState[kind], input=app.querySelector("#rflDirSearch"),sort=app.querySelector("#rflDirSort"),
       filter=app.querySelector("#rflDirFilter"),list=app.querySelector("#rflDirList"),count=app.querySelector("#rflDirCount");
@@ -609,7 +623,8 @@
         return state.sort==="new"?bv-av:av-bv;
       });
       count.textContent=rows.length+" of "+(data[kind]||[]).length+" records";
-      list.innerHTML=rows.length?rows.map(x=>'<button class="rfl-dir-row" data-v8-go="'+esc(kind+":"+x.id)+'">'+(rflPortrait(kind,x)?'<img class="rfl-dir-thumb" src="'+esc(rflPortrait(kind,x))+'" alt="" loading="lazy"/>':'')+'<span>'+esc(x.name)+'</span><small>'+esc(kind==="locations"?(data.districts.find(d=>d.id===x.district)?.name||"Location"):fallbackStatus(x))+'</small><span aria-hidden="true">›</span></button>').join(""):'<p class="v8-muted">No matching records.</p>';
+      list.innerHTML=rows.length?rows.map(x=>'<button class="rfl-dir-row" data-v8-go="'+esc(kind+":"+x.id)+'">'+(rflPortrait(kind,x)?'<img class="rfl-dir-thumb" src="'+esc(rflPortrait(kind,x))+'" alt="" loading="lazy"/>':(/^repo:portraits\/npcs\/[a-z0-9_-]+\.webp$/.test(x.portrait||"")?'<img class="rfl-dir-thumb" data-rfl-private-portrait="'+esc(x.portrait.slice("repo:portraits/npcs/".length,-5))+'" alt="" loading="lazy"/>':''))+'<span>'+esc(x.name)+'</span><small>'+esc(kind==="locations"?(data.districts.find(d=>d.id===x.district)?.name||"Location"):fallbackStatus(x))+'</small><span aria-hidden="true">›</span></button>').join(""):'<p class="v8-muted">No matching records.</p>';
+      loadPrivatePortraits(list);
       list.querySelectorAll("[data-v8-go]").forEach(el=>el.onclick=()=>{const bits=el.dataset.v8Go.split(":");go(bits[0],bits.slice(1).join(":"));});
     }
     input.oninput=e=>{state.search=e.target.value;paint();};
@@ -822,18 +837,7 @@
       const top=app.querySelector(".panel.dmOnly");
       if(top&&!top.querySelector("#rflJournalGuidance")){const p=document.createElement("p");p.id="rflJournalGuidance";p.className="v8-muted";p.textContent="Session notes are a historical record. To turn improvised people or places into permanent records, use Promote to Canon on a saved session; nothing is generated automatically.";top.insertBefore(p,top.firstChild);}
     }
-    app.querySelectorAll("img[data-rfl-private-portrait]").forEach(async image=>{
-      const id=image.dataset.rflPrivatePortrait;
-      const api=localStorage.getItem("rfl_sync_api_url"),token=sessionStorage.getItem("rfl_sync_session");
-      if(!api||!token){image.alt="Sign in to Repository Sync to view portrait";return;}
-      try{
-        const response=await fetch(api+"/api/portraits/"+encodeURIComponent(id),{headers:{Authorization:"Bearer "+token}});
-        if(!response.ok)throw Error("Could not load portrait");
-        const payload=await response.json();
-        if(!/^[A-Za-z0-9+/]+={0,2}$/.test(payload.content)||payload.content.length>1024000)throw Error("Invalid portrait");
-        image.src="data:image/webp;base64,"+payload.content;
-      }catch(error){image.alt="Private portrait unavailable: "+error.message;}
-    });
+    loadPrivatePortraits(app);
     app.querySelectorAll("[data-v8-create]").forEach(e=>e.onclick=()=>editRecord(e.dataset.v8Create,null));
     app.querySelectorAll("[data-v8-edit]").forEach(e=>e.onclick=()=>{const [k,...id]=e.dataset.v8Edit.split(":");editRecord(k,id.join(":"))});
     app.querySelectorAll("[data-v8-delete]").forEach(e=>e.onclick=()=>{const [k,...id]=e.dataset.v8Delete.split(":");removeRecord(k,id.join(":"))});
