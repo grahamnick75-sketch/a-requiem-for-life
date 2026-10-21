@@ -397,58 +397,74 @@
       const preview=document.getElementById("rflPortraitPreview");
       const status=document.getElementById("rflPortraitStatus");
       const upload=document.getElementById("rflUploadPortrait");
-      let objectUrl=null,loaded=null;
-      const crop=()=>{if(objectUrl){preview.style.objectPosition=document.getElementById("rflCropX").value+"% "+document.getElementById("rflCropY").value+"%";}};
-      document.getElementById("rflCropX").oninput=crop;
-      document.getElementById("rflCropY").oninput=crop;
-      fileInput.onchange=()=>{
-        if(objectUrl)URL.revokeObjectURL(objectUrl);
+      let objectUrl=null;
+      let bitmap=null;
+      const cropCanvas=document.createElement("canvas");
+      cropCanvas.width=cropCanvas.height=1024;
+      preview.replaceWith(cropCanvas);
+      cropCanvas.id="rflPortraitPreview";
+      cropCanvas.style.cssText="display:none;width:180px;height:180px;border-radius:8px;object-fit:contain;max-width:100%";
+      const drawCrop=()=>{
+        if(!bitmap)return;
+        const side=Math.min(bitmap.width,bitmap.height);
+        const fx=Number(document.getElementById("rflCropX").value)/100;
+        const fy=Number(document.getElementById("rflCropY").value)/100;
+        const sx=(bitmap.width-side)*fx,sy=(bitmap.height-side)*fy;
+        cropCanvas.getContext("2d").drawImage(bitmap,sx,sy,side,side,0,0,1024,1024);
+        cropCanvas.style.display="block";
+      };
+      document.getElementById("rflCropX").oninput=drawCrop;
+      document.getElementById("rflCropY").oninput=drawCrop;
+      fileInput.onchange=async()=>{
         const file=fileInput.files[0];
-        if(!file){preview.style.display="none";return;}
+        if(bitmap){bitmap.close();bitmap=null;}
+        cropCanvas.style.display="none";
+        if(!file){status.textContent="Choose an image to preview.";return;}
         if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>8*1024*1024){
           status.textContent="Select a PNG, JPG, or WebP under 8 MB.";fileInput.value="";return;
         }
-        objectUrl=URL.createObjectURL(file);
-        preview.src=objectUrl;preview.style.display="block";crop();
-        status.textContent="Preview ready. Portrait will be cropped to a square.";
+        try{
+          bitmap=await createImageBitmap(file);
+          drawCrop();
+          status.textContent="Preview ready: "+bitmap.width+" × "+bitmap.height+" px. Sliders adjust the exact square crop that will be uploaded.";
+        }catch(error){status.textContent="Could not preview image: "+error.message;}
       };
-      if(!record)upload.disabled=true;
-      else status.textContent="Select artwork and upload. Remember to click Save to GitHub after editing other NPC fields.";
+      if(!record){
+        upload.disabled=true;
+        upload.title="Save this NPC first, then reopen it to upload artwork.";
+        status.textContent="First click Save entry to create the NPC, then reopen Edit NPC Profile to upload artwork.";
+      }else status.textContent="Select artwork and upload. Then Save to GitHub to sync the NPC portrait reference.";
       upload.onclick=async()=>{
-        if(!record||!fileInput.files[0]){status.textContent="Choose a file and save the NPC entry first.";return;}
+        if(!record){status.textContent="Save the new NPC first, then reopen the editor.";return;}
+        if(!fileInput.files[0]||!bitmap){status.textContent="Choose a valid image before uploading.";return;}
         const api=localStorage.getItem("rfl_sync_api_url"),token=sessionStorage.getItem("rfl_sync_session");
         if(!api||!token){status.textContent="Sign in via Repository Sync first.";return;}
         upload.disabled=true;
+        status.textContent="Compressing portrait...";
         try{
-          const img=await createImageBitmap(fileInput.files[0]);
-          const side=Math.min(img.width,img.height),canvas=document.createElement("canvas");
-          canvas.width=canvas.height=1024;
-          const fx=Number(document.getElementById("rflCropX").value)/100;
-          const fy=Number(document.getElementById("rflCropY").value)/100;
-          const sx=(img.width-side)*fx,sy=(img.height-side)*fy;
-          canvas.getContext("2d").drawImage(img,sx,sy,side,side,0,0,1024,1024);
-          img.close();
           let blob=null;
           for(const quality of [0.84,0.75,0.65,0.52]){
-            blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/webp",quality));
+            blob=await new Promise(resolve=>cropCanvas.toBlob(resolve,"image/webp",quality));
             if(blob&&blob.size<=750*1024)break;
           }
           if(!blob||blob.type!=="image/webp"||blob.size>750*1024)throw Error("Portrait remains too large; choose a simpler image.");
           const endpoint=api+"/api/portraits/"+encodeURIComponent(record.id);
           const headers={Authorization:"Bearer "+token};
+          status.textContent="Checking existing portrait...";
           const existing=await fetch(endpoint,{headers});
           let sha=null;
           if(existing.ok){sha=(await existing.json()).sha;}
-          else if(existing.status!==404)throw Error("Unable to check existing portrait ("+existing.status+")");
+          else if(existing.status!==404)throw Error("Unable to check existing portrait (HTTP "+existing.status+")");
           const base64=await new Promise((resolve,reject)=>{
             const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=()=>reject(Error("Could not read compressed image"));reader.readAsDataURL(blob);
           });
+          status.textContent="Uploading "+Math.round(blob.size/1024)+" KiB to private GitHub...";
           const response=await fetch(endpoint,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({sha,content:base64})});
-          const saved=await response.json();
-          if(!response.ok)throw Error(saved.error||"Upload failed");
+          const saved=await response.json().catch(()=>({}));
+          if(!response.ok)throw Error(saved.error||"Upload failed (HTTP "+response.status+")");
           record.portrait=saved.portrait;
           remember("npcs",record,{portrait:record.portrait});
-          status.textContent="Portrait uploaded to private GitHub! Click Save to GitHub in Repository Sync to sync the NPC reference.";
+          status.textContent="✓ Portrait uploaded and committed to private GitHub. Next click Save to GitHub in Repository Sync to sync the NPC record.";
         }catch(error){status.textContent="Upload failed: "+error.message;}
         finally{upload.disabled=false;}
       };
