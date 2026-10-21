@@ -313,7 +313,7 @@
   }
   function rflPortraitCard(kind,item){
     const src=rflPortrait(kind,item);
-    if(!src && item && /^repo:portraits\\/npcs\\/[a-z0-9_-]+\\.webp$/.test(item.portrait||"")){
+    if(!src && item && /^repo:portraits\/npcs\/[a-z0-9_-]+\.webp$/.test(item.portrait||"")){
       const id=item.portrait.slice("repo:portraits/npcs/".length,-5);
       return '<div class="rfl-portrait"><img data-rfl-private-portrait="'+esc(id)+'" alt="Private portrait for '+esc(item.name)+'" loading="lazy" /></div>';
     }
