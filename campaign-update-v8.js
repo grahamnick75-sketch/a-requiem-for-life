@@ -392,6 +392,7 @@
     if(source&&!record)draft.secret="Source — "+source.title+" ("+(source.date||"undated")+"):\n"+source.text;
     const title=(record?"Edit ":"Create ")+kind.replace(/^./,x=>x.toUpperCase()).replace(/s$/,"");
     modal('<div class="oneline"><h2>'+esc(title)+'</h2></div><p class="v8-muted">Structured entries save to this browser and are included in JSON backups. Existing personal notes are preserved.</p><form id="v8EntryForm"><div class="v8-editorfields">'+fieldsFor(kind).map(f=>fieldHtml(f,draft[f[0]])).join("")+(kind==="npcs"?'<div class="field wide"><label>Additional locations (Ctrl/Cmd-click for multiple)</label><select id="rflNpcAdditional" multiple size="7">'+data.locations.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(l=>'<option value="'+esc(l.id)+'"'+(Array.isArray(draft.additionalLocations)&&draft.additionalLocations.includes(l.id)?' selected':'')+'>'+esc(l.name)+'</option>').join("")+'</select></div>':"")+(kind==="npcs"?'<section class="field wide" style="border:1px solid #546575;padding:12px;border-radius:9px"><label>NPC portrait (private GitHub)</label><input id="rflPortraitUpload" type="file" accept="image/png,image/jpeg,image/webp" /><div style="margin:8px 0;display:flex;gap:10px;align-items:center"><img id="rflPortraitPreview" alt="Portrait preview" style="display:none;width:130px;height:130px;object-fit:cover;border-radius:8px" /><div><label for="rflCropX">Horizontal framing</label><input id="rflCropX" type="range" min="0" max="100" value="50" /><label for="rflCropY">Vertical framing</label><input id="rflCropY" type="range" min="0" max="100" value="50" /><label for="rflCropZoom">Zoom</label><input id="rflCropZoom" type="range" min="100" max="250" value="125" /><span id="rflCropHint" style="display:block;font-size:12px;color:#bfd2de">125% zoom</span></div></div><button type="button" class="action" id="rflUploadPortrait">Upload portrait to private GitHub</button><p id="rflPortraitStatus" class="v8-muted">Save new NPC first, then reopen it to upload a portrait.</p></section>':"")+'</div><div class="v8-actions"><button type="submit" class="action">Save entry</button><button type="button" class="action" data-v8-cancel>Cancel</button></div></form>');
+    let uploadSelectedPortrait=async()=>"";
     if(kind==="npcs"){
       const fileInput=document.getElementById("rflPortraitUpload");
       const preview=document.getElementById("rflPortraitPreview");
@@ -439,7 +440,7 @@
       }else status.textContent="Select artwork and upload. Then Save to GitHub to sync the NPC portrait reference.";
       upload.style.display="none";
       status.textContent="Choose an optional portrait, then click Save NPC to save both artwork and character.";
-      async function uploadSelectedPortrait(saved){
+      uploadSelectedPortrait=async function(saved){
         if(!fileInput.files.length)return saved.portrait||"";
         if(!bitmap)throw Error("The image preview is not ready.");
         const api=localStorage.getItem("rfl_sync_api_url"),token=sessionStorage.getItem("rfl_sync_session");
@@ -480,7 +481,11 @@
       button.disabled=true;button.textContent="Saving...";
       const saved=record||{id:newId(kind,patch.name)};
       try{
-        if(kind==="npcs"&&form.querySelector("#rflPortraitUpload").files.length)patch.portrait=await uploadSelectedPortrait(saved);
+        if(kind==="npcs"){
+          if(typeof window.rflCanSaveNpc!=="function")throw Error("Repository Sync unavailable.");
+          window.rflCanSaveNpc();
+          if(form.querySelector("#rflPortraitUpload").files.length)patch.portrait=await uploadSelectedPortrait(saved);
+        }
         Object.assign(saved,patch);
         if(!record)data[kind].push(saved);
         remember(kind,saved,patch);
@@ -1186,6 +1191,10 @@
     sha=result.sha;
     status("Saved to GitHub. Commit recorded.");
   }
+  window.rflCanSaveNpc=()=>{
+    if(!token())throw Error("Sign in to Repository Sync first.");
+    if(!sha)throw Error("Click Load in Repository Sync before saving NPCs to avoid overwriting newer changes.");
+  };
   window.rflSaveNpcToRepository=async()=>{
     if(!token())throw Error("Sign in to Repository Sync first.");
     if(!sha)throw Error("Click Load in Repository Sync before saving NPCs to avoid overwriting newer changes.");
