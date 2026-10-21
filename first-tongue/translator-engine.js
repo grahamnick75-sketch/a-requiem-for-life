@@ -12,8 +12,8 @@ install(nouns,[
 ['nara','fog|mist'],['sir','sea|ocean'],['thul','tide'],['hal','land|earth|ground'],['kar','stone|rock'],['sil','wind|air'],['oru','dawn|sunrise|first light'],['thei','shade|shadow'],['sela','star'],['vere','rain'],['mara','tree'],['shul','wave'],['darel','shore|coast'],['telu','hearth'],['vahar','home|dwelling|house'],['den','gate|door|opening'],['merir','archive|memorial repository'],['vaeir','crossing place'],['saeir','meeting place'],['ithir','workshop'],['kethil','writing|inscription'],
 ['ari','beginning'],['lem','now'],['sere','afterward'],['taren','ancestor'],['tir','night'],['ele','day'],['neth','death'],['meren','memory'],['ethen','endurance'],['oren','question'],['vaeen','crossing'],['drinen','becoming'],['esha-en','self-expression'],['nor','forgetfulness'],['il','line|trail|stroke'],['nul','zero'],['lin','one'],['dus','two'],['vos','three'],['kel','four'],['thal','five'],['ithen','invention'],['ithel','inventor|maker'],['merel','witness'],['eshael','singer|speaker'],['orel','seeker|investigator'],['ser','system|structure|arrangement'],['serith','machine|mechanism|apparatus'],['rath','energy|force'],['tash','path|route|road'],['varil','footprint|trace']
 ]);
-install(verbs,[['esha','sing|speak|express'],['ra','rise|resist|rebel'],['or','seek|search|ask|look for'],['ith','make|create|craft|engineer|invent'],['lun','hold|shelter|sustain'],['mer','remember|recall'],['eth','endure|last'],['vae','cross|travel|pass'],['drin','become|transform'],['ena','live|breathe'],['lir','love|cherish'],['selu','trust|entrust'],['haren','show mercy'],['kir','hurt|wound'],['hei','hope'],['tar','promise|pledge'],['ven','see|witness'],['mas','hear|listen'],['len','understand|learn|know'],['vel','vanish|disappear'],['dur','erase|remove'],['keth','write|inscribe'],['riv','read|decipher'],['kal','open'],['dak','close|lock|seal'],['dar','give|offer'],['vak','take|carry'],['nam','share'],['ther','bind|restrain'],['ham','protect|defend|save'],['nira','walk'],['mal','change|alter'],['mar','build|assemble'],['ner','stand|remain|stay'],['siv','return|come back'],['las','touch'],['rav','shout|call out'],['veth','fear']]);
-install(qualities,[['nar','alone|lonely'],['nor','forgotten|overlooked'],['ari','first'],['lim','true'],['sae','together']]);
+install(verbs,[['esha','sing|speak|express'],['ra','rise|resist|rebel'],['or','seek|search|ask|look for'],['ith','make|create|craft|engineer|invent'],['lun','hold|shelter|sustain'],['mer','remember|recall'],['eth','endure|last'],['vae','cross|travel|pass|move on|pass on|depart'],['drin','become|transform'],['ena','live|breathe'],['lir','love|cherish'],['selu','trust|entrust'],['haren','show mercy'],['kir','hurt|wound'],['hei','hope'],['tar','promise|pledge'],['ven','see|witness'],['mas','hear|listen'],['len','understand|learn|know'],['vel','vanish|disappear'],['dur','erase|remove'],['keth','write|inscribe'],['riv','read|decipher'],['kal','open'],['dak','close|lock|seal'],['dar','give|offer'],['vak','take|carry'],['nam','share'],['ther','bind|restrain'],['ham','protect|defend|save'],['nira','walk'],['mal','change|alter'],['mar','build|assemble'],['ner','stand|remain|stay'],['siv','return|come back'],['las','touch'],['rav','shout|call out'],['veth','fear']]);
+install(qualities,[['hara','gently|tenderly|gentle|tender'],['nar','alone|lonely'],['nor','forgotten|overlooked'],['ari','first'],['lim','true'],['sae','together']]);
 const pronouns={i:'mi',me:'mi',you:'ti',he:'sa',she:'sa',it:'sa',him:'sa',her:'sa',they:'ter',them:'ter',we:'sai',us:'sai'};
 const possessive={my:'mi',your:'ti',his:'sa',her:'sa',its:'sa',their:'ter',our:'sai'};
 const post={in:'lu',within:'lu',inside:'lu',with:'al',alongside:'al',from:'ren',toward:'vai',towards:'vai',to:'vai'};
@@ -64,6 +64,10 @@ function phrase(ts,opts,parsePrep=true){
 }
 function simple(sentence,opts){
  const ts=words(sentence),missing=[],notes=[];
+ const starters=[];
+ if(ts[0]==='and'){starters.push('no');ts.shift();}
+ if(ts[0]==='when'){starters.push('sen');ts.shift();}
+ const starterGloss=starters.map(w=>[w==='no'?'and':'when',w]);
  const base=norm(sentence).replace(/[.!?]+$/,'');
  const special={
   'remember who you are':['Ti i nil ha mer.','Idiomatic paraphrase: "Remember your self." Relative clauses are not yet reconstructed.'],
@@ -87,9 +91,9 @@ function simple(sentence,opts){
   const pred=phrase(predTs,opts);
   missing.push(...subject.missing,...pred.missing);
   if(!pred.ft.length)missing.push('Missing predicate');
-  const out=[...subject.ft,...(negative?['nu']:[]),...pred.ft,...(question?['ke']:[])];
+  const out=[...starters,...subject.ft,...(negative?['nu']:[]),...pred.ft,...(question?['ke']:[])];
   return {ok:!missing.length,ft:!missing.length?cap(out.join(' '))+(question?'?':'.'):'',missing,notes:["Present 'to be' is normally omitted."],
-   breakdown:[...subject.breakdown,...(negative?[['not','nu']]:[]),...pred.breakdown,...(question?[['question','ke']]:[])]};
+   breakdown:[...starterGloss,...subject.breakdown,...(negative?[['not','nu']]:[]),...pred.breakdown,...(question?[['question','ke']]:[])]};
  }
  const command=idx===0,before=ts.slice(0,idx),ai=before.findIndex(t=>aux.has(t));
  const sub=command?[]:before.slice(0,ai<0?before.length:ai);
@@ -106,11 +110,11 @@ function simple(sentence,opts){
  if(opts.exclusive&&sub.includes('we'))notes.push('We excludes the listener (sin).');
  if(sub.includes('we')&&!opts.exclusive)notes.push('We includes the listener (sai).');
  if(ts.some(t=>['he','she','him','her'].includes(t)))notes.push('The First Tongue uses gender-neutral sa.');
- const parts=[...subject.ft,...obj.ft,...(command?['ha']:[]),...(past?['ya']:[]),...(future?['vei']:[]),...(negative?['nu']:[]),v.ft,...(question?['ke']:[])];
- const breakdown=[...subject.breakdown,...obj.breakdown,...(command?[['imperative','ha']]:[]),...(past?[['completed/past','ya']]:[]),...(future?[['future/intended','vei']]:[]),...(negative?[['not','nu']]:[]),[v.en,v.ft],...(question?[['question','ke']]:[])];
+ const parts=[...starters,...subject.ft,...obj.ft,...(command?['ha']:[]),...(past?['ya']:[]),...(future?['vei']:[]),...(negative?['nu']:[]),v.ft,...(question?['ke']:[])];
+ const breakdown=[...starterGloss,...subject.breakdown,...obj.breakdown,...(command?[['imperative','ha']]:[]),...(past?[['completed/past','ya']]:[]),...(future?[['future/intended','vei']]:[]),...(negative?[['not','nu']]:[]),[v.en,v.ft],...(question?[['question','ke']]:[])];
  return {ok:!missing.length,ft:!missing.length?cap(parts.join(' '))+(question?'?':'.'):'',missing,notes,breakdown};
 }
-const pronunciations={mi:'mee',ti:'tee',sa:'sah',sai:'sigh',sin:'sin',ter:'tehr',i:'ee',al:'ahl',nu:'noo',ya:'yah',vei:'vay',ha:'hah',ke:'keh',tal:'tahl',mer:'mehr',nel:'nehl',nil:'neel',ner:'nehr',den:'dehn',kal:'kahl',eth:'ehth',vel:'vehl',saelun:'SAY-loon',esha:'EH-shah',eshara:'eh-SHAH-rah',orith:'OR-ith',mereth:'MEH-reth',vaedrin:'VAY-drin',ra:'rah',or:'or',ith:'eeth',sae:'say',lun:'loon',vae:'vay',drin:'drin',nara:'NAH-rah',sir:'seer',haren:'HAH-rehn',lu:'loo'};
+const pronunciations={sen:'sehn',hara:'HAH-rah',no:'noh',mi:'mee',ti:'tee',sa:'sah',sai:'sigh',sin:'sin',ter:'tehr',i:'ee',al:'ahl',nu:'noo',ya:'yah',vei:'vay',ha:'hah',ke:'keh',tal:'tahl',mer:'mehr',nel:'nehl',nil:'neel',ner:'nehr',den:'dehn',kal:'kahl',eth:'ehth',vel:'vehl',saelun:'SAY-loon',esha:'EH-shah',eshara:'eh-SHAH-rah',orith:'OR-ith',mereth:'MEH-reth',vaedrin:'VAY-drin',ra:'rah',or:'or',ith:'eeth',sae:'say',lun:'loon',vae:'vay',drin:'drin',nara:'NAH-rah',sir:'seer',haren:'HAH-rehn',lu:'loo'};
 function pronunciation(text){
  return text.split(/(\s+|[.,!?;:])/g).map(t=>{
   if(!/[a-z]/i.test(t))return t;
