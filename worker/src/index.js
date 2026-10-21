@@ -74,7 +74,7 @@ export default {
       if(!["admin","maintain","write"].includes(result.permission))return fail("GitHub write access is required",403);
       const sessionId=random();
       await env.SESSIONS.put("session:"+sessionId,JSON.stringify({login:user.login,token}),{expirationTtl:43200});
-      const target=new URL(env.DASHBOARD_ORIGIN);
+      const target=new URL(env.DASHBOARD_URL);
       target.hash="rfl_sync_session="+encodeURIComponent(sessionId);
       return redirect(target.toString());
     }
