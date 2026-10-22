@@ -883,7 +883,7 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-22-arc2-arc3-canon-reconciliation-v2";
+  var VERSION="2026-10-22-eshara-benefactor-v1";
   var arc="Arc 3 — The Dead Don't Leave";
   var lullabyEnglish=["I will remember you","You will remember me","And when I move on","Hold my memory gently"];
   var lullabyKethil=["Mi Ti Vei Mer","Ti Mi Vei Mer","No Sen Mi Vae","Mi I Meren Hara Ha Lun"];
@@ -1260,6 +1260,25 @@
       summary:"A music-community scene at Avalon House introduces Birdie’s mentorship of Anya, Anya and Elara’s relationship, and a family lullaby later key to Arc 3.",
       secret:"Introduce Birdie, Anya and Elara together at Avalon House during Arc 1. The party's Bard provides a natural potential point of connection, but the exact invitation/performance and placement in Arc 1 are OPEN. Birdie's old lullaby, passed down from her grandmother and taught to Anya, includes this chorus: "+lullabyEnglish.join(" / ")+". It should feel like affectionate music, not an obvious puzzle clue. In Arc 2 Anya dies; Arc 3 returns to Birdie, her Keeper story and this same chorus. The four Kethil tablet inscriptions are: "+lullabyKethil.join(" / ")+".",
       connections:[link("npcs",bid,"Mentor and source of lullaby"),link("npcs",aid,"Former student"),link("threads","arc3_birdie","Emotional reprise"),link("threads","arc3_rite","Long-term puzzle payoff")]
+    });
+
+    // Eshara's future story arc: the central narrative is Elara's descent,
+    // not a broad artistic-community mystery. Only the benefactor approach is locked.
+    upsert("threads","arc_eshara",{
+      name:"Eshara — Elara’s Descent",arc:"Eshara — Voice Unrestrained",status:"Developing",
+      summary:"After Anya’s death, Elara’s grief makes her vulnerable to a mysterious benefactor who offers a seemingly credible way to reunite with her lost partner. The demon’s influence gradually exploits her longing, and the danger to Eshara grows.",
+      secret:"LOCKED: This storyline is primarily about Elara’s descent under demonic influence, not a general mystery about artists throughout San Francisco. Following Anya’s addiction-related death during Arc 2, a mysterious benefactor approaches Elara with compassion and the promise of reunion. Over time, the benefactor guides her toward increasingly dangerous magic. Elara’s desires and choices must remain intelligible; she is not simply possessed or controlled. Her musical expression becomes a channel through which Eshara destabilizes. UNRESOLVED: Is the benefactor the demon in disguise, or an intermediary? Their identity, apparent occupation, introduction, trust-building scenes, rituals, encounters, and exact arc position are not yet decided.",
+      connections:[link("npcs","elara","Central protagonist of the tragedy"),link("lore","eshara_benefactor","Confirmed approach")]
+    });
+    upsert("lore","eshara_benefactor",{
+      name:"Eshara — The Mysterious Benefactor",status:"Canon",
+      summary:"Elara is approached after Anya’s death by an apparently compassionate figure who offers a way to reunite with her lost partner.",
+      secret:"Confirmed approach B: A mysterious benefactor recognizes Elara’s grief and offers a believable route to reunite her with Anya, gradually steering her into dangerous magic and demonic influence. Do not replace this with Anya’s disembodied singing as the primary approach. Elara remains a person making understandable choices rather than a passive puppet. The benefactor’s real identity (demon in disguise versus intermediary), specifics, and eventual outcome are UNDECIDED.",
+      connections:[link("npcs","elara","Person approached"),link("threads","arc_eshara","Eshara storyline")]
+    });
+    upsert("npcs","elara",{},{
+      note:"Eshara story arc: after Anya's death, a mysterious seemingly compassionate benefactor approaches Elara and offers a way to reunite with Anya, leading her gradually toward dangerous magic and the demon's influence. Elara's choice and agency are central. The benefactor’s actual identity remains UNDECIDED.",
+      connections:[link("threads","arc_eshara","Eshara descent"),link("lore","eshara_benefactor","Mysterious benefactor")]
     });
 
     // Migrate legacy, script-generated Arc 2 and Arc 3 prose in older shared/browser saves.
