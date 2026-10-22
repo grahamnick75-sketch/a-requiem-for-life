@@ -1124,8 +1124,7 @@
       ],"The unsafe open panel is the strongest reason to investigate further."),
       section("GM continuity",[
         "Approved case, part of the series of waterfront disappearances presented by the Conservatory.",
-        "His fate is not yet determined; do not assume he is one of the Forgotten until decided.",
-        ""
+        "His fate is not yet determined; do not assume he is one of the Forgotten until decided."
       ],"Keep the eventual explanation open.")
     ];
     upsert("threads","arc3_case_elias_navarro",{
