@@ -883,7 +883,7 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-21-arc3-v10-waterfront-cases";
+  var VERSION="2026-10-21-arc3-v11-elias-case";
   var arc="Arc 3 — The Dead Don't Leave";
   var birdieWords=[
     "My grandmother used to tell me that long before this city had a name, there was a spirit who watched over those who passed.",
@@ -995,7 +995,7 @@
     upsert("lore","arc3_first_tongue",{
       name:"First Tongue & Kethil — Arc 3 Research",status:"Canon",
       summary:"The original Fog community's pre–Gold Rush language naturally faded over generations. Arc 3 begins the campaign's important First Tongue clues; the Conservatory has only fragmentary understanding.",
-      secret:"Treat the First Tongue as fictional, NOT an actual Ohlone or other living Indigenous language. Its written script is Kethil. The original Fog inhabitants spoke it before the Gold Rush; it was not deliberately suppressed, merely lost through time. The Conservatory can translate the short Gilded Gull inscription 'Mi Ti Vei Mer' as 'I will remember you', but does not have instant mastery of long or difficult First Tongue texts; investigation and living cultural knowledge still provide context. During this research the Conservatory tells the party it has noticed reports of other unexplained missing people, opening the wider Arc 3 investigation. All known disappearances originate along San Francisco's waterfront / Embarcadero, but their individual circumstances, victim backgrounds and last-seen sites differ enough to seem unrelated at first. This general waterfront geography is the discoverable common thread; there is no immediately apparent shared cause or Alcatraz connection. The Conservatory has a handful of documented cases the party can examine: individual reports with specific circumstances, not just vague suspicions. Case identities, evidence and how the Scholars obtained the reports remain to be developed collaboratively. At The Gilded Gull the gilded bird carries 'Mi Ti Vei Mer' ('I will remember you'). On Alcatraz the victims of the entity unconsciously repeat First Tongue sounds or phrases such as 'Mi ti mer'; they are not fluent. During Alcatraz exploration First Tongue is HEARD only from victims, never as the entity's audible voice or as a disembodied corridor whisper. Another established phrase is 'Nor nam mal', meaning exactly 'forgotten through binding, and forgotten', expressed as a compact Kethil insignia on the entity's left chest; this is NOT necessarily its true name. The entity's original true name has not yet been established.",
+      secret:"Treat the First Tongue as fictional, NOT an actual Ohlone or other living Indigenous language. Its written script is Kethil. The original Fog inhabitants spoke it before the Gold Rush; it was not deliberately suppressed, merely lost through time. The Conservatory can translate the short Gilded Gull inscription 'Mi Ti Vei Mer' as 'I will remember you', but does not have instant mastery of long or difficult First Tongue texts; investigation and living cultural knowledge still provide context. During this research the Conservatory tells the party it has noticed reports of other unexplained missing people, opening the wider Arc 3 investigation. All known disappearances originate along San Francisco's waterfront / Embarcadero, but their individual circumstances, victim backgrounds and last-seen sites differ enough to seem unrelated at first. This general waterfront geography is the discoverable common thread; there is no immediately apparent shared cause or Alcatraz connection. The Conservatory has a handful of documented cases the party can examine: individual reports with specific circumstances, not just vague suspicions. One confirmed case is Elias Navarro, 43, a waterfront maintenance electrician missing for 12 days when his dossier is reviewed after a Pier 7 lighting inspection. Details for other cases, and how the Scholars obtained their reports, remain to be developed collaboratively. Do not add Naomi Chen or Walter Hayes: those suggested cases were rejected. At The Gilded Gull the gilded bird carries 'Mi Ti Vei Mer' ('I will remember you'). On Alcatraz the victims of the entity unconsciously repeat First Tongue sounds or phrases such as 'Mi ti mer'; they are not fluent. During Alcatraz exploration First Tongue is HEARD only from victims, never as the entity's audible voice or as a disembodied corridor whisper. Another established phrase is 'Nor nam mal', meaning exactly 'forgotten through binding, and forgotten', expressed as a compact Kethil insignia on the entity's left chest; this is NOT necessarily its true name. The entity's original true name has not yet been established.",
       connections:[link("locations","gilded_gull","Written clue"),link("npcs","entity_alcatraz","Chest insignia and forgotten name"),link("lore","arc3_keeper_history","Keeper history")]
     });
     upsert("lore","arc3_keeper_history",{
@@ -1020,6 +1020,14 @@
       name:"Guerrilla Grafters (future Fog concept)",status:"Idea",
       summary:"A separate future city-worldbuilding concept inspired by San Francisco's clandestine community grafting fruit-bearing branches onto ornamental street trees.",
       secret:"Parked for later collaborative development. The user wants the Guerrilla Grafters in the campaign but has NOT decided whether they are ordinary Surface activists, a Fog collective, magical, or linked to any Current. No connection to Arc 3 or Alcatraz; do not invent one."
+    });
+
+    // Approved Arc 3 Conservatory dossier; the two other proposed cases were rejected.
+    upsert("npcs","elias_navarro",{
+      name:"Elias Navarro",age:"43",occupation:"Waterfront maintenance electrician",status:"Canon",
+      summary:"Approved Arc 3 missing-person case. Last seen inspecting faulty lights at Pier 7 along the Embarcadero; missing for twelve days as of the Conservatory case file.",
+      secret:"CONSERVATORY CASE FILE — ELIAS NAVARRO (approved canon): 43-year-old waterfront maintenance electrician. Disappeared during a check of faulty pier lights at Pier 7, twelve days before the dossier is read. His work tools were abandoned beside an open electrical panel, and his truck remained parked nearby. Authorities suspect he fell into the bay, but no body has been recovered. His supervisor insists he would never abandon an energized electrical panel. No confirmed explanation or fate; do NOT prematurely establish that Elias was transported to Alcatraz or became one of the Forgotten. Naomi Chen and Walter Hayes were proposed but rejected and are NOT canon.",
+      connections:[link("threads","arc3_case_elias_navarro","Conservatory case file"),link("threads","arc3_missing_pattern","Waterfront disappearance")]
     });
 
     upsert("npcs","entity_alcatraz",{
@@ -1070,7 +1078,7 @@
         i===0?"Birdie shares her personal grief-driven story about the Keeper; she never mentions Alcatraz.":
         i===1?"The Kindred Engine inventor asks the party to find his wife and sister-in-law, missing for three days.":
         i===2?"Question the busy Gilded Gull staff, confirm dinner, find a third-person lead and the Kethil bird inscription.":
-        i===3?"The Conservatory translates the Gilded Gull inscription and shares documented disappearance cases, all last seen along the waterfront / Embarcadero but otherwise apparently unrelated.":
+        i===3?"The Conservatory translates the Gilded Gull inscription and shares apparently unrelated waterfront disappearance dossiers, including the confirmed Pier 7 case of Elias Navarro.":
         i===4?"Find the intact Kindred bracelet by an Alcatraz Tours sign and meet an independent boat captain.":
         i===5?"The captain brings the party at nightfall and waits aboard; the island appears deserted.":
         i===6?"A flat 'Please help me' leads to an empty cell and a one-character Mereth-based memory lapse.":
@@ -1100,8 +1108,33 @@
       [link("locations","gilded_gull","Restaurant"),link("locations","alcatraz_tour_dock","Waterfront route"),link("lore","arc3_first_tongue","Inscription")]);
     event("arc3_missing_pattern",4,"A Wider Pattern",
       "While researching the Gilded Gull Kethil inscription, the Conservatory translates its short phrase and alerts the party to reports of other unexplained disappearances.",
-      [section("Conservatory discovery",["The party consults the Conservatory about the Kethil inscription on The Gilded Gull seabird carving.","Scholars translate the short inscription Mi Ti Vei Mer as I will remember you, giving the players an opportunity to connect it with Birdie’s previously heard lullaby.","During the same research, the Conservatory alerts the party to reports of other unexplained disappearances; the sisters are not isolated victims.","The Conservatory has a handful of documented case reports for the party to examine. All missing people were last seen along San Francisco's waterfront / Embarcadero, though at different specific sites and under varying circumstances, making them seem unrelated at first. The waterfront is a discoverable geographical pattern; the cases do not immediately point to Alcatraz. Individual case details and how the Scholars obtained their records remain undecided."],"The wider mystery is introduced by the Conservatory, not missing-person posters at the Wharf."),section("DM continuity",["The third person seen leaving the Gilded Gull with the sisters is the independent tour captain.","The Keeper has altered the captain’s memories. He sincerely does not remember the sisters and has no idea his memories are missing.","It remains unknown whether he ferried the sisters to Alcatraz."],"Do not prematurely reveal the captain’s role or prove the route to the island.")],
-      [link("lore","arc3_first_tongue","Kethil research"),link("locations","gilded_gull","Translated inscription")],"Developing");
+      [section("Conservatory discovery",["The party consults the Conservatory about the Kethil inscription on The Gilded Gull seabird carving.","Scholars translate the short inscription Mi Ti Vei Mer as I will remember you, giving the players an opportunity to connect it with Birdie’s previously heard lullaby.","During the same research, the Conservatory alerts the party to reports of other unexplained disappearances; the sisters are not isolated victims.","The Conservatory has a handful of documented case reports for the party to examine. All missing people were last seen along San Francisco's waterfront / Embarcadero, though at different specific sites and under varying circumstances, making them seem unrelated at first. The waterfront is a discoverable geographical pattern; the cases do not immediately point to Alcatraz. The confirmed Elias Navarro dossier concerns a Pier 7 maintenance electrician missing for twelve days. Other individual cases and how the Scholars obtained their records remain undecided."],"The wider mystery is introduced by the Conservatory, not missing-person posters at the Wharf."),section("Approved case: Elias Navarro",["Elias Navarro, 43, waterfront maintenance electrician, disappeared while checking faulty Pier 7 lighting; he has been missing for 12 days as of the Conservatory report.","His tools remain beside an open electrical panel; his truck was still parked nearby.","Authorities suspect he fell into the bay, but no body was recovered. His supervisor says Elias would never leave an energized electrical panel unattended.","Elias’s actual fate remains unresolved. Naomi Chen and Walter Hayes were rejected and are not part of the cases."],"Individual approved case file is linked below."),section("DM continuity",["The third person seen leaving the Gilded Gull with the sisters is the independent tour captain.","The Keeper has altered the captain’s memories. He sincerely does not remember the sisters and has no idea his memories are missing.","It remains unknown whether he ferried the sisters to Alcatraz."],"Do not prematurely reveal the captain’s role or prove the route to the island.")],
+      [link("lore","arc3_first_tongue","Kethil research"),link("locations","gilded_gull","Translated inscription"),link("npcs","elias_navarro","Documented missing person"),link("threads","arc3_case_elias_navarro","Approved case file")],"Developing");
+    var eliasCaseSections=[
+      section("Incident report",[
+        "Name: Elias Navarro; age 43; waterfront maintenance electrician.",
+        "Last seen inspecting faulty lights at Pier 7 on the Embarcadero.",
+        "Missing for twelve days at the time this dossier is reviewed.",
+        "Tools abandoned beside an open electrical panel; work truck still parked nearby."
+      ],"A routine maintenance job became an unexplained disappearance."),
+      section("Findings and leads",[
+        "Authorities suspect he fell into the bay, but no body was recovered.",
+        "His supervisor strongly disputes that explanation: Elias would never knowingly leave an energized electrical panel unattended.",
+        "No confirmed account of what happened after his last sighting."
+      ],"The unsafe open panel is the strongest reason to investigate further."),
+      section("GM continuity",[
+        "Approved case, part of the series of waterfront disappearances presented by the Conservatory.",
+        "His fate is not yet determined; do not assume he is one of the Forgotten until decided.",
+        "Naomi Chen and Walter Hayes were rejected, not canon."
+      ],"Keep the eventual explanation open.")
+    ];
+    upsert("threads","arc3_case_elias_navarro",{
+      name:"Arc 3 — Case File: Elias Navarro",arc:arc,arcNumber:3,
+      parentThread:"arc3_missing_pattern",eventOrder:4.1,status:"Canon",
+      summary:"Pier 7 waterfront electrician, 43, missing for twelve days. His tools and truck were abandoned during a routine lighting inspection.",
+      outline:eliasCaseSections,secret:outlineText(eliasCaseSections),
+      connections:[link("npcs","elias_navarro","Subject"),link("threads","arc3_missing_pattern","Conservatory records")]
+    });
     event("arc3_docks",5,"The Bracelet & the Tour Dock",
       "A Kindred-pattern bracelet points to the tour dock; the captain offers a ride but cannot identify the sisters.",
       [section("Evidence",["Follow the waterfront route to a quieter working pier.","Find the inventor's wife's distinctive Kindred-animal-pattern bracelet INTACT by a mooring post immediately in front of an 'Alcatraz Tours' sign.","The bracelet is not broken and there are no confirmed signs of violence; the captain's 10–15-passenger boat is nearby."],"Strong pointer toward Alcatraz, but NOT proof the sisters boarded the boat."),
