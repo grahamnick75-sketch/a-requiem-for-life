@@ -883,8 +883,10 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-21-arc3-v11-elias-case";
+  var VERSION="2026-10-22-arc2-arc3-canon-reconciliation-v1";
   var arc="Arc 3 — The Dead Don't Leave";
+  var lullabyEnglish=["I will remember you","You will remember me","And when I move on","Hold my memory gently"];
+  var lullabyKethil=["Mi Ti Vei Mer","Ti Mi Vei Mer","No Sen Mi Vae","Mi I Meren Hara Ha Lun"];
   var birdieWords=[
     "My grandmother used to tell me that long before this city had a name, there was a spirit who watched over those who passed.",
     "They called it the Keeper of Memories.",
@@ -962,12 +964,12 @@
       summary:"Haight-Ashbury musician and Avalon House matriarch; an openly Indigenous elder descended from the Fog's original inhabitants and a beloved lifelong musical mentor to Anya.",
       beliefs:"The stories and people of the original Fog community deserve to endure. She openly cherishes her heritage; memory, art, chosen family, and service to the community matter to her."
     },{
-      note:"Birdie is open about her Indigenous Fog heritage; it is not a secret or a late twist. She knew and loved Anya as a longtime musical mentor. Anya dies offsite during the Arc 2 Luma finale, not in Arc 3. Early in Arc 3, BEFORE the Kindred Engine inventor asks the party for help, Birdie grieves Anya at Avalon House and shares precisely the following inherited story without ever mentioning Alcatraz:\n\n“"+birdieWords.join("”\n\n“")+"”\n\nThe scene should be personal grief, not an obvious quest hook. The form of any memorial gathering is still undecided. Do NOT replace Birdie's existing approved character art; a respectful visual revision is only being considered.",
+      note:"Birdie is open about her Indigenous Fog heritage; it is not a secret or a late twist. She knew and loved Anya as a longtime musical mentor. In Arc 1, Birdie, Anya and Elara are introduced at Avalon House; the Bard can connect naturally through music, with performance details and exact session placement left to the DM. Birdie shares the old lullaby with Anya; its chorus is: "+lullabyEnglish.join(" / ")+". Anya dies offsite during the Arc 2 Luma finale, not in Arc 3. Early in Arc 3, BEFORE the Kindred Engine inventor asks the party for help, Birdie grieves Anya at Avalon House and shares precisely the following inherited story without ever mentioning Alcatraz:\n\n“"+birdieWords.join("”\n\n“")+"”\n\nThe scene should be personal grief, not an obvious quest hook. The form of any memorial gathering is still undecided. Do NOT replace Birdie's existing approved character art; a respectful visual revision is only being considered.",
       connections:[link("npcs",aid,"Lifelong musical mentor","Birdie loved Anya and grieves her death in Arc 2."),link("threads","arc3_birdie","Opening scene","Shares her grandmother's Keeper of Memories story.")]
     });
 
     if(avalon)upsert("locations",avID,{},{
-      note:"Arc 3 opens with a personal conversation here between Birdie and the party, after Anya's Arc 2 death and before the Kindred Engine inventor's request for help. Birdie offers her grandmother's Keeper of Memories story without mentioning Alcatraz.",
+      note:"Arc 3 opens with a personal conversation here between Birdie and the party, after Anya's Arc 2 death and before the Kindred Engine inventor's request for help. Birdie sings or recalls the familiar inherited lullaby and offers her grandmother's Keeper of Memories story without mentioning Alcatraz.",
       connections:[link("threads","arc3_birdie","Arc 3 opening")]
     });
 
@@ -987,7 +989,7 @@
     });
 
     if(alcatraz)upsert("locations",alcID,{},{
-      note:"Arc 3: party arrives near nightfall with a helpful independent excursion captain, who remains waiting aboard his boat. No staff or tourists greet them: the island and cellhouse feel eerily empty. They hear a detached, emotionless voice repeating 'Please help me' IN ORDINARY LANGUAGE; an empty solitary cell marks their first Identity Fracture. Their first Forgotten victim is an unfamiliar living person, not either missing sister. The spiritual origin of the corrupted Keeper of Memories and the name-redemption endgame are DM-only. The prison arrival and early beats are established; revised final mechanics remain developing.",
+      note:"Arc 3: party arrives near nightfall with a helpful independent excursion captain, who remains waiting aboard his boat. No staff or tourists greet them: the island and cellhouse feel eerily empty. They hear a detached, emotionless voice repeating 'Please help me' IN ORDINARY LANGUAGE; an empty solitary cell marks their first Identity Fracture. Their first Forgotten victim is an unfamiliar living person, not either missing sister. The spiritual origin of the corrupted Keeper of Memories and its Rite of Remembrance are DM-only. The final ritual uses four physical Kethil tablets in the order of Birdie’s lullaby, then voluntary sacrifice of cherished memories. Keeper combat abilities remain developing.",
       connections:[link("threads","arc_alcatraz","Arc 3 setting"),link("villains","villain_entity_alcatraz","Corrupted Keeper")]
     });
 
@@ -995,14 +997,14 @@
     upsert("lore","arc3_first_tongue",{
       name:"First Tongue & Kethil — Arc 3 Research",status:"Canon",
       summary:"The original Fog community's pre–Gold Rush language naturally faded over generations. Arc 3 begins the campaign's important First Tongue clues; the Conservatory has only fragmentary understanding.",
-      secret:"Treat the First Tongue as fictional, NOT an actual Ohlone or other living Indigenous language. Its written script is Kethil. The original Fog inhabitants spoke it before the Gold Rush; it was not deliberately suppressed, merely lost through time. The Conservatory can translate the short Gilded Gull inscription 'Mi Ti Vei Mer' as 'I will remember you', but does not have instant mastery of long or difficult First Tongue texts; investigation and living cultural knowledge still provide context. During this research the Conservatory tells the party it has noticed reports of other unexplained missing people, opening the wider Arc 3 investigation. All known disappearances originate along San Francisco's waterfront / Embarcadero, but their individual circumstances, victim backgrounds and last-seen sites differ enough to seem unrelated at first. This general waterfront geography is the discoverable common thread; there is no immediately apparent shared cause or Alcatraz connection. The Conservatory has a handful of documented cases the party can examine: individual reports with specific circumstances, not just vague suspicions. One confirmed case is Elias Navarro, 43, a waterfront maintenance electrician missing for 12 days when his dossier is reviewed after a Pier 7 lighting inspection. Details for other cases, and how the Scholars obtained their reports, remain to be developed collaboratively. At The Gilded Gull the gilded bird carries 'Mi Ti Vei Mer' ('I will remember you'). On Alcatraz the victims of the entity unconsciously repeat First Tongue sounds or phrases such as 'Mi ti mer'; they are not fluent. During Alcatraz exploration First Tongue is HEARD only from victims, never as the entity's audible voice or as a disembodied corridor whisper. Another established phrase is 'Nor nam mal', meaning exactly 'forgotten through binding, and forgotten', expressed as a compact Kethil insignia on the entity's left chest; this is NOT necessarily its true name. The entity's original true name has not yet been established.",
-      connections:[link("locations","gilded_gull","Written clue"),link("npcs","entity_alcatraz","Chest insignia and forgotten name"),link("lore","arc3_keeper_history","Keeper history")]
+      secret:"Treat the First Tongue as fictional, NOT an actual Ohlone or other living Indigenous language. Its written script is Kethil. The original Fog inhabitants spoke it before the Gold Rush; it was not deliberately suppressed, merely lost through time. The Conservatory can translate the short Gilded Gull inscription 'Mi Ti Vei Mer' as 'I will remember you', but does not have instant mastery of long or difficult First Tongue texts; investigation and living cultural knowledge still provide context. During this research the Conservatory tells the party it has noticed reports of other unexplained missing people, opening the wider Arc 3 investigation. All known disappearances originate along San Francisco's waterfront / Embarcadero, but their individual circumstances, victim backgrounds and last-seen sites differ enough to seem unrelated at first. This general waterfront geography is the discoverable common thread; there is no immediately apparent shared cause or Alcatraz connection. The Conservatory has a handful of documented cases the party can examine: individual reports with specific circumstances, not just vague suspicions. One confirmed case is Elias Navarro, 43, a waterfront maintenance electrician missing for 12 days when his dossier is reviewed after a Pier 7 lighting inspection. Details for other cases, and how the Scholars obtained their reports, remain to be developed collaboratively. At The Gilded Gull the gilded bird carries 'Mi Ti Vei Mer' ('I will remember you'). On Alcatraz the victims of the entity unconsciously repeat First Tongue sounds or phrases such as 'Mi ti mer'; they are not fluent. During Alcatraz exploration First Tongue is HEARD only from victims, never as the entity's audible voice or as a disembodied corridor whisper. Another established phrase is 'Nor nam mal', meaning exactly 'forgotten through binding, and forgotten', expressed as a compact Kethil insignia on the entity's left chest; this is a descriptive insignia, NOT a password or required true-name clue. The pacification path is the Rite of Remembrance, using the lullaby and four Kethil tablets.",
+      connections:[link("locations","gilded_gull","Written clue"),link("npcs","entity_alcatraz","Chest Kethil insignia"),link("lore","arc3_keeper_history","Keeper history")]
     });
     upsert("lore","arc3_keeper_history",{
       name:"Keeper of Memories — The Forgotten Guardian",status:"Canon",
-      summary:"Long before Alcatraz was a prison, a spirit known by name to the Indigenous inhabitants of the Fog safeguarded the memories of the departed as they journeyed west.",
-      secret:"Original purpose: Keeper of Memories, NOT simply guardian of the dead. Living descendants of the original Fog inhabitants preserve stories of the Keeper, but its actual First Tongue name has been lost. The prison's generations of isolation, dehumanization, cruelty and abandonment corrupted the Keeper. Having forgotten its own identity, it now strips living visitors of their memories and will. Recovery of the original name across Arc 3's research is a potential redemption path: speaking it is an act of remembrance rather than a mechanical password. The entity can also be fought and destroyed; exact rules, pacing and outcome consequences are still to be developed. Keep real Ohlone history and beliefs distinct from invented Fog customs; no fictionalized sacred ceremony is canon.",
-      connections:[link("npcs",bid,"Living storykeeper"),link("lore","arc3_first_tongue","Forgotten true name"),link("villains","villain_entity_alcatraz","Corrupted form")]
+      summary:"Long before Alcatraz was a prison, the Keeper of Memories safeguarded the memories of the departed as they journeyed west.",
+      secret:"Original purpose: Keeper of Memories, NOT simply guardian of the dead. Living descendants of the original Fog inhabitants preserve stories and an inherited lullaby about the Keeper. The prison's generations of isolation, dehumanization, cruelty and abandonment corrupted it. Having forgotten its former role, it now strips living visitors of their memories and will. Pacification requires the Rite of Remembrance: arrange four Kethil tablets in the lullaby’s order, then voluntarily sacrifice cherished memories to strengthen a pacification roll. If pacified, all sacrificed memories return; if killed, they are lost permanently. Detailed combat abilities remain undeveloped. Keep real Ohlone history and beliefs distinct from invented Fog customs; no fictionalized sacred ceremony is canon.",
+      connections:[link("npcs",bid,"Living storykeeper"),link("lore","arc3_first_tongue","Lullaby and Kethil tablets"),link("villains","villain_entity_alcatraz","Corrupted form")]
     });
     upsert("lore","arc3_identity_fracture",{
       name:"Identity Fracture — Alcatraz",status:"Canon",
@@ -1038,17 +1040,17 @@
       appearance:"Approved full-body campaign cartoon/graphic-novel design: unnaturally tall, thin, elongated humanoid. Smooth bald featureless porcelain-white head with deep hollow black eye sockets; no nose or mouth. Smooth long white fingers, no claws. Faded/desaturated orange prison jumpsuit with frayed fabric dissolving into spectral wisps. Compact interlocked Kethil insignia at left chest represents 'Nor nam mal' ('forgotten through binding, and forgotten'); it subtly darkens/glows when activated. Stands perfectly upright and unnaturally still; walks when calm, levitates as anger rises. Standard dark-navy background with electric-cyan geometric triangles. Approved portrait file: assets/portraits/entity-alcatraz.webp.",
       personality:"Ancient, intelligent, articulate and observant; initially confused and curious after the sisters remember one another, then skeptical, angry and increasingly aggressive when shown human compassion.",
       summary:"A once-revered pre-prison Keeper of Memories whose own name and role were lost when generations of prisoner suffering warped it into a taker of identity.",
-      secret:"DM ONLY: Originally cared for the memories of the departed journeying west; the original Fog community knew its actual First Tongue name, now forgotten. It steals living visitors' memories and keeps the Forgotten on Alcatraz. It has also been manipulating the independent Alcatraz tour captain's memories: he was the person seen leaving The Gilded Gull with the missing sisters but genuinely does not recall them. The details of what the captain did afterward are unresolved. It becomes physically visible AFTER the party finds both missing sisters and helps restore their memories through the Kindred bracelet, stories of the inventor/husband and their shared history. Initially curious and confused, the entity then challenges the party's belief in compassion, recounts prison cruelty and grows hostile and aggressive. Players may fight it or recover its original name and demonstrate genuine remembrance and compassion; the exact final mechanism is still DEVELOPING, not a guaranteed one-word instant solution. Official NPC portrait uses assets/portraits/entity-alcatraz.webp.",
+      secret:"DM ONLY: Originally cared for the memories of the departed journeying west; its former purpose survives in Birdie’s inherited lullaby, though the Keeper itself has forgotten its role. It steals living visitors' memories and keeps the Forgotten on Alcatraz. It has also been manipulating the independent Alcatraz tour captain's memories: he was the person seen leaving The Gilded Gull with the missing sisters but genuinely does not recall them. The details of what the captain did afterward are unresolved. It becomes physically visible AFTER the party finds both missing sisters and helps restore their memories through the Kindred bracelet, stories of the inventor/husband and their shared history. Initially curious and confused, the entity then challenges the party's belief in compassion, recounts prison cruelty and grows hostile and aggressive. Players can fight it or complete the Rite of Remembrance with four Kethil tablets and voluntary memory sacrifices. The ritual mechanics are established; its combat stats and attacks are not. Official NPC portrait uses assets/portraits/entity-alcatraz.webp.",
       status:"Canon",
       connections:[link("lore","arc3_keeper_history","Original purpose"),link("lore","arc3_first_tongue","Forgotten name and chest script"),link("threads","arc3_sisters_keeper","Manifestation")]
     });
     upsert("villains","villain_entity_alcatraz",{
       name:"The Entity of Alcatraz",npcId:"entity_alcatraz",arc:arc,
       summary:"The corrupted ancient Keeper of Memories, taking identities rather than safeguarding the departed.",
-      goal:"At present, impose the isolation and emptiness it believes define humanity; its original name and restorative role are forgotten.",
+      goal:"At present, impose the isolation and emptiness it believes define humanity; its former compassionate role is forgotten.",
       method:"Memory theft, Identity Fracture, disembodied voice, control over the Forgotten, terror at leaving the prison, eventual physical manifestation.",
-      weakness:"Human connection can restore memory; rediscovery of its TRUE First Tongue name could release its anger. Exact mechanics remain under development.",
-      secret:"White mask-like face, hollow eyes, long limbs, spectral orange prison jumpsuit and subtle Kethil chest insignia (Nor nam mal). First seen physically after the missing sisters begin remembering each other. Its initial curiosity escalates to skepticism, hostility and aggression. Destruction remains possible; redemption via name, compassion and restoration of identity is being developed. The victims, not the entity, are the audible source of First Tongue utterances within Alcatraz.",
+      weakness:"Human connection can restore memory. The four-tablet Rite of Remembrance and voluntary memory sacrifices create a chance to pacify it; its combat mechanics remain undeveloped.",
+      secret:"White mask-like face, hollow eyes, long limbs, spectral orange prison jumpsuit and subtle Kethil chest insignia (Nor nam mal). First seen physically after the missing sisters begin remembering each other. Its initial curiosity escalates to skepticism, hostility and aggression. Destruction remains possible, but the established Rite of Remembrance offers a pacification path via the lullaby and voluntary sacrifice of memories. The victims, not the entity, are the audible source of First Tongue utterances within Alcatraz.",
       status:"Developing",
       connections:[link("npcs","entity_alcatraz","NPC form"),link("lore","arc3_keeper_history","Original identity")]
     });
@@ -1068,12 +1070,13 @@
       ["arc3_alcatraz_arrival","The Crossing at Dusk"],
       ["arc3_empty_cell","The Voice and First Fracture"],
       ["arc3_first_forgotten","The Forgotten Stranger"],
-      ["arc3_sisters_keeper","The Sisters and the Keeper"]
+      ["arc3_sisters_keeper","The Sisters and the Keeper"],
+      ["arc3_rite","The Rite of Remembrance"]
     ];
     upsert("threads","arc_alcatraz",{
       name:"Arc 3 — Overview: The Dead Don't Leave",arc:arc,arcNumber:3,eventOrder:0,
       status:"Developing",
-      summary:"After Anya's Arc 2 death, a story of the Keeper of Memories quietly foreshadows missing-person cases, a Fisherman's Wharf investigation, and an Alcatraz spirit whose own forgotten name may be the key to redemption.",
+      summary:"After Anya’s Arc 2 death, Birdie’s inherited lullaby foreshadows a waterfront disappearance mystery and the four-tablet Rite of Remembrance that can pacify the corrupted Keeper of Memories on Alcatraz.",
       outline:events.map(function(e,i){return section(String(i+1)+". "+e[1],[
         i===0?"Birdie shares her personal grief-driven story about the Keeper; she never mentions Alcatraz.":
         i===1?"The Kindred Engine inventor asks the party to find his wife and sister-in-law, missing for three days.":
@@ -1083,7 +1086,8 @@
         i===5?"The captain brings the party at nightfall and waits aboard; the island appears deserted.":
         i===6?"A flat 'Please help me' leads to an empty cell and a one-character Mereth-based memory lapse.":
         i===7?"Meet an unfamiliar living but hollowed victim, who echoes First Tongue fragments and cannot willingly leave.":
-        "Restore the sisters through the bracelet and personal stories; the Keeper manifests; true-name redemption and combat remain possible."
+        i===8?"Restore the sisters through their bracelet and personal stories; the Keeper manifests, and players may fight or try to pacify it.":
+        "Arrange four Kethil tablets by Birdie’s lullaby, then sacrifice cherished memories to strengthen the Keeper’s pacification roll on initiative count 20."
       ],i===3?"Outline / placement unresolved":"See linked event for confirmed beats.");}),
       connections:events.map(function(e,i){return link("threads",e[0],"Event "+(i+1));})
         .concat([link("lore","arc3_keeper_history","Underlying mystery"),link("lore","arc3_first_tongue","Investigative language")])
@@ -1091,8 +1095,8 @@
       note:"Keep this as a developing outline. The disappearance of OTHER people is part of the agreed broader mystery, but exact new evidence, pace and event placement are still open. The Gilded Gull clue now points toward Alcatraz earlier than the first rough pitch did. Do not reintroduce an invented passenger ledger, force a dock camera, make the captain leave, or shift Anya's death out of Arc 2."
     });
     event("arc3_birdie",1,"Birdie Remembers Anya",
-      "After Anya dies in Arc 2, Birdie speaks privately with the party at Avalon House before the missing-person hook.",
-      [section("Anya's absence",["Birdie is an openly Indigenous elder and beloved Haight-Ashbury musical mentor of Anya, NOT a secret mystic.","She grieves Anya's Arc 2 death and turns to a story passed down by her grandmother."],"Allow the emotional scene to stand on its own."),
+      "After Anya dies in Arc 2, the party reconnects with her former mentor Birdie, recalling the lullaby first shared with Anya and Elara in Arc 1.",
+      [section("Anya's absence",["Birdie is an openly Indigenous elder and beloved Haight-Ashbury musical mentor of Anya, NOT a secret mystic.","The party met Birdie, Anya and Elara through the music community at Avalon House in Arc 1; the Bard may have connected with them, but no required performance is scripted.","Birdie grieves Anya’s Arc 2 death and revisits her grandmother’s old lullaby: "+lullabyEnglish.join(" / "),"She also turns to an inherited Keeper of Memories story."],"Allow the emotional scene to stand on its own."),
        section("Birdie's words — preserve exactly",birdieWords,"No mention of Alcatraz or obvious quest hook."),
        section("Open question",["Why the party visits Avalon House—memorial gathering or informal visit—has not been decided."],"Do not invent a mandatory memorial.")],
       [link("npcs",bid,"Storyteller"),link("locations",avID,"Setting"),link("lore","arc3_keeper_history","Foreshadowing")]);
@@ -1158,8 +1162,52 @@
       "The party reunites the missing sisters; recovering their connection causes the corrupted Keeper to manifest physically.",
       [section("Recovering who they were",["Find the inventor's missing wife and her sister, both alive but deprived of memories.","Use the Kindred-pattern bracelet and stories about the inventor, their shared lives and The Gilded Gull tradition to revive recognition.","When one recognizes the other, the ancient corrupted Keeper manifests in the prison."],"Human connection restores identity and triggers the reveal."),
        section("First manifestation",["Entity's appearance: tall, elongated white featureless face with hollow black eyes, faded orange spectral prison jumpsuit and compact Kethil left-chest insignia 'Nor nam mal'.","It begins intelligent, articulate, confused and CURIOUS, not immediately attacking.","When the party presents compassion as evidence against its view of humanity, it becomes skeptical, challenges them with stories of cruelty, then grows hostile and aggressive."],"An encounter, not an instant forced combat roll."),
-       section("Two potential resolutions",["The party can fight the manifested entity or investigate its ORIGINAL First Tongue name, lost across generations.","The Keeper once safeguarded the departed's memories, before Alcatraz prison suffering corrupted it; learning its name is an act of recognition, not simply a magic password.","The full way that empathy, name-recovery and possible combat interlock is deliberately still in development; do not assume a guaranteed redemption result."],"Mereth remembrance and Saelun human connection meet at the arc's climax.")],
-      [link("npcs","entity_alcatraz","Manifestation"),link("villains","villain_entity_alcatraz","Possible final opponent"),link("lore","arc3_keeper_history","True-name mystery")],"Developing");
+       section("Two potential resolutions",["The party may fight and kill the Keeper, or activate the four-tablet Rite of Remembrance during initiative.","The Keeper once safeguarded the departed’s memories; the inherited lullaby and the willingness to sacrifice memories offer a path to pacification.","The rite’s mechanics are established; specific Keeper attacks, stats and combat pacing remain undesigned."],"Mereth remembrance and Saelun human connection meet at the arc’s climax.")],
+      [link("npcs","entity_alcatraz","Manifestation"),link("villains","villain_entity_alcatraz","Possible final opponent"),link("lore","arc3_keeper_history","Forgotten purpose")],"Developing");
+
+    var riteOutline=[
+      section("Solve the four Kethil tablets",[
+        "The tablets are engraved in the 19-character Kethil script. The four lines, in the correct order, are: "+lullabyKethil.join(" / ")+".",
+        "They match Birdie’s four-line chorus, introduced with Anya and Elara in Arc 1 and revisited after Anya’s Arc 2 death: "+lullabyEnglish.join(" / ")+".",
+        "Moving or placing one tablet costs an action OR a bonus action; each character can position at most two tablets per turn.",
+        "Wrong ordering has no backlash or damage. Correct placement of all four activates the rite IMMEDIATELY."
+      ],"A clue planted across three arcs becomes a physical table puzzle."),
+      section("Voluntary memory sacrifice",[
+        "Once activated, a character may relinquish one cherished memory as an action and one as a bonus action, maximum two per character's turn.",
+        "Each memory sacrificed since the LAST Keeper roll adds 1d20 to the next pacification roll; previous bonus dice never carry forward.",
+        "A failed pacification roll does not restore memories. Players know sacrificing them risks permanent loss, but do not know which ending restores them."
+      ],"The players decide what to risk, and every sacrifice has emotional weight."),
+      section("Initiative 20: the Keeper's roll",[
+        "On initiative count 20, the DM rolls a base 1d20 plus 1d20 for each cherished memory sacrificed SINCE THE PREVIOUS roll.",
+        "ONLY a natural 20 on any of those dice pacifies the Keeper. After any failed roll, the next roll begins again with the base 1d20.",
+        "Pacification immediately restores ALL sacrificed memories. Killing the Keeper instead leaves every sacrificed memory lost PERMANENTLY.",
+        "Keeper combat abilities, stat block and encounter balancing are NOT locked yet."
+      ],"The rite offers a difficult but meaningful alternative to killing the Keeper.")
+    ];
+    upsert("lore","arc3_rite_of_remembrance",{
+      name:"Rite of Remembrance — Kethil Tablets and Memory Sacrifice",
+      status:"Canon",summary:"Four physically manipulated Kethil tablets keyed to Birdie’s lullaby unlock a voluntary memory-sacrifice pacification ritual.",
+      secret:outlineText(riteOutline),
+      connections:[link("threads","arc3_rite","Final ritual"),link("npcs",bid,"Lullaby source"),link("villains","villain_entity_alcatraz","Pacification target")]
+    });
+    event("arc3_rite",10,"The Rite of Remembrance",
+      "Players arrange the four Kethil tablets using Birdie’s lullaby, then may sacrifice cherished memories to pacify the Keeper during initiative.",
+      riteOutline,[link("lore","arc3_rite_of_remembrance","Full ritual rules"),link("villains","villain_entity_alcatraz","Pacification target"),link("threads","arc3_birdie","Lullaby clue")],"Canon");
+
+    upsert("npcs","ren_nakamura",{
+      name:"Ren Nakamura",occupation:"Bookshop employee at The Paper Lantern, Japantown",status:"Canon",
+      personality:"Warm, approachable and exuberant about Japanese folklore, especially ghost stories.",
+      summary:"Folklore-loving bookshop employee whose imagination accidentally manifests an Onryō-inspired spectral construct through Wonderworks’ Intention Engine.",
+      appearance:"Round glasses, slightly messy dark hair, layered green cardigan, casual shirt, satchel with whimsical folklore pins. Lovable bookworm; use the established navy and cyan geometric character-art style. His actual portrait is uploaded manually by the DM; do not set a portrait path.",
+      secret:"Arc 2: Attends Wonderworks and accidentally imagines an Onryō-inspired spectral construct into being through the Intention Engine. This is a fictional manifestation, not a real Japanese spiritual ritual. Luma contains it, earning public trust. Ren works at the ordinary Surface bookstore The Paper Lantern in Japantown. No portrait is automatically assigned: the DM is testing manual image upload.",
+      connections:[link("threads","arc2_luma_presentation","Festival manifestation"),link("threads","wonderworks_festival","Festival attendee")]
+    });
+    upsert("lore","arc1_birdie_lullaby_setup",{
+      name:"Arc 1 — Avalon House: Birdie, Anya, Elara and the Old Lullaby",status:"Canon",
+      summary:"A music-community scene at Avalon House introduces Birdie’s mentorship of Anya, Anya and Elara’s relationship, and a family lullaby later key to Arc 3.",
+      secret:"Introduce Birdie, Anya and Elara together at Avalon House during Arc 1. The party's Bard provides a natural potential point of connection, but the exact invitation/performance and placement in Arc 1 are OPEN. Birdie's old lullaby, passed down from her grandmother and taught to Anya, includes this chorus: "+lullabyEnglish.join(" / ")+". It should feel like affectionate music, not an obvious puzzle clue. In Arc 2 Anya dies; Arc 3 returns to Birdie, her Keeper story and this same chorus. The four Kethil tablet inscriptions are: "+lullabyKethil.join(" / ")+".",
+      connections:[link("npcs",bid,"Mentor and source of lullaby"),link("npcs",aid,"Former student"),link("threads","arc3_birdie","Emotional reprise"),link("threads","arc3_rite","Long-term puzzle payoff")]
+    });
 
     // Remember the update in local dashboard state. Retain all user edits / deletions.
     data._arc3CanonVersion=VERSION;
