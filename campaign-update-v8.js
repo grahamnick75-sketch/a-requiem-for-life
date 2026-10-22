@@ -883,7 +883,7 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-22-arc2-arc3-canon-reconciliation-v1";
+  var VERSION="2026-10-22-arc2-arc3-canon-reconciliation-v2";
   var arc="Arc 3 — The Dead Don't Leave";
   var lullabyEnglish=["I will remember you","You will remember me","And when I move on","Hold my memory gently"];
   var lullabyKethil=["Mi Ti Vei Mer","Ti Mi Vei Mer","No Sen Mi Vae","Mi I Meren Hara Ha Lun"];
@@ -945,6 +945,59 @@
     };
     return upsert("threads",id,fields);
   }
+  // Upgrade only exact superseded canon phrases within existing saved records.
+  // This preserves unrelated user prose, manually uploaded portraits, and field edits.
+  function reconcileLegacyFields(){
+    var oldAndNew=[
+      ["an honest Intention Engine accident creates a large firebreathing dragon. Luma sends drones to surround it with magical netting and shrink it to toy size. Her callback: “That one should probably stay here.”","an honest Intention Engine accident brings to life an Onryō-inspired spectral construct imagined by Ren Nakamura. Luma contains it with her security systems; precise effects and dialogue remain open."],
+      ["Later, an honest accident produces the full-sized firebreathing dragon that Luma contains and shrinks.","Later, a genuine accident manifests an Onryō-inspired spectral construct from attendee Ren Nakamura's imagination; Luma contains it."],
+      ["Concerned by Luma's dragon response","Concerned by Luma's impressive response to Ren's accidental spectral manifestation"],
+      ["Responds heroically to an accidental Intention Engine dragon using drones, magical netting and shrinking containment.","Responds heroically to a spectral construct unintentionally manifested from folklore enthusiast Ren Nakamura's imagination by the Intention Engine; security systems contain the threat."],
+      ["Its ending brings the accidental dragon and Daniel's invitation.","Its ending brings Ren's accidental folklore-inspired spectral manifestation and Daniel's invitation."],
+      ["Arc 2 — 03. Luma’s Presentation & Dragon Accident","Arc 2 — 03. Luma’s Presentation & Ren’s Folklore Manifestation"],
+      ["At the end of her presentation, the Intention Engine accidentally produces a large firebreathing dragon that threatens the festival.","At the end of her presentation, the Intention Engine accidentally produces an Onryō-inspired spectral construct from festival attendee Ren Nakamura's imagination. The construct threatens the festival."],
+      ["Luma calmly directs people behind barriers, deploys drones, surrounds the dragon with magical netting, and reduces it to toy size.","Luma directs the audience to safety and uses security systems to contain the construct; precise containment effects remain open."],
+      ["She looks back to the crowd: “That one should probably stay here.”","Luma's rescue wins public confidence; no specific callback line is locked."],
+      ["true-name redemption and combat remain possible","pacification via the four-tablet Rite of Remembrance or combat remain possible"],
+      ["a spirit whose own forgotten name may be the key to redemption","a Keeper spirit that can be pacified through Birdie’s lullaby and a four-tablet memory rite"],
+      ["The party can fight the manifested entity or investigate its ORIGINAL First Tongue name, lost across generations.","The party can fight the manifested entity or activate the four-tablet Rite of Remembrance."],
+      ["The Keeper once safeguarded the departed's memories, before Alcatraz prison suffering corrupted it; learning its name is an act of recognition, not simply a magic password.","The Keeper once safeguarded the departed’s memories, before Alcatraz prison suffering corrupted it; Birdie’s inherited lullaby preserves a path toward remembrance."],
+      ["The full way that empathy, name-recovery and possible combat interlock is deliberately still in development; do not assume a guaranteed redemption result.","The rite’s tablet and memory-sacrifice mechanics are established; Keeper combat abilities remain undeveloped."],
+      ["Recovery of the original name across Arc 3's research is a potential redemption path: speaking it is an act of remembrance rather than a mechanical password.","Pacification requires the Rite of Remembrance: arrange four Kethil tablets in Birdie’s lullaby order, then voluntarily sacrifice cherished memories."],
+      ["rediscovery of its TRUE First Tongue name could release its anger. Exact mechanics remain under development.","the four-tablet Rite of Remembrance offers a chance to pacify it through voluntary memory sacrifice. Combat mechanics remain undeveloped."],
+      ["redemption via name, compassion and restoration of identity is being developed.","pacification through the four-tablet Rite of Remembrance is possible."],
+      ["name-redemption endgame","Rite of Remembrance endgame"],
+      ["Forgotten true name","Lullaby and Kethil tablets"],
+      ["True-name mystery","Forgotten purpose"]
+    ];
+    function patch(value){
+      if(typeof value==="string"){
+        var result=value;
+        oldAndNew.forEach(function(pair){if(result.indexOf(pair[0])>=0)result=result.split(pair[0]).join(pair[1]);});
+        return result;
+      }
+      if(Array.isArray(value))return value.map(patch);
+      if(value&&typeof value==="object"){
+        var out={};
+        Object.keys(value).forEach(function(k){out[k]=patch(value[k]);});
+        return out;
+      }
+      return value;
+    }
+    ["threads","lore","npcs","villains","locations"].forEach(function(kind){
+      (data[kind]||[]).forEach(function(item){
+        ["name","summary","secret","campaignNotes","outline","goal","method","weakness","connections"].forEach(function(field){
+          if(Object.prototype.hasOwnProperty.call(item,field))item[field]=patch(item[field]);
+        });
+      });
+    });
+    if(data._editorOverrides){
+      Object.keys(data._editorOverrides).forEach(function(key){
+        data._editorOverrides[key]=patch(data._editorOverrides[key]);
+      });
+    }
+  }
+
   function apply(){
     if(data._arc3CanonVersion===VERSION) return;
     for(var kind of ["districts","locations","npcs","villains","lore","threads"])
@@ -1201,7 +1254,7 @@
       appearance:"Round glasses, slightly messy dark hair, layered green cardigan, casual shirt, satchel with whimsical folklore pins. Lovable bookworm; use the established navy and cyan geometric character-art style. His actual portrait is uploaded manually by the DM; do not set a portrait path.",
       secret:"Arc 2: Attends Wonderworks and accidentally imagines an Onryō-inspired spectral construct into being through the Intention Engine. This is a fictional manifestation, not a real Japanese spiritual ritual. Luma contains it, earning public trust. Ren works at the ordinary Surface bookstore The Paper Lantern in Japantown. No portrait is automatically assigned: the DM is testing manual image upload.",
       connections:[link("threads","arc2_luma_presentation","Festival manifestation"),link("threads","wonderworks_festival","Festival attendee")]
-    });
+    },{aliases:["Ren Nakamura"]});
     upsert("lore","arc1_birdie_lullaby_setup",{
       name:"Arc 1 — Avalon House: Birdie, Anya, Elara and the Old Lullaby",status:"Canon",
       summary:"A music-community scene at Avalon House introduces Birdie’s mentorship of Anya, Anya and Elara’s relationship, and a family lullaby later key to Arc 3.",
@@ -1209,6 +1262,8 @@
       connections:[link("npcs",bid,"Mentor and source of lullaby"),link("npcs",aid,"Former student"),link("threads","arc3_birdie","Emotional reprise"),link("threads","arc3_rite","Long-term puzzle payoff")]
     });
 
+    // Migrate legacy, script-generated Arc 2 and Arc 3 prose in older shared/browser saves.
+    reconcileLegacyFields();
     // Remember the update in local dashboard state. Retain all user edits / deletions.
     data._arc3CanonVersion=VERSION;
     if(typeof persist==="function"){try{persist();}catch(err){console.warn("Arc 3 persistence deferred",err);}}
