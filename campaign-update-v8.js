@@ -883,7 +883,7 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-28-campaign-wide-canon-sweep-v2";
+  var VERSION="2026-10-28-campaign-wide-canon-sweep-v3";
   var arc="Arc 3 — The Dead Don't Leave";
   var lullabyEnglish=["I will remember you","You will remember me","And when I move on","Hold my memory gently"];
   var lullabyKethil=["Mi Ti Vei Mer","Ti Mi Vei Mer","No Sen Mi Vae","Mi I Meren Hara Ha Lun"];
@@ -949,6 +949,7 @@
   // This preserves unrelated user prose, manually uploaded portraits, and field edits.
   function reconcileLegacyFields(){
     var oldAndNew=[
+      ["Secondary expression of Crossroads:","Waterfront resonance of Vaedrin:"],
       ["Chinatown remains the Crossroads anchor.","Chinatown is a candidate for Vaedrin resonance; an exclusive anchor is not established."],
       ["Crossroads anchor stays Chinatown, with secondary waterfront resonance.","Vaedrin may resonate around Chinatown and the waterfront; exact anchor placement remains open."],
       ["The benefactor’s actual identity remains UNDECIDED.","The benefactor is a willing servant of the demon and a respected record label executive; his personal name and label are still undecided."],
@@ -987,7 +988,7 @@
       }
       return value;
     }
-    ["threads","lore","npcs","villains","locations"].forEach(function(kind){
+    ["threads","lore","npcs","villains","locations","districts"].forEach(function(kind){
       (data[kind]||[]).forEach(function(item){
         ["name","summary","secret","campaignNotes","outline","goal","method","weakness","connections"].forEach(function(field){
           if(Object.prototype.hasOwnProperty.call(item,field))item[field]=patch(item[field]);
