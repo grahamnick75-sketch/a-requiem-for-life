@@ -883,7 +883,7 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-28-campaign-wide-canon-sweep-v4";
+  var VERSION="2026-10-28-campaign-wide-canon-sweep-v5";
   var arc="Arc 3 — The Dead Don't Leave";
   var lullabyEnglish=["I will remember you","You will remember me","And when I move on","Hold my memory gently"];
   var lullabyKethil=["Mi Ti Vei Mer","Ti Mi Vei Mer","No Sen Mi Vae","Mi I Meren Hara Ha Lun"];
@@ -949,6 +949,9 @@
   // This preserves unrelated user prose, manually uploaded portraits, and field edits.
   function reconcileLegacyFields(){
     var oldAndNew=[
+      ["A smooth, contract-focused criminal exploiting Confluence weakness for profit, not working for Elara or her demon.","A smooth contract-focused criminal whose physical smuggling network operates for profit; he does not knowingly serve Evander Veyne's infernal scheme."],
+      ["An unknown buyer pays him to import an unusually powerful creature to be used as a weapon.","An initially unidentified buyer pays him to import the magically altered Riftstalker. The purchase's purpose remains open; the monogrammed buyer is later revealed as Elara's record label executive."],
+      ["Monster, buyer, intended target and precise location undecided; build a level-appropriate serious Fey boss combat kit.","The altered creature is the Riftstalker and the anonymous buyer is the demon-serving record executive, but the creature's intended use and final combat details remain undecided."],
       ["exploiting weakened Confluence barriers to import dangerous creatures.","running a physical smuggling network through mortal intermediaries; the Embarcadero shipment itself involves no Fey crossing."],
       ["A mysterious buyer orders an extraordinarily powerful magically altered Displacer Beast (working name: Riftstalker) as a weapon.","A mysterious buyer commissions a magically altered Displacer Beast (working name: Riftstalker). The purpose of the purchase is not yet established."],
       ["Creature experiments’ origin, buyer, target, exact docks and stats remain undecided.","The buyer is concealed by an ornate monogrammed letter in Arc 1 and is revealed as Elara’s record-label executive in Arc 4. The Riftstalker’s intended use and final combat details are still undecided."],
