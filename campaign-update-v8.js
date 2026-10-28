@@ -883,7 +883,7 @@
   if(typeof data==="undefined" || !data || typeof render!=="function") return;
   if(window.__rflArc3V9Loaded) return;
   window.__rflArc3V9Loaded=true;
-  var VERSION="2026-10-26-arc4-full-outline-v1";
+  var VERSION="2026-10-28-campaign-wide-canon-sweep-v1";
   var arc="Arc 3 — The Dead Don't Leave";
   var lullabyEnglish=["I will remember you","You will remember me","And when I move on","Hold my memory gently"];
   var lullabyKethil=["Mi Ti Vei Mer","Ti Mi Vei Mer","No Sen Mi Vae","Mi I Meren Hara Ha Lun"];
@@ -921,7 +921,7 @@
       if(!Object.prototype.hasOwnProperty.call(edits,key))item[key]=fields[key];
     });
     if(opts.note && !Object.prototype.hasOwnProperty.call(edits,"secret")){
-      var tag="[Arc 3 canon update — October 19, 2026]";
+      var tag="[Campaign canon note — October 28, 2026]";
       var old=String(item.secret||"");
       if(!old.includes(opts.note))item.secret=(old+"\n\n"+tag+"\n"+opts.note).trim();
     }
@@ -1267,6 +1267,35 @@
     // Arc 4 is a working story outline. Keep unapproved people, locations, and mechanics explicitly open.
     var arc4Origin=[{"title":"Longstanding musical partnership","bullets":["Elara and Anya have been signed to the same Fog record label for years; its celebrated executive is a respected arts patron whose support of musicians and venues earns community trust.","The executive was secretly a willing servant of the demon from the beginning and signed the duo to exploit something extraordinary about their duets. He does not genuinely care for them; the relationship was cultivated for the demon's purposes.","Elara connects to Eshara (expression). Anya connects to Saelun (belonging) and, as Vox Nebulae, understands their supernatural harmonic resonance. Elara remains an unawakened Surface musician, completely unaware of the Fog and Currents; Anya never hints at the truth.","Their duets move audiences toward compassion and togetherness without visible magic: strangers feel understood, isolation briefly lifts, and connection comes naturally."],"takeaway":"The executive was targeting the music of two Currents in harmony, not Elara alone."},{"title":"Tragedy changes the plan","bullets":["Anya dies offsite during the Arc 2 Luma finale. Her addiction-related death is NOT caused by the demon or the executive and is a disruption to their original plan.","The executive gives Elara real time to grieve. After months, he gently suggests that returning to a solo career may help her find herself. He does not immediately push a contract or supernatural solution.","Elara's solo recordings are beautiful but lack the deep audience connection that came from her duets with Anya. The executive notices the missing Saelun resonance and gradually steers her artistic direction.","Eventually the executive exploits her wish to reunite with Anya, promising that reunion may be possible. Specific techniques, recording sessions, and how that promise is made are deliberately undecided."],"takeaway":"Preserve Elara's agency: she believes she is healing through art while someone trusted is manipulating her."}];
     var arc4Events=[{"id":"arc4_birdie","order":1,"title":"Birdie's Concern","summary":"Birdie asks the party to investigate the unsettling change in Elara's new music.","outline":[{"title":"The personal hook","bullets":["Birdie has been Elara and Anya's longtime musical mentor at Avalon House, already introduced to the party in Arc 1 and revisited after Anya's death in Arc 3.","Elara's new solo music is beautiful but provokes grief, anger, regret and loneliness in listeners; unlike the duo's old music, it encourages them to retreat from one another.","Birdie's familiarity with the Fog and the Currents tells her this is more than a change in musical style. She worries about Elara's safety and asks the party to look into it."],"takeaway":"The party gets involved because Birdie cares about Elara, not because of a formal Conservatory assignment."},{"title":"Open details","bullets":["The location of the conversation, Birdie's exact wording, and any evidence she brings have not yet been designed."],"takeaway":"Do not script encounters before the outline is approved."}],"connections":[{"targetType":"npcs","targetId":"birdie","relation":"Requests help"},{"targetType":"npcs","targetId":"elara","relation":"Person of concern"},{"targetType":"lore","targetId":"eshara_duets","relation":"Earlier harmony"}]},{"id":"arc4_listeners","order":2,"title":"The Spreading Isolation","summary":"The party confirms Elara's new music is isolating listeners and reconnects with a guarded but friendly Elara.","outline":[{"title":"First investigative direction","bullets":["Follow reports of other listeners increasingly overwhelmed by their own emotions, withdrawing rather than reaching out. The effect extends beyond one show or one person.","The party establishes that something supernatural is happening through the music; the exact listener cases, locations, and investigative clues remain open.","Elara notices listeners becoming distraught, but honestly believes her work helps them confront emotions they have buried."],"takeaway":"Investigate the spreading effect BEFORE making the record label the principal suspect."},{"title":"Elara's response","bullets":["Elara is genuinely friendly when the party checks in, since they knew Anya. She is protective of her music and record label executive and becomes uncomfortable when either is questioned.","She is not yet aware of the Fog or the magical ritual, nor is she simply possessed. Her emotional reasoning must remain believable."],"takeaway":"Build tension without prematurely turning Elara into an enemy."}],"connections":[{"targetType":"npcs","targetId":"elara","relation":"Performer"},{"targetType":"threads","targetId":"arc4_birdie","relation":"Investigation hook"}]},{"id":"arc4_label","order":3,"title":"The Label and the Monogram","summary":"Suspicion turns toward the record label; the party connects its executive to the Ferryman's Riftstalker buyer from Arc 1.","outline":[{"title":"Second investigative direction","bullets":["After confirming the music's effects, the party uncovers suspicious behavior surrounding Elara's Fog record label and its well-regarded executive.","The party finds the SAME ornate two-letter monogram that appeared on a sealed letter instructing the Ferryman about the Riftstalker purchase in Arc 1.","The matching mark reveals the executive was the mysterious purchaser of the Riftstalker and that the conspiracy dates back to the earlier arc.","The executive's personal name, record label name, monogram initials, exact evidence location and the purpose of the Riftstalker purchase remain undecided."],"takeaway":"Reward recognition of the old letter without inventing final identities or evidence delivery."},{"title":"Hidden truth","bullets":["The executive is a deliberate servant of the demon, not an unwitting intermediary or the demon itself.","They cultivated Elara and Anya's careers for years to exploit their Eshara–Saelun duets, then recalibrated after Anya's death."],"takeaway":"An influential arts patron is revealed as a long-term manipulator."}],"connections":[{"targetType":"villains","targetId":"villain_eshara_label_executive","relation":"Secret buyer"},{"targetType":"lore","targetId":"arc1_riftstalker_monogram","relation":"Arc 1 breadcrumb"},{"targetType":"threads","targetId":"arc1_finale","relation":"Earlier commission"}]},{"id":"arc4_executive_reacts","order":4,"title":"The Executive Closes Ranks","summary":"Knowing the party has exposed him, the executive undermines their relationship with Elara instead of immediately resorting to violence.","outline":[{"title":"An exposed conspirator","bullets":["The executive realizes the party has traced the Ferryman's monogram back to him, prior to the concert.","He responds FIRST with psychological manipulation, encouraging Elara to see the party as people interfering with her recovery, creative independence and career.","He also quietly obstructs their investigation, while maintaining his generous and respected public persona.","Elara is not automatically hostile: she still cares for the party but becomes increasingly suspicious of their criticism because she trusts the executive."],"takeaway":"The primary obstacle is trust, not a compulsory henchman ambush."},{"title":"Open details","bullets":["The mechanism by which he discovers he is exposed, his exact manipulations, any allies, and whether the party ever fights his agents remain undecided."],"takeaway":"Preserve escalation options for later design."}],"connections":[{"targetType":"npcs","targetId":"elara","relation":"Subject of manipulation"},{"targetType":"villains","targetId":"villain_eshara_label_executive","relation":"Manipulator"}]},{"id":"arc4_concert","order":5,"title":"The Corrupted Comeback Concert","summary":"Elara's major live solo concert becomes a concealed ritual designed to destabilize Eshara.","outline":[{"title":"The threat","bullets":["The executive guides Elara toward a corrupted musical composition. To her, it is an honest expression of her grief, love for Anya, and attempt to reclaim her artistic voice.","The composition secretly functions as a ritual attack against Eshara — Voice Unrestrained.","At a major LIVE concert, the performance intensifies the music's emotional isolation and begins destabilizing Eshara.","The party must try to disrupt the ritual and reach Elara without treating her as an irredeemable villain."],"takeaway":"The arc climax is a live performance, not a citywide recording release."},{"title":"What is not yet designed","bullets":["The concert venue and scale, ritual mechanics, the record executive's combat role, how Elara learns the truth, the party's possible resolutions, and the extent of damage to Eshara remain open.","The broader campaign still has five Current-centered arcs. The fifth attack targets Saelun; its failure to protect the Confluence triggers a separate two-encounter finale: restabilize the Confluence, then defeat the demon."],"takeaway":"Do not pre-decide whether the party successfully saves Elara or completely heals Eshara."}],"connections":[{"targetType":"npcs","targetId":"elara","relation":"Solo performer"},{"targetType":"villains","targetId":"villain_eshara_label_executive","relation":"Hidden ritual architect"},{"targetType":"lore","targetId":"eshara_duets","relation":"Lost harmonic power"}]}];
+
+    // Two approved playable opening encounters within Arc 4; preserve later beats as open.
+    var bEvent=arc4Events.find(function(e){return e.id==="arc4_birdie";});
+    if(bEvent){
+      bEvent.summary="Birdie's concern brings the party to an Avalon House listening gathering, where Elara's song causes a painful argument and reveals distorted Eshara resonance.";
+      bEvent.outline.push(section("Encounter 1 — Avalon House: the listening party",[
+        "Birdie invites the party to an intimate listening gathering at Avalon House. Elara is NOT singing live: a recording of her recent music is played.",
+        "Everyone in the party makes a DC 13 Wisdom saving throw as the music begins. Success: sense a fleeting, unnatural loneliness and recognize an outside emotional influence. Failure: feel a personal insecurity or painful memory intensified; the PLAYER chooses its expression. No forced behavior or mechanical penalty.",
+        "Two longtime friends begin a deeply personal, unexpectedly cruel argument, demonstrating how the song turns existing emotional wounds into disconnection.",
+        "Stopping the recording DOES NOT immediately restore calm. Heightened emotions linger for hours, but the supernatural effect is gone by the following day. Words spoken and hurt feelings may have ordinary consequences.",
+        "Investigating the resonance allows a DC 14 Arcana check. Success identifies interference with Eshara itself. Failure still registers something supernatural, but not its nature.",
+        "No clue at this point identifies the record executive or the demon."
+      ],"Show the music's danger without taking control of the player characters."));
+    }
+    var gEvent=arc4Events.find(function(e){return e.id==="arc4_listeners";});
+    if(gEvent){
+      gEvent.summary="The party investigates Elara's spreading influence and faces 5–6 crystalline, magically enraged patrons at Dolly Trolley's Glitterbomb in the CASTRO.";
+      gEvent.outline.push(section("Encounter 2 — Glitterbomb: Rage on the Dance Floor",[
+        "LOCATION: Glitterbomb, the Castro drag cabaret owned by Dolly Trolley (NOT a Tenderloin club or a venue called Dolly Trolley). This is an existing location and NPC.",
+        "A drag performer uses an OFFICIAL RECORDING of a NEW Elara song as part of an act. Only five or six patrons become supernaturally enraged; the rest of the crowd panics, evacuates, or needs protection.",
+        "The corrupted music triggers DC 15 Wisdom saving throws for party members. Emotions intensify; roleplay and responses remain players' decisions.",
+        "The affected patrons grow conspicuous jagged crystalline formations and gain abnormal strength and resilience. They become active threats but remain innocent victims, not evil monsters.",
+        "A full, NONLETHAL combat-style brawl breaks out. Dolly successfully resists the influence and works with the party to protect patrons, evacuate civilians, and contain violence.",
+        "The recorded song may stop, but the fighting and supernatural rage persist temporarily; stopping the speakers alone does NOT end the encounter.",
+        "Characters can deliberately target the crystals as an alternative to damaging patrons. Shattering a person's crystals weakens their powers, and destroying all their crystals ends their magical rage WITHOUT hurting the host. Precise attack rolls, crystal AC/HP, scaling and timing are not yet designed.",
+        "Once the effect wears off, patrons are confused or remorseful, while injuries, damage, and social consequences remain. Broken crystals persist as collectible, magically resonant physical evidence.",
+        "OPEN: What magical examination of the fragments reveals (intentional Eshara corruption versus an unfamiliar magical signature) has NOT been chosen."
+      ],"A tactical rescue battle: the party saves corrupted people while preserving shards for the investigation."));
+    }
     var arc4Name="Arc 4 — Elara's Descent";
     upsert("threads","arc_eshara",{
       name:"Arc 4 — Overview: Elara's Descent",arc:arc4Name,arcNumber:4,eventOrder:0,status:"Developing",
@@ -1326,6 +1355,158 @@
       note:"ARC 4 CANON: Birdie hears how Elara's new solo compositions isolate listeners emotionally rather than strengthen community. Familiar with the Fog and musical Currents, she senses an unnatural influence and asks the party to investigate. She is personally concerned for Elara, not issuing a Conservatory assignment.",
       connections:[link("threads","arc4_birdie","Arc 4 investigation hook"),link("threads","arc_eshara","Eshara arc")]
     });
+
+    // Campaign-wide sweep: correct legacy six-Current source entries and register the
+    // true final antagonist without erasing user-authored record overrides.
+    var fiveCurrents=[
+      {name:"Eshara",meaning:"Voice unrestrained",domain:"Art, Expression and Rebellion",arc:4},
+      {name:"Orith",meaning:"Seeking that makes",domain:"Invention and Innovation",arc:2},
+      {name:"Saelun",meaning:"Holding one another",domain:"Belonging and Chosen Family",arc:5},
+      {name:"Mereth",meaning:"Memory that endures",domain:"History and Remembrance",arc:3},
+      {name:"Vaedrin",meaning:"Chosen passage",domain:"Migration and Transformation",arc:1}
+    ];
+    upsert("lore","currents",{
+      name:"The Five Currents",status:"Canon",
+      summary:"Five Currents sustain the Confluence: Eshara (expression), Orith (innovation), Saelun (belonging), Mereth (remembrance) and Vaedrin (transformation).",
+      secret:"LOCKED FIVE CURRENTS: "+fiveCurrents.map(function(c){return c.name+" — "+c.meaning+" ("+c.domain+") — Arc "+c.arc;}).join("; ")+". Every Current resonates throughout San Francisco through people's choices and relationships; do not revert to the obsolete six-Current Wildfire/Crossroads/Foundation/Threshold/Spark/Covenant model. Do not assume each Current is tied exclusively to a single physical district.",
+      connections:[link("lore","confluence","Sustains protection"),link("threads","campaign_finale","Restoration objective")]
+    });
+    upsert("lore","surface",{
+      name:"Surface and Fog",status:"Canon",
+      summary:"The Surface is ordinary San Francisco; the Fog is its overlapping supernatural reality, normally veiled by the Confluence.",
+      secret:"The Confluence protects Surface life and veils the Fog from ordinary perception. The separate Umbral Arcana system was removed from canon. Awakening requires an event; do not assume unawakened people such as Elara can see Fog magic."
+    });
+    upsert("lore","confluence",{
+      name:"The Confluence",status:"Canon",
+      summary:"A citywide magical protection sustained by five Currents; it protects Surface life and veils the supernatural Fog.",
+      secret:"The Confluence keeps Surface life safe and the Fog hidden, and is sustained by the five Currents. The separate Umbral Arcana concept is RETIRED. Evander Veyne's plan is to corrupt and seize—not destroy—the Currents: fracture the Confluence, establish an infernal domain, and make that domain the NEW ANCHOR for the Confluence. If successful, the Confluence would protect his sovereign territory from outside entities, even the infernal powers of the Nine Hells, while trapping residents under his rule. Whether the reanchoring fully occurs in Arc 5 or is preventable/reversible in the first finale encounter remains open.",
+      connections:[link("lore","currents","Five magical supports"),link("lore","evander_master_plan","Threatened reanchoring"),link("threads","finale_confluence","Restoration")]
+    });
+    upsert("lore","conservatory",{
+      name:"The Conservatory",status:"Canon",
+      summary:"Hidden institution beneath the Conservatory of Flowers, devoted to scholarship, scouting magical resonance and preserving fragmentary First Tongue knowledge.",
+      secret:"Founded during the Gold Rush; scouts monitor the FIVE Currents. Its members understand parts of the Fog's history and fragmentary Kethil/First Tongue texts, but they are not omniscient. They may hold scattered accounts of infernal dominion failures without already having solved Evander's scheme. The Confluence alone protects Surface life and veils the Fog."
+    });
+    upsert("lore","elara",{
+      name:"Elara, Anya and Eshara's Corruption",status:"Canon",
+      summary:"Elara and Anya's duets harmonized Eshara and Saelun; after Anya's unrelated death, a demon-serving record executive slowly turns Elara's solo music into a corrupted concert ritual.",
+      secret:"Anya, Vox Nebulae, knew their duets' magical significance but never informed Elara. Elara remains UNAWAKENED and ignorant of the Fog during the early story and Arc 4 investigation. Anya dies elsewhere during Arc 2's Luma finale from an addiction-related tragedy, NOT a demonic murder. Their longtime Fog record-label executive was willingly serving Evander Veyne from the start. After allowing months for grief, he subtly nudges Elara into a solo career. Her music generates temporarily amplified loneliness, anger and alienation; she rationalizes it as difficult but healing art. Her major LIVE concert conceals an Eshara-destabilizing ritual. The party's efforts to save her and the outcome are open.",
+      connections:[link("npcs","elara","Singer"),link("npcs",aid,"Anya"),link("threads","arc_eshara","Arc 4"),link("npcs","evander_veyne","Infernal mastermind")]
+    });
+    // Legacy district descriptions in the initial dashboard seed still named old Currents.
+    [
+      ["haight","Eshara resonates strongly here through art, expression and rebellion; Avalon House is a sanctuary for musicians."],
+      ["soma","Orith resonates through invention and experimentation; Renewal Biomedical is the established major Orith anchor, not Salesforce Tower."],
+      ["castro","Saelun resonates here through belonging and chosen family; theatrical expression at Glitterbomb also echoes Eshara."],
+      ["chinatown","Vaedrin is a candidate thematic resonance here, but an exclusive physical anchor has not been confirmed."],
+      ["presidio","A unique Mereth or other Current anchor is not established here; the retired Foundation Current no longer exists."],
+      ["tenderloin","A unique Current anchor is not established here; the retired Threshold Current no longer exists."]
+    ].forEach(function(pair){upsert("districts",pair[0],{secret:pair[1]});});
+    upsert("locations","avalon",{
+      secret:"An open, multigenerational arts sanctuary with strong Eshara resonance. Birdie, Anya and Elara are introduced here in Arc 1; in Arc 3 Birdie recalls the Keeper of Memories and her lullaby; Arc 4 begins with Birdie's invitation to the party to hear Elara's unsettling recording."
+    },{aliases:["Avalon House"],connections:[link("threads","arc4_birdie","Arc 4 opening") ]});
+    upsert("locations","castro_glitterbomb",{
+      name:"Glitterbomb",district:"castro",status:"Canon"
+    },{
+      aliases:["Glitterbomb"],
+      note:"ARC 4 ENCOUNTER 2: During a drag act, an OFFICIAL recording of Elara's new song triggers magical rage in five or six patrons, who develop jagged crystals and supernatural strength. Dolly helps evacuate and protect other patrons. After the music stops the rage persists temporarily. The party can shatter crystals harmlessly to free the affected individuals; collectible shards remain.",
+      connections:[link("npcs","dolly_trolley","Owner"),link("threads","arc4_listeners","Glitterbomb riot")]
+    });
+    upsert("npcs","dolly_trolley",{
+      name:"Dolly Trolley",location:"castro_glitterbomb",status:"Canon"
+    },{
+      aliases:["Dolly Trolley"],
+      note:"Arc 4 Glitterbomb scene: Dolly RESISTS Elara's magical rage and actively helps evacuate and protect patrons. Only five or six guests become corrupted, not the entire crowd. Glitterbomb is in the CASTRO.",
+      connections:[link("locations","castro_glitterbomb","Owns Glitterbomb"),link("threads","arc4_listeners","Riot ally")]
+    });
+    upsert("npcs","evander_veyne",{
+      name:"Evander Veyne",status:"Canon",ancestry:"Infernal fiend",
+      occupation:"Infernal scholar and aspiring sovereign",
+      personality:"Courtly, patient, intellectually arrogant, calculating; considers mortals inferior resources rather than equals.",
+      appearance:"In his controlled gentlemanly form: tall, almost human, impeccably dressed and unnervingly composed. In the FINAL confrontation he reveals a towering, horned, armored Infernal Monarch form; the specific costume and horn details are intentionally undecided.",
+      summary:"The campaign's true infernal mastermind: a centuries-old scholarly upstart seeking to make San Francisco the first permanently anchored infernal kingdom on the Material Plane.",
+      secret:"Evander Veyne is his REAL infernal name, not an alias. Comparatively minor in Hell's hierarchy, he has spent centuries researching ancient, FAILED infernal dominions. Those territories depended on unstable Nine Hells connections and could never remain anchored to the Material Plane. He discovered San Francisco's Confluence and FIVE Currents, and believes he can replace its foundation with his own infernal domain, forcing it to shield his independent kingdom against outside entities including Hell's rulers. He sees humans as resources to be owned, not people to be admired. While the Confluence holds, he CANNOT physically enter San Francisco or appear independently: he communicates ONLY by channeling his voice or image through WILLING servants. The record label executive, his willing agent, is the Arc 4 vessel. The demon introduces himself to the party as Evander Veyne in Arc 4 but does NOT reveal his infernal-sovereignty objective. In Arc 5 the Confluence breaks and he enters SF in his genteel appearance. His monstrous Infernal Monarch form is held back until the separate FINAL FIGHT. Exact rank, powers, true form aesthetics and combat statistics undecided.",
+      connections:[link("villains","villain_evander_veyne","Principal antagonist"),link("lore","evander_master_plan","Infernal sovereignty plan"),link("npcs","eshara_label_executive","Willing mouthpiece"),link("threads","arc5_saelun","The Breach"),link("threads","finale_evander","Final confrontation")]
+    });
+    upsert("villains","villain_evander_veyne",{
+      name:"Evander Veyne",npcId:"evander_veyne",status:"Canon",arc:"Campaign-wide antagonist / Final Encounter 2",
+      summary:"Infernal Scholar, centuries-long plotter, and aspiring ruler of a permanent independent dominion protected by San Francisco's own Confluence.",
+      goal:"Make his infernal domain the new anchor of the Confluence, transforming the city's protection into a shield for his sovereignty against entities outside his realm.",
+      method:"Study prior dominion failures; cultivate willing agents; exploit suffering that weakens each Current; engineer an Arc 5 Confluence rupture and Nine Hells gateway; seize control of the five Currents without destroying them.",
+      weakness:"The domain's attempted reanchoring to the Confluence must be prevented or reversed before he is decisively confronted. Specific vulnerability and battle mechanics are undecided.",
+      secret:"His ambitious plan is to escape Hell's authority, not rise within it. Humanity is his resource. The party meets him by name through a willing agent in Arc 4 but learns his true objective later. He enters after the Arc 5 breach as an elegant gentleman; his true Infernal Monarch form appears only in the last confrontation. He is NOT the mastermind of every independent villain's choices: Luma and the Keeper retain their own motives.",
+      connections:[link("npcs","evander_veyne","True identity"),link("threads","arc5_saelun","Breach"),link("threads","finale_evander","Final encounter")]
+    });
+    upsert("lore","infernal_dominions",{
+      name:"The Failed Infernal Dominions",status:"Canon",
+      summary:"Across ancient history, fiends established temporary mortal territories, but none succeeded in creating a permanent independent infernal dominion.",
+      secret:"Fragments of tablets, manuscripts and occult histories record infernal kingdoms that eventually fell. They all depended on unstable magical links to the Nine Hells and collapsed when those links failed. Evander Veyne, a scholarly upstart, has studied these accounts for centuries. Exact historical civilizations, dates, artifacts and named fiends are NOT established. These records can become research material for the Conservatory.",
+      connections:[link("npcs","evander_veyne","Centuries of research"),link("lore","evander_master_plan","His breakthrough")]
+    });
+    upsert("lore","evander_master_plan",{
+      name:"Evander's Plan — Steal the Confluence's Protection",status:"Canon",
+      summary:"Evander seeks to build a permanent San Francisco infernal domain as the Confluence's NEW ANCHOR, so the city's own protective magic defends his realm from outside entities.",
+      secret:"The demon's aim is INDEPENDENT SOVEREIGNTY, not annihilation of the city. Past dominions failed to anchor permanently. The Confluence's five Currents are his answer. Scheme: exploit suffering to weaken their integrity without destroying them; rupture the Confluence in Arc 5; enter through the Nine Hells gateway; establish an infernal domain that replaces the Confluence's old foundation; harness the Currents so the protective barrier shelters his kingdom against outside powers, potentially even Hell's hierarchy, while subjecting San Francisco's residents to his rule. The five arcs reflect vulnerabilities he exploits, but Luma and the Keeper are NOT necessarily direct agents. Do not reveal the true objective to players during Evander's Arc 4 introduction. Exact reanchoring ritual and post-rupture timeline remain unresolved.",
+      connections:[link("npcs","evander_veyne","Architect"),link("lore","currents","Five Currents"),link("lore","infernal_dominions","Historic failures"),link("threads","finale_confluence","Protective barrier is reclaimed")]
+    });
+    upsert("lore","eshara_benefactor",{
+      name:"Eshara — Record Label Executive (Name Undecided)",status:"Canon"
+    },{connections:[link("npcs","evander_veyne","Willing infernal patron")]});
+    upsert("npcs","eshara_label_executive",{},{
+      note:"The infernal force he willingly serves is Evander Veyne, the centuries-old scholar. He can voluntarily channel Evander's voice in Arc 4, allowing Evander to reveal his TRUE NAME but not his ambition to make SF an infernal dominion.",
+      connections:[link("npcs","evander_veyne","Willing infernal mouthpiece")]
+    });
+    upsert("threads","arc_eshara",{
+      summary:"Arc 4 (Eshara): Birdie's Avalon House listening gathering exposes temporarily isolating music. At Glitterbomb in the Castro, Elara's recording enrages 5–6 crystalline patrons; their broken crystals remain as evidence. The investigation leads to the record executive and his Arc 1 Ferryman monogram. He manipulates Elara against the party; Evander Veyne briefly speaks through this willing servant by name. Elara's live comeback concert is a covert Eshara ritual."
+    },{connections:[link("npcs","evander_veyne","Infernal figure revealed"),link("locations","castro_glitterbomb","Encounter 2")]});
+    upsert("threads","arc5_saelun",{
+      name:"Arc 5 — Saelun (Title TBD)",arc:"Arc 5 — Saelun",arcNumber:5,eventOrder:0,status:"Developing",
+      summary:"The fifth Current-centered arc targets Saelun (Belonging and Chosen Family). Evander's attack ultimately breaches the Confluence; Surface and Fog collide and a gateway to the Nine Hells opens.",
+      outline:[
+        section("Confirmed structure",[
+          "The fifth arc is a DISTINCT Saelun story, not the two finale encounters. It follows Vaedrin, Orith, Mereth and Eshara.",
+          "After mounting damage to the Currents, the demon's plan succeeds in rupturing the Confluence. The Fog and Surface destabilize and a gateway to the Nine Hells opens.",
+          "Evander enters San Francisco in his composed, gentlemanly appearance; his true monstrous form remains concealed until the final fight.",
+          "His actual goal is to make an infernal domain the NEW protective anchor of the Confluence, not to simply destroy the barrier."
+        ],"The catastrophic breach sets up two SEPARATE subsequent encounters."),
+        section("Undecided",[
+          "Arc 5's title, location, individual encounters, Saelun ritual details, character outcomes, and how the party learns the complete infernal plan have not been agreed."
+        ],"Do not invent a detailed Arc 5 story.")
+      ],
+      secret:"Saelun's corruption triggers a Confluence rupture and a Nine Hells gateway. Evander's hoped-for infernal dominion would become the new anchor and receive the Confluence's protection. After this arc, first restore the Confluence, then defeat Evander in separate encounters.",
+      connections:[link("npcs","evander_veyne","Arrives through breach"),link("threads","campaign_finale","Precedes finale"),link("lore","currents","Saelun")]
+    });
+    var finaleOverview=[
+      section("1. Restore the Confluence",["A separate post–Arc 5 encounter to prevent or reverse the replacement of the Confluence's natural foundation by Evander's infernal domain.","Reclaim the Currents' protective role. The resolution and its exact mechanics have not yet been designed."],"The protective barrier must not remain a shield for Evander's kingdom."),
+      section("2. Defeat Evander Veyne",["A separate, subsequent final confrontation with Evander, after the Confluence-restoration objective.","Only now is his monstrous, horned and armored Infernal Monarch form revealed. His actual combat design and end state remain undecided."],"Two finale objectives remain separate.")
+    ];
+    upsert("threads","campaign_finale",{
+      name:"Finale — After Arc 5 (Two Encounters)",arc:"Finale — Post-Arc 5",eventOrder:0,status:"Developing",
+      summary:"After Saelun's catastrophic fifth arc, the party must first reclaim the Confluence, then separately confront and defeat Evander Veyne.",
+      outline:finaleOverview,secret:outlineText(finaleOverview),
+      connections:[link("threads","finale_confluence","Encounter 1"),link("threads","finale_evander","Encounter 2"),link("threads","arc5_saelun","Preceding breach")]
+    });
+    upsert("threads","finale_confluence",{
+      name:"Finale — 01. Reclaim the Confluence",arc:"Finale — Post-Arc 5",
+      parentThread:"campaign_finale",eventOrder:1,status:"Developing",
+      summary:"Restore the Confluence's purpose and prevent or reverse its transformation into Evander's protective infernal shield.",
+      outline:[finaleOverview[0]],secret:outlineText([finaleOverview[0]]),
+      connections:[link("lore","evander_master_plan","Threat"),link("npcs","evander_veyne","Would-be sovereign")]
+    });
+    upsert("threads","finale_evander",{
+      name:"Finale — 02. Defeat Evander Veyne",arc:"Finale — Post-Arc 5",
+      parentThread:"campaign_finale",eventOrder:2,status:"Developing",
+      summary:"Confront Evander Veyne after the Confluence objective. The Infernal Gentleman finally unveils his terrifying Infernal Monarch form.",
+      outline:[finaleOverview[1]],secret:outlineText([finaleOverview[1]]),
+      connections:[link("npcs","evander_veyne","Final foe"),link("villains","villain_evander_veyne","Boss")]
+    });
+    upsert("threads","main",{
+      name:"Campaign Throughline — The Five Currents and Evander Veyne",status:"Developing",
+      summary:"Five arcs test Vaedrin, Orith, Mereth, Eshara and Saelun; infernal scholar Evander Veyne seeks to turn San Francisco's protective Confluence into the permanent anchor of his independent domain.",
+      secret:"Established order: Arc 1 Vaedrin (Ferryman), Arc 2 Orith (Luma), Arc 3 Mereth (Keeper), Arc 4 Eshara (Elara), Arc 5 Saelun (breach). Distinct final encounters: 1. Restore/reclaim the Confluence, then 2. defeat Evander. The demon is an infernal scholar and upstart who seeks to steal the Confluence's protection, not destroy the city. Some arc antagonists, such as Luma and the Keeper, are independent rather than deliberate demon agents.",
+      connections:[link("lore","currents","Five Currents"),link("npcs","evander_veyne","Main antagonist"),link("threads","arc5_saelun","Final Current"),link("threads","campaign_finale","Two final encounters")]
+    });
+
     // Migrate legacy, script-generated Arc 2 and Arc 3 prose in older shared/browser saves.
     reconcileLegacyFields();
     // Remember the update in local dashboard state. Retain all user edits / deletions.
@@ -1381,6 +1562,9 @@
     kinds.forEach(k=>{if(Array.isArray(remote.data.collections[k]))data[k]=remote.data.collections[k]});
     data._editorOverrides=remote.data._editorOverrides||{};
     data._editorDeletes=remote.data._editorDeletes||[];
+    // Re-run the current canon migration against the freshly loaded repository state.
+    // A previous startup migration must not suppress updates after a later Load action.
+    data._arc3CanonVersion="";
     sha=remote.sha;
     persist();render();
     status("Loaded shared campaign state. Version "+sha.slice(0,8));
